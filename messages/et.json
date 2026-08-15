@@ -1,0 +1,240 @@
+{
+  "common": {
+    "appName": "Planogramm",
+    "loading": "Laadimine…",
+    "cancel": "Tühista",
+    "save": "Salvesta",
+    "delete": "Kustuta",
+    "close": "Sulge",
+    "description": "Riiuli ümberpaigutamine vastavalt planogrammile"
+  },
+  "nav": {
+    "planograms": "Planogrammid",
+    "import": "Import",
+    "users": "Kasutajad",
+    "stores": "Poed",
+    "analytics": "Analüütika",
+    "signOut": "Logi välja"
+  },
+  "home": {
+    "status": "Teenus töötab",
+    "link": "Ava planogrammid"
+  },
+  "login": {
+    "email": "E-post",
+    "password": "Parool",
+    "invalidCredentials": "Vale e-post või parool",
+    "submitting": "Sisselogimine…",
+    "submit": "Logi sisse"
+  },
+  "planograms": {
+    "title": "Planogrammid",
+    "empty": "Planogramme pole veel — importige Exceli fail jaotises „Import“.",
+    "meta": "{itemCount} positsiooni · versioon {version}",
+    "status": {
+      "IN_PROGRESS": "pooleli",
+      "DONE": "valmis"
+    }
+  },
+  "preview": {
+    "back": "← Kõik planogrammid",
+    "importedMeta": "Imporditud {date} · versioon {version}",
+    "start": "Alusta",
+    "continueFromStep": "Jätka sammust {step}",
+    "legend": {
+      "ok": "muutusteta",
+      "changed": "muudetud",
+      "new": "uus toode",
+      "removed": "eemalda"
+    }
+  },
+  "run": {
+    "empty": "Sellel planogrammil pole positsioone.",
+    "rackCounter": "Riiul {current} / {total}",
+    "stepCounter": "Samm {current} / {total}",
+    "back": "◀ Tagasi",
+    "next": "▶ Samm",
+    "feedback": "Tagasiside",
+    "prevRackAria": "Eelmine riiul",
+    "nextRackAria": "Järgmine riiul",
+    "shelfLabel": "Tasand {n}"
+  },
+  "stepLabel": {
+    "pick": "Eemalda",
+    "delete": "Sortimendist väljas",
+    "place": "Aseta",
+    "move": "Tõsta ümber",
+    "resize": "Muuda esipindade arvu",
+    "confirm": "Juba õigel kohal",
+    "idle": "Valmis alustama",
+    "done": "Riiul on valmis"
+  },
+  "instructions": {
+    "idle": "Vajuta „Samm“, et alustada riiuli ümberpaigutamist",
+    "done": "Kõik sammud on tehtud — riiul vastab uuele plaanile",
+    "delete": "Võta {article} ({sap}) riiulist {rack} tasandilt {shelf} — toodet uues plaanis pole, pane korvi „Sortimendist väljas“",
+    "pick": "Tee ruumi: eemalda {article} ({sap}) riiulist {rack} tasandilt {shelf} ajutisse korvi",
+    "moveSame": "Nihuta {article} ({sap}) riiulil {rack} tasandil {shelf}: positsioonilt {oldPos} positsioonile {newPos}",
+    "moveDifferent": "Tõsta {article} ({sap}) riiulist {fromRack} tasandilt {fromShelf} riiulisse {rack} tasandile {shelf}, positsioon {newPos}, esipindu {faces}",
+    "confirm": "{article} ({sap}) on juba õigel kohal — midagi teha pole vaja",
+    "resizeIncrease": "Suurenda toote {article} ({sap}) esipindade arvu riiulil {rack} tasandil {shelf}, positsioon {newPos}: {oldFaces} → {newFaces}",
+    "resizeDecrease": "Vähenda toote {article} ({sap}) esipindade arvu riiulil {rack} tasandil {shelf}, positsioon {newPos}: {oldFaces} → {newFaces}",
+    "placeFromTemp": "Võta {article} ({sap}) ajutisest korvist ja aseta riiulisse {rack} tasandile {shelf}, positsioon {newPos}, esipindu {faces}",
+    "placeFromNew": "Võta {article} ({sap}) korvist „Uus toode“ ja aseta riiulisse {rack} tasandile {shelf}, positsioon {newPos}, esipindu {faces}",
+    "placeFromShelf": "Võta {article} ({sap}) riiulist {oldRack} tasandilt {oldShelf} ja aseta riiulisse {rack} tasandile {shelf}, positsioon {newPos}, esipindu {faces}"
+  },
+  "feedback": {
+    "sentThanks": "Aitäh, saadetud!",
+    "newTag": "Uus toode",
+    "reasonTitle": "Põhjus",
+    "isShelfReady": "Kas toode on riiulil valmis?",
+    "needSeparator": "Vajab eraldajat",
+    "doesntFitByHeight": "Ei mahu kõrguse tõttu",
+    "doesntFitFacesQty": "Ei mahu esipindade arvu tõttu",
+    "other": "Muu",
+    "commentPlaceholder": "Kommentaar",
+    "addPhoto": "Lisa foto",
+    "submitting": "Saatmine…",
+    "submit": "Saada",
+    "validationError": "Märgi põhjus või lisa kommentaar",
+    "genericError": "Saatmine ebaõnnestus",
+    "productLocation": "Riiul {rack} → Tasand {shelf} → Positsioon {position} → Esipindu {faces}"
+  },
+  "completion": {
+    "title": "Planogramm on valmis",
+    "placed": "{count} toodet paigutatud",
+    "feedbackSent": "{count} tagasisidet saadetud",
+    "removed": "{count} toodet eemaldatud",
+    "stepsCompleted": "{count}/{total} sammu tehtud",
+    "thanks": "Aitäh, {name}!",
+    "done": "Valmis"
+  },
+  "adminImport": {
+    "title": "Planogrammi import",
+    "storeLabel": "Pood",
+    "storePlaceholder": "— vali pood —",
+    "newStoreCodePlaceholder": "Uue poe kood (nt T203)",
+    "createStore": "+ Loo pood",
+    "fileLabel": "Exceli fail",
+    "hint": "Fail võib sisaldada mitut planogrammi (Node) — kõik imporditakse korraga. Sama Node uuesti üleslaadimine loob uue versiooni.",
+    "submitting": "Importimine…",
+    "submit": "Impordi",
+    "resultTitle": "Tulemus — pood {store}",
+    "table": {
+      "node": "Node",
+      "version": "Versioon",
+      "items": "Positsioone",
+      "duplicates": "SAP-i duplikaadid"
+    },
+    "errors": {
+      "createStoreFailed": "Poe loomine ebaõnnestus",
+      "importFailed": "Impordi viga"
+    }
+  },
+  "adminUsers": {
+    "title": "Kasutajad",
+    "newUserTitle": "Uus kasutaja",
+    "email": "E-post",
+    "password": "Parool",
+    "name": "Nimi",
+    "role": "Roll",
+    "store": "Pood",
+    "creating": "Loomine…",
+    "create": "Loo",
+    "allUsersTitle": "Kõik kasutajad",
+    "table": {
+      "email": "E-post",
+      "name": "Nimi",
+      "role": "Roll",
+      "store": "Pood",
+      "active": "Aktiivne"
+    },
+    "errors": {
+      "createUserFailed": "Kasutaja loomine ebaõnnestus"
+    }
+  },
+  "adminStores": {
+    "title": "Poed",
+    "newStoreTitle": "Uus pood",
+    "code": "Kood",
+    "name": "Nimi",
+    "chain": "Kett",
+    "format": "Formaat",
+    "address": "Aadress",
+    "email": "E-post",
+    "creating": "Loomine…",
+    "create": "Loo",
+    "allStoresTitle": "Kõik poed",
+    "table": {
+      "code": "Kood",
+      "name": "Nimi",
+      "chain": "Kett",
+      "format": "Formaat",
+      "address": "Aadress",
+      "email": "E-post",
+      "printers": "Printerid"
+    },
+    "configure": "Seadista",
+    "hide": "Peida",
+    "printersTitle": "Poe printerid",
+    "printerName": "Nimi",
+    "printerIp": "IP",
+    "noPrinters": "Printereid pole veel",
+    "addPrinter": "Lisa printer",
+    "errors": {
+      "createStoreFailed": "Poe loomine ebaõnnestus"
+    }
+  },
+  "analytics": {
+    "title": "Analüütika",
+    "stats": {
+      "done": "valmis",
+      "inProgress": "pooleli",
+      "notStarted": "alustamata",
+      "avgDuration": "keskmine teostusaeg"
+    },
+    "byStoreTitle": "Poodide kaupa",
+    "byStoreTable": {
+      "store": "Pood",
+      "done": "Valmis",
+      "inProgress": "Pooleli"
+    },
+    "runsTitle": "Planogrammid poodide kaupa",
+    "allStores": "Kõik poed",
+    "runsTable": {
+      "store": "Pood",
+      "planogram": "Planogramm",
+      "user": "Kes",
+      "status": "Staatus",
+      "step": "Samm",
+      "started": "Alustatud",
+      "finished": "Lõpetatud",
+      "duration": "Kestus, min"
+    },
+    "status": {
+      "NOT_STARTED": "alustamata",
+      "IN_PROGRESS": "pooleli",
+      "DONE": "valmis",
+      "ABANDONED": "loobutud"
+    },
+    "noRuns": "Veel pole midagi tehtud",
+    "feedbackTitle": "Tagasiside",
+    "feedbackTable": {
+      "photo": "Foto",
+      "storeAndPlanogram": "Pood / planogramm",
+      "product": "Toode",
+      "reasons": "Põhjused",
+      "comment": "Kommentaar",
+      "user": "Kes",
+      "when": "Millal"
+    },
+    "reason": {
+      "needSeparator": "eraldaja",
+      "doesntFitByHeight": "ei mahu kõrguse tõttu",
+      "doesntFitFacesQty": "ei mahu esipindade tõttu",
+      "otherReason": "muu"
+    },
+    "noFeedback": "Tagasisidet pole veel",
+    "minutesShort": "min"
+  }
+}

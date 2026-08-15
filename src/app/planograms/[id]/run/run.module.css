@@ -1,0 +1,195 @@
+.page {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 14px 14px 148px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.headerTop {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.store {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: 22px;
+  margin: 0;
+  color: var(--ink);
+}
+
+.rackCounter {
+  font-size: 12px;
+  color: var(--ink-soft);
+}
+
+.progressTrack {
+  height: 6px;
+  border-radius: 999px;
+  background: var(--surface-3);
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  background: var(--accent);
+  transition: width 0.2s ease;
+}
+
+.stepCounter {
+  font-size: 12px;
+  color: var(--ink-faint);
+}
+
+.shelves {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.instructionCard {
+  background: var(--surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-1);
+  border-left: 5px solid var(--ink-faint);
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.instructionCard[data-kind="delete"] {
+  border-left-color: var(--danger);
+}
+.instructionCard[data-kind="pick"],
+.instructionCard[data-kind="move"],
+.instructionCard[data-kind="resize"] {
+  border-left-color: var(--move);
+}
+.instructionCard[data-kind="place"] {
+  border-left-color: var(--new);
+}
+.instructionCard[data-kind="confirm"],
+.instructionCard[data-kind="done"] {
+  border-left-color: var(--ok);
+}
+
+.instructionTag {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--ink-faint);
+  font-weight: 600;
+}
+
+.instructionProduct {
+  font-family: var(--font-display);
+  font-size: 18px;
+  color: var(--ink);
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.instructionSap {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--ink-soft);
+  font-weight: 400;
+}
+
+.instructionText {
+  margin: 0;
+  font-size: 14px;
+  color: var(--ink-soft);
+  line-height: 1.4;
+}
+
+.controls {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px 14px calc(10px + env(safe-area-inset-bottom));
+  background: var(--surface);
+  border-top: 1px solid var(--line);
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.controlsRow {
+  display: flex;
+  gap: 10px;
+}
+
+.btnPrimary,
+.btnGhost {
+  flex: 1;
+  padding: 14px;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  font-size: 15px;
+  border: none;
+  cursor: pointer;
+}
+
+.btnPrimary {
+  background: var(--accent);
+  color: var(--accent-ink);
+  flex: 2;
+}
+
+.btnPrimary:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.btnGhost {
+  background: var(--surface-2);
+  color: var(--ink);
+}
+
+.btnGhost:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.cancelBtn,
+.feedbackBtn {
+  flex: 1;
+  text-align: center;
+  padding: 11px;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  font-size: 13px;
+  border: none;
+  cursor: pointer;
+}
+
+.cancelBtn {
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+
+.feedbackBtn {
+  background: var(--surface-2);
+  color: var(--ink-soft);
+}

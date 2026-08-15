@@ -1,0 +1,9 @@
+# Reverse proxy + automatic TLS (Let's Encrypt) for the Planogram app.
+# Set DOMAIN in your .env before `docker compose up` on the real server, e.g.:
+#   DOMAIN=planograms.example.com
+# For local testing without a domain, DOMAIN defaults to localhost — Caddy will
+# serve plain HTTP there instead of requesting a real certificate.
+
+{$DOMAIN:localhost} {
+	reverse_proxy app:3000
+}

@@ -1,0 +1,240 @@
+{
+  "common": {
+    "appName": "Планограмма",
+    "loading": "Загрузка…",
+    "cancel": "Отмена",
+    "save": "Сохранить",
+    "delete": "Удалить",
+    "close": "Закрыть",
+    "description": "Пересборка полки по планограмме"
+  },
+  "nav": {
+    "planograms": "Планограммы",
+    "import": "Импорт",
+    "users": "Пользователи",
+    "stores": "Магазины",
+    "analytics": "Аналитика",
+    "signOut": "Выйти"
+  },
+  "home": {
+    "status": "Сервис поднят и работает",
+    "link": "Перейти к планограммам"
+  },
+  "login": {
+    "email": "Email",
+    "password": "Пароль",
+    "invalidCredentials": "Неверный email или пароль",
+    "submitting": "Вход…",
+    "submit": "Войти"
+  },
+  "planograms": {
+    "title": "Планограммы",
+    "empty": "Планограмм пока нет — импортируйте Excel-файл в разделе «Импорт».",
+    "meta": "{itemCount} позиций · версия {version}",
+    "status": {
+      "IN_PROGRESS": "в процессе",
+      "DONE": "собрано"
+    }
+  },
+  "preview": {
+    "back": "← Все планограммы",
+    "importedMeta": "Импортировано {date} · версия {version}",
+    "start": "Начать",
+    "continueFromStep": "Продолжить с шага {step}",
+    "legend": {
+      "ok": "без изменений",
+      "changed": "изменения",
+      "new": "новый товар",
+      "removed": "убрать"
+    }
+  },
+  "run": {
+    "empty": "В этой планограмме нет позиций.",
+    "rackCounter": "Стеллаж {current} из {total}",
+    "stepCounter": "Шаг {current} / {total}",
+    "back": "◀ Назад",
+    "next": "▶ Шаг",
+    "feedback": "Отзыв",
+    "prevRackAria": "Предыдущий стеллаж",
+    "nextRackAria": "Следующий стеллаж",
+    "shelfLabel": "Полка {n}"
+  },
+  "stepLabel": {
+    "pick": "Убери",
+    "delete": "В корзину «Не ассорт»",
+    "place": "Поставь",
+    "move": "Переставь",
+    "resize": "Поменяй кол-во лиц",
+    "confirm": "Уже на месте",
+    "idle": "Готово к работе",
+    "done": "Раскладка собрана"
+  },
+  "instructions": {
+    "idle": "Нажмите «Шаг», чтобы начать пересборку полки",
+    "done": "Все шаги выполнены — полка собрана по новому плану",
+    "delete": "Возьми {article} ({sap}) со стеллажа {rack} полка {shelf} — товара нет в новом плане, убери в корзину «Не ассорт»",
+    "pick": "Освободи место: убери {article} ({sap}) со стеллажа {rack} полка {shelf} во временную корзину",
+    "moveSame": "Сдвинь {article} ({sap}) на стеллаже {rack} полка {shelf}: с позиции {oldPos} на позицию {newPos}",
+    "moveDifferent": "Переставь {article} ({sap}) со стеллажа {fromRack} полка {fromShelf} на стеллаж {rack} полка {shelf}, позиция {newPos}, лиц {faces}",
+    "confirm": "{article} ({sap}) уже стоит на своём месте — ничего делать не нужно",
+    "resizeIncrease": "Увеличь количество лиц у {article} ({sap}) на стеллаже {rack} полка {shelf}, позиция {newPos}: с {oldFaces} на {newFaces}",
+    "resizeDecrease": "Уменьши количество лиц у {article} ({sap}) на стеллаже {rack} полка {shelf}, позиция {newPos}: с {oldFaces} на {newFaces}",
+    "placeFromTemp": "Возьми {article} ({sap}) из временной корзины и поставь на стеллаж {rack} полка {shelf}, позиция {newPos}, лиц {faces}",
+    "placeFromNew": "Возьми {article} ({sap}) из корзины «Новый товар» и поставь на стеллаж {rack} полка {shelf}, позиция {newPos}, лиц {faces}",
+    "placeFromShelf": "Возьми {article} ({sap}) со стеллажа {oldRack} полка {oldShelf} и поставь на стеллаж {rack} полка {shelf}, позиция {newPos}, лиц {faces}"
+  },
+  "feedback": {
+    "sentThanks": "Спасибо, отправлено!",
+    "newTag": "Новый товар",
+    "reasonTitle": "Причина",
+    "isShelfReady": "Товар готов на полке?",
+    "needSeparator": "Нужен разделитель",
+    "doesntFitByHeight": "Не помещается по высоте",
+    "doesntFitFacesQty": "Не влезает по количеству лиц",
+    "other": "Другое",
+    "commentPlaceholder": "Комментарий",
+    "addPhoto": "Добавить фото",
+    "submitting": "Отправка…",
+    "submit": "Отправить",
+    "validationError": "Отметьте причину или добавьте комментарий",
+    "genericError": "Не удалось отправить",
+    "productLocation": "Стеллаж {rack} → Полка {shelf} → Позиция {position} → Лиц {faces}"
+  },
+  "completion": {
+    "title": "Планограмма собрана",
+    "placed": "{count} товаров расставлено",
+    "feedbackSent": "{count} отправлено отзывов",
+    "removed": "{count} товаров убрано",
+    "stepsCompleted": "{count}/{total} шагов завершено",
+    "thanks": "Спасибо, {name}!",
+    "done": "Готово"
+  },
+  "adminImport": {
+    "title": "Импорт планограммы",
+    "storeLabel": "Магазин",
+    "storePlaceholder": "— выберите магазин —",
+    "newStoreCodePlaceholder": "Код нового магазина (напр. T203)",
+    "createStore": "+ Создать магазин",
+    "fileLabel": "Файл Excel",
+    "hint": "Файл может содержать несколько планограмм (Node) — все будут импортированы за один раз. Повторная загрузка того же Node создаёт новую версию.",
+    "submitting": "Импорт…",
+    "submit": "Импортировать",
+    "resultTitle": "Результат — магазин {store}",
+    "table": {
+      "node": "Node",
+      "version": "Версия",
+      "items": "Позиций",
+      "duplicates": "Дубликаты SAP"
+    },
+    "errors": {
+      "createStoreFailed": "Не удалось создать магазин",
+      "importFailed": "Ошибка импорта"
+    }
+  },
+  "adminUsers": {
+    "title": "Пользователи",
+    "newUserTitle": "Новый пользователь",
+    "email": "Email",
+    "password": "Пароль",
+    "name": "Имя",
+    "role": "Роль",
+    "store": "Магазин",
+    "creating": "Создание…",
+    "create": "Создать",
+    "allUsersTitle": "Все пользователи",
+    "table": {
+      "email": "Email",
+      "name": "Имя",
+      "role": "Роль",
+      "store": "Магазин",
+      "active": "Активен"
+    },
+    "errors": {
+      "createUserFailed": "Не удалось создать пользователя"
+    }
+  },
+  "adminStores": {
+    "title": "Магазины",
+    "newStoreTitle": "Новый магазин",
+    "code": "Код",
+    "name": "Название",
+    "chain": "Сеть",
+    "format": "Формат",
+    "address": "Адрес",
+    "email": "Email",
+    "creating": "Создание…",
+    "create": "Создать",
+    "allStoresTitle": "Все магазины",
+    "table": {
+      "code": "Код",
+      "name": "Название",
+      "chain": "Сеть",
+      "format": "Формат",
+      "address": "Адрес",
+      "email": "Email",
+      "printers": "Принтеры"
+    },
+    "configure": "Настроить",
+    "hide": "Скрыть",
+    "printersTitle": "Принтеры магазина",
+    "printerName": "Название",
+    "printerIp": "IP",
+    "noPrinters": "Принтеров пока нет",
+    "addPrinter": "Добавить принтер",
+    "errors": {
+      "createStoreFailed": "Не удалось создать магазин"
+    }
+  },
+  "analytics": {
+    "title": "Аналитика",
+    "stats": {
+      "done": "собрано",
+      "inProgress": "в процессе",
+      "notStarted": "не начато",
+      "avgDuration": "среднее время сборки"
+    },
+    "byStoreTitle": "По магазинам",
+    "byStoreTable": {
+      "store": "Магазин",
+      "done": "Собрано",
+      "inProgress": "В процессе"
+    },
+    "runsTitle": "Планограммы по магазину",
+    "allStores": "Все магазины",
+    "runsTable": {
+      "store": "Магазин",
+      "planogram": "Планограмма",
+      "user": "Кто",
+      "status": "Статус",
+      "step": "Шаг",
+      "started": "Начато",
+      "finished": "Завершено",
+      "duration": "Время, мин"
+    },
+    "status": {
+      "NOT_STARTED": "не начато",
+      "IN_PROGRESS": "в процессе",
+      "DONE": "собрано",
+      "ABANDONED": "отменено"
+    },
+    "noRuns": "Пока ничего не выполнялось",
+    "feedbackTitle": "Обратная связь",
+    "feedbackTable": {
+      "photo": "Фото",
+      "storeAndPlanogram": "Магазин / планограмма",
+      "product": "Товар",
+      "reasons": "Причины",
+      "comment": "Комментарий",
+      "user": "Кто",
+      "when": "Когда"
+    },
+    "reason": {
+      "needSeparator": "разделитель",
+      "doesntFitByHeight": "не влезает по высоте",
+      "doesntFitFacesQty": "не влезает по кол-ву лиц",
+      "otherReason": "другое"
+    },
+    "noFeedback": "Пока нет отзывов",
+    "minutesShort": "мин"
+  }
+}

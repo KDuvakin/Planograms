@@ -1,0 +1,9 @@
+node_modules
+.next
+.git
+.env
+.env.local
+src/generated
+public/uploads/feedback/*
+!public/uploads/feedback/.gitkeep
+npm-debug.log*

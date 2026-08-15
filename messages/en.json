@@ -1,0 +1,240 @@
+{
+  "common": {
+    "appName": "Planogram",
+    "loading": "Loading…",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "close": "Close",
+    "description": "Resetting a shelf to a planogram"
+  },
+  "nav": {
+    "planograms": "Planograms",
+    "import": "Import",
+    "users": "Users",
+    "stores": "Stores",
+    "analytics": "Analytics",
+    "signOut": "Sign out"
+  },
+  "home": {
+    "status": "Service is up and running",
+    "link": "Go to planograms"
+  },
+  "login": {
+    "email": "Email",
+    "password": "Password",
+    "invalidCredentials": "Invalid email or password",
+    "submitting": "Signing in…",
+    "submit": "Sign in"
+  },
+  "planograms": {
+    "title": "Planograms",
+    "empty": "No planograms yet — import an Excel file in the Import section.",
+    "meta": "{itemCount} items · version {version}",
+    "status": {
+      "IN_PROGRESS": "in progress",
+      "DONE": "done"
+    }
+  },
+  "preview": {
+    "back": "← All planograms",
+    "importedMeta": "Imported {date} · version {version}",
+    "start": "Start",
+    "continueFromStep": "Continue from step {step}",
+    "legend": {
+      "ok": "no changes",
+      "changed": "changed",
+      "new": "new item",
+      "removed": "remove"
+    }
+  },
+  "run": {
+    "empty": "This planogram has no items.",
+    "rackCounter": "Rack {current} of {total}",
+    "stepCounter": "Step {current} / {total}",
+    "back": "◀ Back",
+    "next": "▶ Step",
+    "feedback": "Feedback",
+    "prevRackAria": "Previous rack",
+    "nextRackAria": "Next rack",
+    "shelfLabel": "Shelf {n}"
+  },
+  "stepLabel": {
+    "pick": "Remove",
+    "delete": "To \"not assorted\"",
+    "place": "Place",
+    "move": "Move",
+    "resize": "Change face count",
+    "confirm": "Already in place",
+    "idle": "Ready to start",
+    "done": "Layout complete"
+  },
+  "instructions": {
+    "idle": "Press \"Step\" to start resetting the shelf",
+    "done": "All steps completed — the shelf now matches the new plan",
+    "delete": "Take {article} ({sap}) from rack {rack} shelf {shelf} — it's not in the new plan, put it in the \"not assorted\" basket",
+    "pick": "Free up space: remove {article} ({sap}) from rack {rack} shelf {shelf} into the temporary basket",
+    "moveSame": "Shift {article} ({sap}) on rack {rack} shelf {shelf}: from position {oldPos} to position {newPos}",
+    "moveDifferent": "Move {article} ({sap}) from rack {fromRack} shelf {fromShelf} to rack {rack} shelf {shelf}, position {newPos}, {faces} faces",
+    "confirm": "{article} ({sap}) is already in place — nothing to do",
+    "resizeIncrease": "Increase the face count of {article} ({sap}) on rack {rack} shelf {shelf}, position {newPos}: from {oldFaces} to {newFaces}",
+    "resizeDecrease": "Decrease the face count of {article} ({sap}) on rack {rack} shelf {shelf}, position {newPos}: from {oldFaces} to {newFaces}",
+    "placeFromTemp": "Take {article} ({sap}) from the temporary basket and place it on rack {rack} shelf {shelf}, position {newPos}, {faces} faces",
+    "placeFromNew": "Take {article} ({sap}) from the \"new item\" basket and place it on rack {rack} shelf {shelf}, position {newPos}, {faces} faces",
+    "placeFromShelf": "Take {article} ({sap}) from rack {oldRack} shelf {oldShelf} and place it on rack {rack} shelf {shelf}, position {newPos}, {faces} faces"
+  },
+  "feedback": {
+    "sentThanks": "Thanks, submitted!",
+    "newTag": "New item",
+    "reasonTitle": "Reason",
+    "isShelfReady": "Is the item shelf-ready?",
+    "needSeparator": "Needs a separator",
+    "doesntFitByHeight": "Doesn't fit by height",
+    "doesntFitFacesQty": "Doesn't fit the face count",
+    "other": "Other",
+    "commentPlaceholder": "Comment",
+    "addPhoto": "Add photo",
+    "submitting": "Submitting…",
+    "submit": "Submit",
+    "validationError": "Pick a reason or add a comment",
+    "genericError": "Couldn't submit",
+    "productLocation": "Rack {rack} → Shelf {shelf} → Position {position} → Faces {faces}"
+  },
+  "completion": {
+    "title": "Planogram implemented",
+    "placed": "{count} products placed",
+    "feedbackSent": "{count} feedback sent",
+    "removed": "{count} items removed",
+    "stepsCompleted": "{count}/{total} steps completed",
+    "thanks": "Thank you, {name}!",
+    "done": "Done"
+  },
+  "adminImport": {
+    "title": "Import planogram",
+    "storeLabel": "Store",
+    "storePlaceholder": "— select a store —",
+    "newStoreCodePlaceholder": "New store code (e.g. T203)",
+    "createStore": "+ Create store",
+    "fileLabel": "Excel file",
+    "hint": "The file can contain several planograms (Node) — all are imported at once. Re-uploading the same Node creates a new version.",
+    "submitting": "Importing…",
+    "submit": "Import",
+    "resultTitle": "Result — store {store}",
+    "table": {
+      "node": "Node",
+      "version": "Version",
+      "items": "Items",
+      "duplicates": "Duplicate SAPs"
+    },
+    "errors": {
+      "createStoreFailed": "Couldn't create the store",
+      "importFailed": "Import error"
+    }
+  },
+  "adminUsers": {
+    "title": "Users",
+    "newUserTitle": "New user",
+    "email": "Email",
+    "password": "Password",
+    "name": "Name",
+    "role": "Role",
+    "store": "Store",
+    "creating": "Creating…",
+    "create": "Create",
+    "allUsersTitle": "All users",
+    "table": {
+      "email": "Email",
+      "name": "Name",
+      "role": "Role",
+      "store": "Store",
+      "active": "Active"
+    },
+    "errors": {
+      "createUserFailed": "Couldn't create the user"
+    }
+  },
+  "adminStores": {
+    "title": "Stores",
+    "newStoreTitle": "New store",
+    "code": "Code",
+    "name": "Name",
+    "chain": "Chain",
+    "format": "Format",
+    "address": "Address",
+    "email": "Email",
+    "creating": "Creating…",
+    "create": "Create",
+    "allStoresTitle": "All stores",
+    "table": {
+      "code": "Code",
+      "name": "Name",
+      "chain": "Chain",
+      "format": "Format",
+      "address": "Address",
+      "email": "Email",
+      "printers": "Printers"
+    },
+    "configure": "Configure",
+    "hide": "Hide",
+    "printersTitle": "Store printers",
+    "printerName": "Name",
+    "printerIp": "IP",
+    "noPrinters": "No printers yet",
+    "addPrinter": "Add printer",
+    "errors": {
+      "createStoreFailed": "Couldn't create the store"
+    }
+  },
+  "analytics": {
+    "title": "Analytics",
+    "stats": {
+      "done": "done",
+      "inProgress": "in progress",
+      "notStarted": "not started",
+      "avgDuration": "average implementation time"
+    },
+    "byStoreTitle": "By store",
+    "byStoreTable": {
+      "store": "Store",
+      "done": "Done",
+      "inProgress": "In progress"
+    },
+    "runsTitle": "Planograms by store",
+    "allStores": "All stores",
+    "runsTable": {
+      "store": "Store",
+      "planogram": "Planogram",
+      "user": "User",
+      "status": "Status",
+      "step": "Step",
+      "started": "Started",
+      "finished": "Finished",
+      "duration": "Duration, min"
+    },
+    "status": {
+      "NOT_STARTED": "not started",
+      "IN_PROGRESS": "in progress",
+      "DONE": "done",
+      "ABANDONED": "abandoned"
+    },
+    "noRuns": "Nothing implemented yet",
+    "feedbackTitle": "Feedback",
+    "feedbackTable": {
+      "photo": "Photo",
+      "storeAndPlanogram": "Store / planogram",
+      "product": "Item",
+      "reasons": "Reasons",
+      "comment": "Comment",
+      "user": "User",
+      "when": "When"
+    },
+    "reason": {
+      "needSeparator": "separator",
+      "doesntFitByHeight": "doesn't fit by height",
+      "doesntFitFacesQty": "doesn't fit face count",
+      "otherReason": "other"
+    },
+    "noFeedback": "No feedback yet",
+    "minutesShort": "min"
+  }
+}

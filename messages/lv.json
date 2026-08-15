@@ -1,0 +1,240 @@
+{
+  "common": {
+    "appName": "Planograma",
+    "loading": "Ielādē…",
+    "cancel": "Atcelt",
+    "save": "Saglabāt",
+    "delete": "Dzēst",
+    "close": "Aizvērt",
+    "description": "Plaukta pārkārtošana atbilstoši planogrammai"
+  },
+  "nav": {
+    "planograms": "Planogrammas",
+    "import": "Imports",
+    "users": "Lietotāji",
+    "stores": "Veikali",
+    "analytics": "Analītika",
+    "signOut": "Iziet"
+  },
+  "home": {
+    "status": "Serviss darbojas",
+    "link": "Uz planogrammām"
+  },
+  "login": {
+    "email": "E-pasts",
+    "password": "Parole",
+    "invalidCredentials": "Nepareizs e-pasts vai parole",
+    "submitting": "Pieslēdzas…",
+    "submit": "Pieslēgties"
+  },
+  "planograms": {
+    "title": "Planogrammas",
+    "empty": "Planogrammu vēl nav — importējiet Excel failu sadaļā „Imports“.",
+    "meta": "{itemCount} pozīcijas · versija {version}",
+    "status": {
+      "IN_PROGRESS": "izpildē",
+      "DONE": "izpildīts"
+    }
+  },
+  "preview": {
+    "back": "← Visas planogrammas",
+    "importedMeta": "Importēts {date} · versija {version}",
+    "start": "Sākt",
+    "continueFromStep": "Turpināt no soļa {step}",
+    "legend": {
+      "ok": "bez izmaiņām",
+      "changed": "izmaiņas",
+      "new": "jauna prece",
+      "removed": "noņemt"
+    }
+  },
+  "run": {
+    "empty": "Šai planogrammai nav pozīciju.",
+    "rackCounter": "Plaukts {current} no {total}",
+    "stepCounter": "Solis {current} / {total}",
+    "back": "◀ Atpakaļ",
+    "next": "▶ Solis",
+    "feedback": "Atsauksme",
+    "prevRackAria": "Iepriekšējais plaukts",
+    "nextRackAria": "Nākamais plaukts",
+    "shelfLabel": "Līmenis {n}"
+  },
+  "stepLabel": {
+    "pick": "Noņemt",
+    "delete": "Ārpus sortimenta",
+    "place": "Novietot",
+    "move": "Pārvietot",
+    "resize": "Mainīt seju skaitu",
+    "confirm": "Jau savā vietā",
+    "idle": "Gatavs sākt",
+    "done": "Plaukts gatavs"
+  },
+  "instructions": {
+    "idle": "Spied „Solis“, lai sāktu plaukta pārkārtošanu",
+    "done": "Visi soļi pabeigti — plaukts atbilst jaunajam plānam",
+    "delete": "Paņem {article} ({sap}) no plaukta {rack} plaukta līmeņa {shelf} — preces jaunajā plānā nav, ievieto grozā „Ārpus sortimenta“",
+    "pick": "Atbrīvo vietu: noņem {article} ({sap}) no plaukta {rack} plaukta līmeņa {shelf} pagaidu grozā",
+    "moveSame": "Pārbīdi {article} ({sap}) plauktā {rack} līmenī {shelf}: no pozīcijas {oldPos} uz pozīciju {newPos}",
+    "moveDifferent": "Pārvieto {article} ({sap}) no plaukta {fromRack} līmeņa {fromShelf} uz plauktu {rack} līmeni {shelf}, pozīcija {newPos}, {faces} sejas",
+    "confirm": "{article} ({sap}) jau ir savā vietā — nekas nav jādara",
+    "resizeIncrease": "Palielini preces {article} ({sap}) seju skaitu plauktā {rack} līmenī {shelf}, pozīcija {newPos}: no {oldFaces} uz {newFaces}",
+    "resizeDecrease": "Samazini preces {article} ({sap}) seju skaitu plauktā {rack} līmenī {shelf}, pozīcija {newPos}: no {oldFaces} uz {newFaces}",
+    "placeFromTemp": "Paņem {article} ({sap}) no pagaidu groza un novieto plauktā {rack} līmenī {shelf}, pozīcija {newPos}, {faces} sejas",
+    "placeFromNew": "Paņem {article} ({sap}) no groza „Jauna prece“ un novieto plauktā {rack} līmenī {shelf}, pozīcija {newPos}, {faces} sejas",
+    "placeFromShelf": "Paņem {article} ({sap}) no plaukta {oldRack} līmeņa {oldShelf} un novieto plauktā {rack} līmenī {shelf}, pozīcija {newPos}, {faces} sejas"
+  },
+  "feedback": {
+    "sentThanks": "Paldies, nosūtīts!",
+    "newTag": "Jauna prece",
+    "reasonTitle": "Iemesls",
+    "isShelfReady": "Vai prece ir gatava plauktā?",
+    "needSeparator": "Nepieciešams atdalītājs",
+    "doesntFitByHeight": "Neietilpst pēc augstuma",
+    "doesntFitFacesQty": "Neietilpst pēc seju skaita",
+    "other": "Cits",
+    "commentPlaceholder": "Komentārs",
+    "addPhoto": "Pievienot foto",
+    "submitting": "Sūta…",
+    "submit": "Sūtīt",
+    "validationError": "Atzīmējiet iemeslu vai pievienojiet komentāru",
+    "genericError": "Neizdevās nosūtīt",
+    "productLocation": "Plaukts {rack} → Līmenis {shelf} → Pozīcija {position} → Sejas {faces}"
+  },
+  "completion": {
+    "title": "Planograma ieviesta",
+    "placed": "{count} preces novietotas",
+    "feedbackSent": "{count} atsauksmes nosūtītas",
+    "removed": "{count} preces noņemtas",
+    "stepsCompleted": "{count}/{total} soļi pabeigti",
+    "thanks": "Paldies, {name}!",
+    "done": "Gatavs"
+  },
+  "adminImport": {
+    "title": "Planogrammas imports",
+    "storeLabel": "Veikals",
+    "storePlaceholder": "— izvēlieties veikalu —",
+    "newStoreCodePlaceholder": "Jauna veikala kods (piem., T203)",
+    "createStore": "+ Izveidot veikalu",
+    "fileLabel": "Excel fails",
+    "hint": "Fails var saturēt vairākas planogrammas (Node) — visas tiek importētas uzreiz. Atkārtoti augšupielādējot to pašu Node, tiek izveidota jauna versija.",
+    "submitting": "Importē…",
+    "submit": "Importēt",
+    "resultTitle": "Rezultāts — veikals {store}",
+    "table": {
+      "node": "Node",
+      "version": "Versija",
+      "items": "Pozīcijas",
+      "duplicates": "SAP dublikāti"
+    },
+    "errors": {
+      "createStoreFailed": "Neizdevās izveidot veikalu",
+      "importFailed": "Importa kļūda"
+    }
+  },
+  "adminUsers": {
+    "title": "Lietotāji",
+    "newUserTitle": "Jauns lietotājs",
+    "email": "E-pasts",
+    "password": "Parole",
+    "name": "Vārds",
+    "role": "Loma",
+    "store": "Veikals",
+    "creating": "Izveido…",
+    "create": "Izveidot",
+    "allUsersTitle": "Visi lietotāji",
+    "table": {
+      "email": "E-pasts",
+      "name": "Vārds",
+      "role": "Loma",
+      "store": "Veikals",
+      "active": "Aktīvs"
+    },
+    "errors": {
+      "createUserFailed": "Neizdevās izveidot lietotāju"
+    }
+  },
+  "adminStores": {
+    "title": "Veikali",
+    "newStoreTitle": "Jauns veikals",
+    "code": "Kods",
+    "name": "Nosaukums",
+    "chain": "Tīkls",
+    "format": "Formāts",
+    "address": "Adrese",
+    "email": "E-pasts",
+    "creating": "Izveido…",
+    "create": "Izveidot",
+    "allStoresTitle": "Visi veikali",
+    "table": {
+      "code": "Kods",
+      "name": "Nosaukums",
+      "chain": "Tīkls",
+      "format": "Formāts",
+      "address": "Adrese",
+      "email": "E-pasts",
+      "printers": "Printeri"
+    },
+    "configure": "Konfigurēt",
+    "hide": "Slēpt",
+    "printersTitle": "Veikala printeri",
+    "printerName": "Nosaukums",
+    "printerIp": "IP",
+    "noPrinters": "Printeru vēl nav",
+    "addPrinter": "Pievienot printeri",
+    "errors": {
+      "createStoreFailed": "Neizdevās izveidot veikalu"
+    }
+  },
+  "analytics": {
+    "title": "Analītika",
+    "stats": {
+      "done": "izpildīts",
+      "inProgress": "izpildē",
+      "notStarted": "nav sākts",
+      "avgDuration": "vidējais ieviešanas laiks"
+    },
+    "byStoreTitle": "Pēc veikaliem",
+    "byStoreTable": {
+      "store": "Veikals",
+      "done": "Izpildīts",
+      "inProgress": "Izpildē"
+    },
+    "runsTitle": "Planogrammas pēc veikala",
+    "allStores": "Visi veikali",
+    "runsTable": {
+      "store": "Veikals",
+      "planogram": "Planograma",
+      "user": "Kas",
+      "status": "Statuss",
+      "step": "Solis",
+      "started": "Sākts",
+      "finished": "Pabeigts",
+      "duration": "Ilgums, min"
+    },
+    "status": {
+      "NOT_STARTED": "nav sākts",
+      "IN_PROGRESS": "izpildē",
+      "DONE": "izpildīts",
+      "ABANDONED": "atcelts"
+    },
+    "noRuns": "Vēl nekas nav izpildīts",
+    "feedbackTitle": "Atsauksmes",
+    "feedbackTable": {
+      "photo": "Foto",
+      "storeAndPlanogram": "Veikals / planograma",
+      "product": "Prece",
+      "reasons": "Iemesli",
+      "comment": "Komentārs",
+      "user": "Kas",
+      "when": "Kad"
+    },
+    "reason": {
+      "needSeparator": "atdalītājs",
+      "doesntFitByHeight": "neietilpst pēc augstuma",
+      "doesntFitFacesQty": "neietilpst pēc seju skaita",
+      "otherReason": "cits"
+    },
+    "noFeedback": "Atsauksmju vēl nav",
+    "minutesShort": "min"
+  }
+}

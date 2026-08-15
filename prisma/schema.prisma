@@ -1,0 +1,168 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlserver"
+}
+
+// SQL Server connector doesn't support native enums — Role/RunStatus are
+// plain strings, validated at the application layer (see src/lib/rbac.ts).
+// Role: "ADMIN" | "MANAGER" | "MERCHANDISER"
+// RunStatus: "NOT_STARTED" | "IN_PROGRESS" | "DONE" | "ABANDONED"
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  name         String?
+  role         String   @default("MERCHANDISER")
+  storeId      String?
+  store        Store?   @relation(fields: [storeId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  active       Boolean  @default(true)
+  createdAt    DateTime @default(now())
+
+  runs      PlanogramRun[]
+  imports   Planogram[]    @relation("ImportedBy")
+  feedbacks Feedback[]
+}
+
+model Store {
+  id        String   @id @default(cuid())
+  code      String   @unique
+  name      String?
+  chain     String?
+  format    String?
+  address   String?
+  email     String?
+  createdAt DateTime @default(now())
+
+  users      User[]
+  planograms Planogram[]
+  printers   Printer[]
+}
+
+// A store can have several printers (till, warehouse, ...), so IPs live in
+// their own table rather than a single Store.printerIp field.
+model Printer {
+  id        String   @id @default(cuid())
+  storeId   String
+  store     Store    @relation(fields: [storeId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  name      String?
+  ip        String
+  createdAt DateTime @default(now())
+
+  @@index([storeId])
+}
+
+model Planogram {
+  id             String   @id @default(cuid())
+  storeId        String
+  store          Store    @relation(fields: [storeId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  node           String
+  version        Int      @default(1)
+  isCurrent      Boolean  @default(true)
+  shelfLengthCm  Float    @default(133)
+  sourceFileName String
+  importedAt     DateTime @default(now())
+  importedById   String
+  importedBy     User     @relation("ImportedBy", fields: [importedById], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  items PlanogramItem[]
+  runs  PlanogramRun[]
+
+  @@unique([storeId, node, version])
+  @@index([storeId, node, isCurrent])
+}
+
+model PlanogramItem {
+  id          String    @id @default(cuid())
+  planogramId String
+  planogram   Planogram @relation(fields: [planogramId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  sortIndex   Int
+
+  sap     String
+  ean     String?
+  article String
+
+  rackOld             String
+  shelfOld            String
+  positionNumberOld   String
+  facesOld            Int
+  unitOrTrayOld       String?
+  positionWidthOld    Float?
+  productTrayWidthOld Float?
+
+  rackNew             String
+  shelfNew            String
+  positionNumberNew   String
+  facesNew            Int
+  unitOrTrayNew       String?
+  positionWidthNew    Float?
+  productTrayWidthNew Float?
+
+  faceWidth Float
+  isNew     Boolean
+  isDeleted Boolean
+
+  feedbacks Feedback[]
+
+  @@index([planogramId, sap])
+}
+
+model PlanogramRun {
+  id              String    @id @default(cuid())
+  planogramId     String
+  planogram       Planogram @relation(fields: [planogramId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  userId          String
+  user            User      @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  status          String    @default("NOT_STARTED")
+  currentRealStep Int       @default(0)
+  realStepsTotal  Int       @default(0)
+  startedAt       DateTime?
+  finishedAt      DateTime?
+  lastActivityAt  DateTime  @updatedAt
+  createdAt       DateTime  @default(now())
+
+  feedbacks Feedback[]
+
+  @@index([planogramId, userId, status])
+  @@index([userId, status])
+}
+
+model Feedback {
+  id              String         @id @default(cuid())
+  runId           String
+  run             PlanogramRun   @relation(fields: [runId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  planogramItemId String?
+  planogramItem   PlanogramItem? @relation(fields: [planogramItemId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  stepRealIndex   Int
+
+  // structured reasons, matched to the app's feedback form checkboxes
+  isShelfReady      Boolean?
+  needSeparator     Boolean  @default(false)
+  doesntFitByHeight Boolean  @default(false)
+  doesntFitFacesQty Boolean  @default(false)
+  otherReason       Boolean  @default(false)
+
+  comment   String   @db.NVarChar(Max)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  createdAt DateTime @default(now())
+
+  photos FeedbackPhoto[]
+
+  @@index([runId])
+}
+
+// A feedback entry can carry several photos (the app lets you attach up to 3).
+model FeedbackPhoto {
+  id         String   @id @default(cuid())
+  feedbackId String
+  feedback   Feedback @relation(fields: [feedbackId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  url        String
+  createdAt  DateTime @default(now())
+
+  @@index([feedbackId])
+}

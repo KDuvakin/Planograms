@@ -1,17 +1,46 @@
+/* =====================================================================
+   PLANOGRAM · design tokens
+   Ported from the original prototype (planogram.css) — same palette,
+   same shelf-tag visual identity, new mobile-first layout on top of it.
+   ===================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap');
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg: #EDF1EE;
+  --surface: #FFFFFF;
+  --surface-2: #E3E9E5;
+  --surface-3: #D3DCD7;
+  --ink: #14231F;
+  --ink-soft: #55655F;
+  --ink-faint: #8B978F;
+  --line: #C7D1CB;
+
+  --accent: #0B6E5C;
+  --accent-ink: #FFFFFF;
+  --accent-soft: #DCEFE9;
+
+  --ok: #2E9E58;
+  --ok-soft: #E4F5EA;
+  --move: #DB9A2B;
+  --move-soft: #FCF1DC;
+  --danger: #D2483F;
+  --danger-soft: #FBE7E5;
+  --new: #3573C7;
+  --new-soft: #E4EEFB;
+
+  --font-display: 'Barlow Condensed', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  --font-mono: 'IBM Plex Mono', monospace;
+
+  --radius: 10px;
+  --radius-sm: 6px;
+  --shadow-1: 0 1px 2px rgba(20, 35, 31, .06), 0 1px 1px rgba(20, 35, 31, .04);
+  --shadow-2: 0 8px 24px rgba(20, 35, 31, .14), 0 2px 6px rgba(20, 35, 31, .08);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-html {
-  height: 100%;
+* {
+  box-sizing: border-box;
 }
 
 html,
@@ -21,20 +50,13 @@ body {
 }
 
 body {
-  min-height: 100%;
-  display: flex;
-  flex-direction: column;
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-* {
-  box-sizing: border-box;
-  padding: 0;
   margin: 0;
+  min-height: 100%;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 14px;
+  -webkit-font-smoothing: antialiased;
 }
 
 a {
@@ -42,8 +64,6 @@ a {
   text-decoration: none;
 }
 
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
+button {
+  font-family: inherit;
 }
