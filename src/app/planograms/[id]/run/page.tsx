@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 import type { PlanogramItemLike } from "@/lib/engine/loadProducts";
 import { RunView } from "./RunView";
 import styles from "./run.module.css";
+import { fetcher } from "@/lib/swrFetcher";
 
 interface PlanogramMeta {
   id: string;
@@ -22,7 +23,6 @@ export interface RunRecord {
   realStepsTotal: number;
 }
 
-const fetcher = (url: string) => fetch(url).then((r) => r.json());
 
 export default function RunPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);

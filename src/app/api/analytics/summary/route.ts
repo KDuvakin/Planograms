@@ -5,17 +5,21 @@ import { prisma } from "@/lib/db";
 
 export async function GET() {
   try {
-    await requireRole("ADMIN", "MANAGER");
+    const session = await requireRole("ADMIN", "MANAGER");
+
+    // MANAGER only ever sees their own store's numbers.
+    const storeId = session.user.role === "MANAGER" ? session.user.storeId : undefined;
+    const planogramFilter = storeId ? { planogram: { storeId } } : {};
 
     const [notStarted, inProgress, done, abandoned] = await Promise.all([
-      prisma.planogramRun.count({ where: { status: "NOT_STARTED" } }),
-      prisma.planogramRun.count({ where: { status: "IN_PROGRESS" } }),
-      prisma.planogramRun.count({ where: { status: "DONE" } }),
-      prisma.planogramRun.count({ where: { status: "ABANDONED" } }),
+      prisma.planogramRun.count({ where: { status: "NOT_STARTED", ...planogramFilter } }),
+      prisma.planogramRun.count({ where: { status: "IN_PROGRESS", ...planogramFilter } }),
+      prisma.planogramRun.count({ where: { status: "DONE", ...planogramFilter } }),
+      prisma.planogramRun.count({ where: { status: "ABANDONED", ...planogramFilter } }),
     ]);
 
     const doneRuns = await prisma.planogramRun.findMany({
-      where: { status: "DONE", startedAt: { not: null }, finishedAt: { not: null } },
+      where: { status: "DONE", startedAt: { not: null }, finishedAt: { not: null }, ...planogramFilter },
       select: {
         startedAt: true,
         finishedAt: true,
@@ -35,7 +39,7 @@ export async function GET() {
 
     const byStore = new Map<string, { storeCode: string; done: number; inProgress: number }>();
     const storeCounts = await prisma.planogramRun.findMany({
-      where: { status: { in: ["DONE", "IN_PROGRESS"] } },
+      where: { status: { in: ["DONE", "IN_PROGRESS"] }, ...planogramFilter },
       select: { status: true, planogram: { select: { store: { select: { code: true } } } } },
     });
     for (const r of storeCounts) {

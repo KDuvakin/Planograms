@@ -5,9 +5,13 @@ import { prisma } from "@/lib/db";
 
 export async function GET(req: NextRequest) {
   try {
-    await requireRole("ADMIN", "MANAGER");
+    const session = await requireRole("ADMIN", "MANAGER");
 
-    const storeId = req.nextUrl.searchParams.get("storeId") ?? undefined;
+    // MANAGER is confined to their own store — any ?storeId= override is ignored.
+    const storeId =
+      session.user.role === "ADMIN"
+        ? (req.nextUrl.searchParams.get("storeId") ?? undefined)
+        : (session.user.storeId ?? undefined);
     const userId = req.nextUrl.searchParams.get("userId") ?? undefined;
     const status = req.nextUrl.searchParams.get("status") ?? undefined;
 

@@ -10,6 +10,7 @@ import { RackTabs } from "@/components/run/RackTabs";
 import { ShelfRow } from "@/components/run/ShelfRow";
 import { DiffLegend } from "@/components/run/DiffLegend";
 import styles from "./preview.module.css";
+import { fetcher } from "@/lib/swrFetcher";
 
 interface PlanogramMeta {
   id: string;
@@ -20,7 +21,6 @@ interface PlanogramMeta {
   store: { code: string; name: string | null };
 }
 
-const fetcher = (url: string) => fetch(url).then((r) => r.json());
 const SCALE = 3.2;
 
 export default function PlanogramPreviewPage({ params }: { params: Promise<{ id: string }> }) {

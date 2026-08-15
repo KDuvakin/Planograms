@@ -1,11 +1,14 @@
 "use client";
 
+import { useState } from "react";
 import useSWR from "swr";
 import Link from "next/link";
-import { signOut, useSession } from "next-auth/react";
+import { signOut } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { TopNav } from "@/components/TopNav";
 import styles from "./planograms.module.css";
+import { fetcher } from "@/lib/swrFetcher";
 
 interface PlanogramListItem {
   id: string;
@@ -19,16 +22,38 @@ interface PlanogramListItem {
   realStepsTotal: number;
 }
 
-const fetcher = (url: string) => fetch(url).then((r) => r.json());
+interface StoreGroup {
+  store: PlanogramListItem["store"];
+  items: PlanogramListItem[];
+}
+
+function groupByStore(items: PlanogramListItem[]): StoreGroup[] {
+  const map = new Map<string, StoreGroup>();
+  for (const item of items) {
+    const existing = map.get(item.store.id);
+    if (existing) existing.items.push(item);
+    else map.set(item.store.id, { store: item.store, items: [item] });
+  }
+  return Array.from(map.values());
+}
 
 export default function PlanogramsPage() {
   const t = useTranslations("planograms");
   const tNav = useTranslations("nav");
   const tCommon = useTranslations("common");
   const { data, isLoading } = useSWR<PlanogramListItem[]>("/api/planograms", fetcher);
-  const { data: session } = useSession();
-  const role = session?.user?.role;
-  const isStaff = role === "ADMIN" || role === "MANAGER";
+
+  const groups = groupByStore(data ?? []);
+  const [collapsed, setCollapsed] = useState<Set<string>>(new Set());
+
+  function toggleStore(id: string) {
+    setCollapsed((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  }
 
   return (
     <main className={styles.page}>
@@ -42,43 +67,63 @@ export default function PlanogramsPage() {
         </div>
       </header>
 
-      {isStaff && (
-        <nav className={styles.staffNav}>
-          <Link href="/admin/import">{tNav("import")}</Link>
-          <Link href="/admin/users">{tNav("users")}</Link>
-          <Link href="/admin/stores">{tNav("stores")}</Link>
-          <Link href="/analytics">{tNav("analytics")}</Link>
-        </nav>
-      )}
+      <TopNav />
 
       {isLoading && <p className={styles.hint}>{tCommon("loading")}</p>}
       {!isLoading && data?.length === 0 && <p className={styles.hint}>{t("empty")}</p>}
 
-      <ul className={styles.list}>
-        {data?.map((p) => {
-          const statusLabel =
-            p.runStatus === "IN_PROGRESS" || p.runStatus === "DONE" ? t(`status.${p.runStatus}`) : null;
+      <div className={styles.tree}>
+        {groups.map((group) => {
+          const isCollapsed = collapsed.has(group.store.id);
           return (
-            <li key={p.id}>
-              <Link href={`/planograms/${p.id}`} className={styles.card}>
-                <div className={styles.cardMain}>
-                  <div className={styles.cardStore}>{p.store.code}</div>
-                  <div className={styles.cardNode}>{p.node}</div>
-                </div>
-                <div className={styles.cardMeta}>
-                  {t("meta", { itemCount: p.itemCount, version: p.version })}
-                  {statusLabel && (
-                    <span className={`${styles.statusBadge} ${styles[`status_${p.runStatus}`]}`}>
-                      {statusLabel}
-                      {p.runStatus === "IN_PROGRESS" ? ` ${p.currentRealStep}/${p.realStepsTotal}` : ""}
-                    </span>
-                  )}
-                </div>
-              </Link>
-            </li>
+            <section key={group.store.id} className={styles.storeGroup}>
+              <button
+                type="button"
+                className={styles.storeHeader}
+                onClick={() => toggleStore(group.store.id)}
+                aria-expanded={!isCollapsed}
+              >
+                <span className={`${styles.chevron} ${isCollapsed ? styles.chevronCollapsed : ""}`}>▾</span>
+                <span className={styles.storeCode}>{group.store.code}</span>
+                {group.store.name && <span className={styles.storeName}>{group.store.name}</span>}
+              </button>
+
+              {!isCollapsed && (
+                <ul className={styles.list}>
+                  {group.items.map((p) => {
+                    const isDone = p.runStatus === "DONE";
+                    const statusLabel =
+                      p.runStatus === "IN_PROGRESS" || p.runStatus === "DONE"
+                        ? t(`status.${p.runStatus}`)
+                        : null;
+                    return (
+                      <li key={p.id}>
+                        <Link href={`/planograms/${p.id}`} className={styles.card}>
+                          <span className={`${styles.statusDot} ${isDone ? styles.dotGreen : styles.dotRed}`} />
+                          <div className={styles.cardBody}>
+                            <div className={styles.cardNode}>{p.node}</div>
+                            <div className={styles.cardMeta}>
+                              {t("meta", { itemCount: p.itemCount, version: p.version })}
+                              {statusLabel && (
+                                <span className={`${styles.statusBadge} ${styles[`status_${p.runStatus}`]}`}>
+                                  {statusLabel}
+                                  {p.runStatus === "IN_PROGRESS"
+                                    ? ` ${p.currentRealStep}/${p.realStepsTotal}`
+                                    : ""}
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        </Link>
+                      </li>
+                    );
+                  })}
+                </ul>
+              )}
+            </section>
           );
         })}
-      </ul>
+      </div>
     </main>
   );
 }

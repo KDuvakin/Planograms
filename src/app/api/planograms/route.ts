@@ -7,13 +7,13 @@ export async function GET(req: NextRequest) {
   try {
     const session = await requireUser();
 
-    // No explicit filter: a MERCHANDISER defaults to their own store's planograms.
-    // Staff (ADMIN/MANAGER) see every store's planograms by default — they manage
-    // multiple stores, not just the one their own account happens to be tied to.
+    // MERCHANDISER and MANAGER are confined to their own store — a store-scoped
+    // role, not just a default — any ?storeId= override is ignored for them.
+    // Only ADMIN can see (or filter across) every store.
     const storeId =
-      req.nextUrl.searchParams.get("storeId") ??
-      (session.user.role === "MERCHANDISER" ? session.user.storeId : undefined) ??
-      undefined;
+      session.user.role === "ADMIN"
+        ? (req.nextUrl.searchParams.get("storeId") ?? undefined)
+        : (session.user.storeId ?? undefined);
 
     const planograms = await prisma.planogram.findMany({
       where: { isCurrent: true, ...(storeId ? { storeId } : {}) },

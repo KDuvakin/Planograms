@@ -1,49 +1,40 @@
 .page {
-  max-width: 860px;
+  max-width: 520px;
   margin: 0 auto;
-  padding: 24px 16px 64px;
+  padding: 20px 14px 48px;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 16px;
 }
 
 .title {
   font-family: var(--font-display);
-  font-size: 26px;
+  font-size: 24px;
   margin: 0;
   color: var(--ink);
-}
-
-.nav {
-  display: flex;
-  gap: 14px;
-  font-size: 13px;
-}
-
-.nav a {
-  color: var(--ink-soft);
 }
 
 .card {
   background: var(--surface);
   border-radius: var(--radius);
   box-shadow: var(--shadow-1);
-  padding: 18px;
+  padding: 16px;
   display: flex;
   flex-direction: column;
   gap: 12px;
+  min-width: 0;
 }
 
 .subtitle {
   font-family: var(--font-display);
-  font-size: 18px;
+  font-size: 17px;
   margin: 0;
   color: var(--ink);
 }
 
 .form {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
   gap: 10px;
   align-items: end;
 }
@@ -64,6 +55,7 @@
   border: 1px solid var(--line);
   background: var(--surface);
   color: var(--ink);
+  width: 100%;
 }
 
 .btnPrimary {
@@ -102,6 +94,7 @@
 
 .tableWrap {
   overflow-x: auto;
+  max-width: 100%;
 }
 
 .table {
@@ -125,7 +118,7 @@
 
 .statCards {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  grid-template-columns: repeat(2, 1fr);
   gap: 10px;
 }
 
@@ -137,11 +130,12 @@
   display: flex;
   flex-direction: column;
   gap: 2px;
+  min-width: 0;
 }
 
 .statValue {
   font-family: var(--font-display);
-  font-size: 26px;
+  font-size: 24px;
   color: var(--ink);
 }
 
@@ -151,8 +145,8 @@
 }
 
 .thumb {
-  width: 48px;
-  height: 48px;
+  width: 44px;
+  height: 44px;
   object-fit: cover;
   border-radius: var(--radius-sm);
   border: 1px solid var(--line);
@@ -161,4 +155,92 @@
 .thumbRow {
   display: flex;
   gap: 4px;
+  flex-wrap: wrap;
+}
+
+.hintText {
+  color: var(--ink-faint);
+  font-size: 13px;
+  margin: 0;
+}
+
+/* ===== mobile-friendly record cards (replace wide tables on analytics) ===== */
+
+.recordList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.recordCard {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.recordHeader {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--ink-faint);
+}
+
+.recordTitle {
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--ink);
+}
+
+.recordRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 12px;
+  color: var(--ink-soft);
+}
+
+.recordRow span:last-child {
+  color: var(--ink);
+  text-align: right;
+}
+
+.recordComment {
+  margin: 2px 0;
+  font-size: 13px;
+  color: var(--ink);
+  font-style: italic;
+}
+
+.statusPill {
+  flex: 0 0 auto;
+  border-radius: 999px;
+  padding: 2px 8px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.pill_NOT_STARTED {
+  background: var(--surface-3);
+  color: var(--ink-soft);
+}
+
+.pill_IN_PROGRESS {
+  background: var(--move-soft);
+  color: var(--move);
+}
+
+.pill_DONE {
+  background: var(--ok-soft);
+  color: var(--ok);
+}
+
+.pill_ABANDONED {
+  background: var(--danger-soft);
+  color: var(--danger);
 }

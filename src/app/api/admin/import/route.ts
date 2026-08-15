@@ -16,7 +16,7 @@ interface NodeImportSummary {
 
 export async function POST(req: NextRequest) {
   try {
-    const session = await requireRole("ADMIN", "MANAGER");
+    const session = await requireRole("ADMIN");
 
     const formData = await req.formData();
     const storeId = String(formData.get("storeId") ?? "");

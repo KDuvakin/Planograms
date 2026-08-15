@@ -1,10 +1,11 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import Link from "next/link";
 import useSWR from "swr";
 import { useTranslations } from "next-intl";
+import { TopNav } from "@/components/TopNav";
 import styles from "@/components/admin/admin.module.css";
+import { fetcher } from "@/lib/swrFetcher";
 
 interface Store {
   id: string;
@@ -20,12 +21,10 @@ interface UserRow {
   store: { id: string; code: string } | null;
 }
 
-const fetcher = (url: string) => fetch(url).then((r) => r.json());
 const ROLES = ["ADMIN", "MANAGER", "MERCHANDISER"] as const;
 
 export default function UsersAdminPage() {
   const t = useTranslations("adminUsers");
-  const tNav = useTranslations("nav");
   const { data: users, mutate } = useSWR<UserRow[]>("/api/users", fetcher);
   const { data: stores } = useSWR<Store[]>("/api/stores", fetcher);
 
@@ -71,12 +70,7 @@ export default function UsersAdminPage() {
 
   return (
     <main className={styles.page}>
-      <nav className={styles.nav}>
-        <Link href="/planograms">{tNav("planograms")}</Link>
-        <Link href="/admin/import">{tNav("import")}</Link>
-        <Link href="/admin/stores">{tNav("stores")}</Link>
-        <Link href="/analytics">{tNav("analytics")}</Link>
-      </nav>
+      <TopNav />
 
       <h1 className={styles.title}>{t("title")}</h1>
 

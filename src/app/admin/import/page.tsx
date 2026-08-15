@@ -3,7 +3,9 @@
 import { useState, type FormEvent } from "react";
 import useSWR from "swr";
 import { useTranslations } from "next-intl";
+import { TopNav } from "@/components/TopNav";
 import styles from "./import.module.css";
+import { fetcher } from "@/lib/swrFetcher";
 
 interface Store {
   id: string;
@@ -16,7 +18,6 @@ interface ImportResult {
   results: Array<{ node: string; version: number; itemCount: number; duplicates: string[] }>;
 }
 
-const fetcher = (url: string) => fetch(url).then((r) => r.json());
 
 export default function ImportPage() {
   const t = useTranslations("adminImport");
@@ -72,6 +73,8 @@ export default function ImportPage() {
 
   return (
     <main className={styles.page}>
+      <TopNav />
+
       <h1 className={styles.title}>{t("title")}</h1>
 
       <section className={styles.card}>
