@@ -61,6 +61,9 @@ model Printer {
 model Category {
   id         String   @id @default(cuid())
   name       String   @unique
+  nameEn     String?
+  nameEt     String?
+  nameLv     String?
   icon       String
   nodePrefix String?
   sortOrder  Int      @default(0)
@@ -76,6 +79,9 @@ model Node {
   id         String   @id @default(cuid())
   code       String   @unique
   name       String
+  nameEn     String?
+  nameEt     String?
+  nameLv     String?
   categoryId String
   category   Category @relation(fields: [categoryId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   createdAt  DateTime @default(now())

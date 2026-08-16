@@ -1,0 +1,22 @@
+BEGIN TRY
+
+BEGIN TRAN;
+
+-- AlterTable
+ALTER TABLE [dbo].[Category] ADD [nameEn] NVARCHAR(1000), [nameEt] NVARCHAR(1000), [nameLv] NVARCHAR(1000);
+
+-- AlterTable
+ALTER TABLE [dbo].[Node] ADD [nameEn] NVARCHAR(1000), [nameEt] NVARCHAR(1000), [nameLv] NVARCHAR(1000);
+
+COMMIT TRAN;
+
+END TRY
+BEGIN CATCH
+
+IF @@TRANCOUNT > 0
+BEGIN
+    ROLLBACK TRAN;
+END;
+THROW
+
+END CATCH

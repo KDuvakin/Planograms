@@ -13,27 +13,34 @@ const adapter = new PrismaMssql({
 });
 const prisma = new PrismaClient({ adapter });
 
-const CATEGORIES: { name: string; icon: string; nodePrefix: string | null }[] = [
-  { name: "Скоропорт", icon: "🥩", nodePrefix: null },
-  { name: "Заморозка", icon: "❄️", nodePrefix: null },
-  { name: "Бакалея", icon: "🌾", nodePrefix: "B4" },
-  { name: "Напитки", icon: "🥤", nodePrefix: null },
-  { name: "Алкоголь", icon: "🍷", nodePrefix: null },
-  { name: "Детские товары", icon: "🍼", nodePrefix: "BA" },
-  { name: "Товары для домашних питомцев", icon: "🐾", nodePrefix: null },
-  { name: "Товары первой необходимости", icon: "🧻", nodePrefix: null },
-  { name: "Промышленные товары", icon: "🔧", nodePrefix: null },
-  { name: "Цветы", icon: "💐", nodePrefix: null },
+const CATEGORIES: {
+  name: string;
+  nameEn: string;
+  nameEt: string;
+  nameLv: string;
+  icon: string;
+  nodePrefix: string | null;
+}[] = [
+  { name: "Скоропорт", nameEn: "Perishables", nameEt: "Kiiresti riknev", nameLv: "Ātrbojīgās preces", icon: "🥩", nodePrefix: null },
+  { name: "Заморозка", nameEn: "Frozen", nameEt: "Külmutatud", nameLv: "Saldētās preces", icon: "❄️", nodePrefix: null },
+  { name: "Бакалея", nameEn: "Groceries", nameEt: "Toidukaubad", nameLv: "Pārtikas preces", icon: "🌾", nodePrefix: "B4" },
+  { name: "Напитки", nameEn: "Beverages", nameEt: "Joogid", nameLv: "Dzērieni", icon: "🥤", nodePrefix: null },
+  { name: "Алкоголь", nameEn: "Alcohol", nameEt: "Alkohol", nameLv: "Alkohols", icon: "🍷", nodePrefix: null },
+  { name: "Детские товары", nameEn: "Baby products", nameEt: "Lastekaubad", nameLv: "Bērnu preces", icon: "🍼", nodePrefix: "BA" },
+  { name: "Товары для домашних питомцев", nameEn: "Pet products", nameEt: "Lemmikloomatarbed", nameLv: "Mājdzīvnieku preces", icon: "🐾", nodePrefix: null },
+  { name: "Товары первой необходимости", nameEn: "Essentials", nameEt: "Esmatarbekaubad", nameLv: "Pirmās nepieciešamības preces", icon: "🧻", nodePrefix: null },
+  { name: "Промышленные товары", nameEn: "Household & hardware", nameEt: "Tööstuskaubad", nameLv: "Rūpniecības preces", icon: "🔧", nodePrefix: null },
+  { name: "Цветы", nameEn: "Flowers", nameEt: "Lilled", nameLv: "Ziedi", icon: "💐", nodePrefix: null },
 ];
 
 // Exact Node code -> name, within a category (by name, matched against CATEGORIES above).
-const NODES: { code: string; name: string; categoryName: string }[] = [
-  { code: "B41", name: "Кофе", categoryName: "Бакалея" },
-  { code: "B42A", name: "Конфеты", categoryName: "Бакалея" },
-  { code: "B43D", name: "Печенье", categoryName: "Бакалея" },
-  { code: "B44", name: "Чипсы", categoryName: "Бакалея" },
-  { code: "B47A", name: "Супы, бульоны", categoryName: "Бакалея" },
-  { code: "BA0", name: "Детское питание", categoryName: "Детские товары" },
+const NODES: { code: string; name: string; nameEn: string; nameEt: string; nameLv: string; categoryName: string }[] = [
+  { code: "B41", name: "Кофе", nameEn: "Coffee", nameEt: "Kohv", nameLv: "Kafija", categoryName: "Бакалея" },
+  { code: "B42A", name: "Конфеты", nameEn: "Candy", nameEt: "Kompvekid", nameLv: "Konfektes", categoryName: "Бакалея" },
+  { code: "B43D", name: "Печенье", nameEn: "Cookies", nameEt: "Küpsised", nameLv: "Cepumi", categoryName: "Бакалея" },
+  { code: "B44", name: "Чипсы", nameEn: "Chips", nameEt: "Krõpsud", nameLv: "Čipsi", categoryName: "Бакалея" },
+  { code: "B47A", name: "Супы, бульоны", nameEn: "Soups & broths", nameEt: "Supid, puljongid", nameLv: "Zupas, buljoni", categoryName: "Бакалея" },
+  { code: "BA0", name: "Детское питание", nameEn: "Baby food", nameEt: "Beebitoit", nameLv: "Bērnu pārtika", categoryName: "Детские товары" },
 ];
 
 async function main() {
@@ -45,21 +52,22 @@ async function main() {
 
   const categoryIdByName = new Map<string, string>();
   for (const [index, category] of CATEGORIES.entries()) {
+    const { name, ...rest } = category;
     const row = await prisma.category.upsert({
-      where: { name: category.name },
-      update: { icon: category.icon, nodePrefix: category.nodePrefix, sortOrder: index },
-      create: { ...category, sortOrder: index },
+      where: { name },
+      update: { ...rest, sortOrder: index },
+      create: { name, ...rest, sortOrder: index },
     });
     categoryIdByName.set(row.name, row.id);
   }
 
-  for (const node of NODES) {
-    const categoryId = categoryIdByName.get(node.categoryName);
+  for (const { categoryName, ...node } of NODES) {
+    const categoryId = categoryIdByName.get(categoryName);
     if (!categoryId) continue;
     await prisma.node.upsert({
       where: { code: node.code },
-      update: { name: node.name, categoryId },
-      create: { code: node.code, name: node.name, categoryId },
+      update: { ...node, categoryId },
+      create: { ...node, categoryId },
     });
   }
 

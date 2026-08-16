@@ -4,9 +4,10 @@ import { useState } from "react";
 import useSWR from "swr";
 import Link from "next/link";
 import { signOut } from "next-auth/react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { TopNav } from "@/components/TopNav";
+import { localizedName, type CategoryWithNodes } from "@/lib/nodeCategory";
 import styles from "./planograms.module.css";
 import { fetcher } from "@/lib/swrFetcher";
 
@@ -20,15 +21,6 @@ interface PlanogramListItem {
   runStatus: "NOT_STARTED" | "IN_PROGRESS" | "DONE" | "ABANDONED";
   currentRealStep: number;
   realStepsTotal: number;
-}
-
-interface Category {
-  id: string;
-  name: string;
-  icon: string;
-  nodePrefix: string | null;
-  sortOrder: number;
-  nodes: { code: string; name: string }[];
 }
 
 interface SubGroup {
@@ -57,16 +49,17 @@ function worstDotClass(items: PlanogramListItem[], styles: Record<string, string
 }
 
 /** Splits a category's items by their Node's given name (e.g. "Кофе") — items on a Node with no name stay flat. */
-function subGroupsFor(category: Category, items: PlanogramListItem[]): SubGroup[] {
-  const nameByCode = new Map(category.nodes.map((n) => [n.code, n.name]));
+function subGroupsFor(category: CategoryWithNodes, items: PlanogramListItem[], locale: string): SubGroup[] {
+  const nodeByCode = new Map(category.nodes.map((n) => [n.code, n]));
   const named = new Map<string, PlanogramListItem[]>();
   const flat: PlanogramListItem[] = [];
   for (const item of items) {
-    const name = nameByCode.get(item.node);
-    if (!name) {
+    const node = nodeByCode.get(item.node);
+    if (!node) {
       flat.push(item);
       continue;
     }
+    const name = localizedName(node, locale);
     if (!named.has(name)) named.set(name, []);
     named.get(name)!.push(item);
   }
@@ -75,7 +68,12 @@ function subGroupsFor(category: Category, items: PlanogramListItem[]): SubGroup[
   return result;
 }
 
-function groupByCategory(items: PlanogramListItem[], categories: Category[], uncategorizedLabel: string): CategoryGroup[] {
+function groupByCategory(
+  items: PlanogramListItem[],
+  categories: CategoryWithNodes[],
+  locale: string,
+  uncategorizedLabel: string
+): CategoryGroup[] {
   const byId = new Map(categories.map((c) => [c.id, [] as PlanogramListItem[]]));
   const byPrefix = categories.filter((c) => c.nodePrefix);
   const leftover: PlanogramListItem[] = [];
@@ -93,7 +91,13 @@ function groupByCategory(items: PlanogramListItem[], categories: Category[], unc
 
   const groups: CategoryGroup[] = categories.map((c) => {
     const categoryItems = byId.get(c.id)!;
-    return { key: c.id, name: c.name, icon: c.icon, items: categoryItems, subGroups: subGroupsFor(c, categoryItems) };
+    return {
+      key: c.id,
+      name: localizedName(c, locale),
+      icon: c.icon,
+      items: categoryItems,
+      subGroups: subGroupsFor(c, categoryItems, locale),
+    };
   });
 
   if (leftover.length > 0) {
@@ -112,12 +116,12 @@ export default function PlanogramsPage() {
   const t = useTranslations("planograms");
   const tNav = useTranslations("nav");
   const tCommon = useTranslations("common");
+  const locale = useLocale();
   const { data, isLoading } = useSWR<PlanogramListItem[]>("/api/planograms", fetcher);
-  const { data: categories } = useSWR<Category[]>("/api/categories", fetcher);
+  const { data: categories } = useSWR<CategoryWithNodes[]>("/api/categories", fetcher);
 
-  const groups = groupByCategory(data ?? [], categories ?? [], t("uncategorized"));
+  const groups = groupByCategory(data ?? [], categories ?? [], locale, t("uncategorized"));
   const showStoreCode = new Set((data ?? []).map((p) => p.store.id)).size > 1;
-  const newCount = (data ?? []).filter((p) => p.runStatus === "NOT_STARTED").length;
 
   // Tree starts fully collapsed — a category only opens once the user taps it.
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
@@ -147,14 +151,12 @@ export default function PlanogramsPage() {
 
       {isLoading && <p className={styles.hint}>{tCommon("loading")}</p>}
       {!isLoading && data?.length === 0 && <p className={styles.hint}>{t("empty")}</p>}
-      {!isLoading && (data?.length ?? 0) > 0 && (
-        <p className={styles.newCount}>{t("newCount", { count: newCount, total: data!.length })}</p>
-      )}
 
       <div className={styles.tree}>
         {groups.map((group) => {
           const isExpanded = expanded.has(group.key);
           const dotClass = worstDotClass(group.items, styles);
+          const newInGroup = group.items.filter((p) => p.runStatus === "NOT_STARTED").length;
           return (
             <section key={group.key} className={styles.categoryGroup}>
               <button
@@ -164,9 +166,16 @@ export default function PlanogramsPage() {
                 aria-expanded={isExpanded}
               >
                 <span className={styles.categoryIconWrap}>{group.icon}</span>
-                <span className={styles.categoryName}>
-                  {group.name} <span className={styles.categoryCount}>({group.items.length})</span>
-                </span>
+                <div className={styles.categoryNameCol}>
+                  <span className={styles.categoryName}>
+                    {group.name} <span className={styles.categoryCount}>({group.items.length})</span>
+                  </span>
+                  {group.items.length > 0 && (
+                    <span className={styles.categoryNewCount}>
+                      {t("newCount", { count: newInGroup, total: group.items.length })}
+                    </span>
+                  )}
+                </div>
                 {dotClass && <span className={`${styles.categoryStatusDot} ${dotClass}`} />}
                 <span className={`${styles.chevron} ${isExpanded ? "" : styles.chevronCollapsed}`}>▾</span>
               </button>

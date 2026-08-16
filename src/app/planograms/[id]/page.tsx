@@ -64,7 +64,7 @@ export default function PlanogramPreviewPage({ params }: { params: Promise<{ id:
     return <main className={styles.page}>{tCommon("loading")}</main>;
   }
 
-  const category = resolveNodeCategory(categories ?? [], meta.node);
+  const category = resolveNodeCategory(categories ?? [], meta.node, locale);
 
   return (
     <main className={styles.page}>

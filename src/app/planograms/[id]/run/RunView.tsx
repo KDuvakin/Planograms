@@ -4,14 +4,13 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import useSWR from "swr";
 import { rackNumbers, shelfNumbers } from "@/lib/engine";
-import type { NavigatorKind } from "@/lib/engine";
 import type { PlanogramItemLike } from "@/lib/engine/loadProducts";
 import { createRunStore } from "@/lib/engine/runStore";
+import { RackTabs } from "@/components/run/RackTabs";
 import { ShelfRow } from "@/components/run/ShelfRow";
-import { ProductIcon } from "@/components/run/ProductIcon";
 import { DiffLegend } from "@/components/run/DiffLegend";
 import { FeedbackDialog, type FeedbackProductInfo } from "@/components/run/FeedbackDialog";
 import { CompletionScreen } from "@/components/run/CompletionScreen";
@@ -19,20 +18,8 @@ import { resolveNodeCategory, type CategoryWithNodes } from "@/lib/nodeCategory"
 import { fetcher } from "@/lib/swrFetcher";
 import type { RunRecord } from "./page";
 import styles from "./run.module.css";
-import runStyles from "@/components/run/run.module.css";
 
 const SCALE = 3.2;
-
-/** Which of the shared `ok/move/danger/new` state-color classes a step's kind renders in. */
-const KIND_STATE_CLASS: Partial<Record<NavigatorKind, string>> = {
-  delete: runStyles.danger,
-  pick: runStyles.move,
-  move: runStyles.move,
-  resize: runStyles.move,
-  place: runStyles.new,
-  confirm: runStyles.ok,
-  done: runStyles.ok,
-};
 
 interface Meta {
   id: string;
@@ -64,6 +51,7 @@ export function RunView({
   const tCommon = useTranslations("common");
   const tStepLabel = useTranslations("stepLabel");
   const tInstructions = useTranslations("instructions");
+  const locale = useLocale();
   const router = useRouter();
   const { data: session } = useSession();
   const [useRunState] = useState(() => createRunStore(items, run.currentRealStep));
@@ -72,7 +60,7 @@ export function RunView({
   const [feedbackCount, setFeedbackCount] = useState(0);
   const [rackTransition, setRackTransition] = useState<{ completedRack: string; nextRack: string } | null>(null);
   const { data: categories } = useSWR<CategoryWithNodes[]>("/api/categories", fetcher);
-  const category = resolveNodeCategory(categories ?? [], meta.node);
+  const category = resolveNodeCategory(categories ?? [], meta.node, locale);
 
   // Mark the run IN_PROGRESS as soon as the screen opens (once per run id).
   const startedRunId = useRef<string | null>(null);
@@ -106,7 +94,19 @@ export function RunView({
 
   const lastExecutedStep = state.currentStep > 0 ? state.steps[state.currentStep - 1] : null;
   const focusRack = lastExecutedStep?.rack ?? racks[0] ?? null;
-  const rackIndex = focusRack ? racks.indexOf(focusRack) : -1;
+
+  // "Adjust state during render" (react.dev pattern) instead of an effect: whenever the real
+  // step count changes, snap the rack tabs back to wherever that step happened, while still
+  // letting the user freely browse other racks in between.
+  const [trackedRealStep, setTrackedRealStep] = useState(state.currentRealStep);
+  const [selectedRack, setSelectedRack] = useState<string | null>(focusRack);
+  if (trackedRealStep !== state.currentRealStep) {
+    setTrackedRealStep(state.currentRealStep);
+    setSelectedRack(focusRack);
+  }
+
+  const currentRack = selectedRack && racks.includes(selectedRack) ? selectedRack : racks[0];
+  const rackIndex = currentRack ? racks.indexOf(currentRack) : -1;
 
   const isDone = state.currentRealStep >= state.realStepsTotal;
   const progressPct = state.realStepsTotal ? Math.round((state.currentRealStep / state.realStepsTotal) * 100) : 0;
@@ -209,8 +209,6 @@ export function RunView({
       }
     : null;
 
-  const kindStateClass = lastExecutedStep ? KIND_STATE_CLASS[state.navigator.kind] : undefined;
-
   return (
     <main className={styles.page}>
       <header className={styles.header}>
@@ -237,6 +235,23 @@ export function RunView({
 
       <DiffLegend />
 
+      {currentRack && (
+        <>
+          <RackTabs racks={racks} current={currentRack} onSelect={setSelectedRack} />
+          <div className={styles.shelves}>
+            {shelfNumbers(state, currentRack).map((shelf) => (
+              <ShelfRow
+                key={shelf}
+                shelfNum={shelf}
+                items={state.racks[currentRack][shelf].items}
+                scale={SCALE}
+                highlightIndex={lastExecutedStep?.product.index}
+              />
+            ))}
+          </div>
+        </>
+      )}
+
       <div className={styles.stepHeading}>
         {t("stepCounter", { current: state.currentRealStep, total: state.realStepsTotal })}
       </div>
@@ -244,42 +259,17 @@ export function RunView({
         <div className={styles.progressFill} style={{ width: `${progressPct}%` }} />
       </div>
 
-      {lastExecutedStep && (
-        <>
-          <section className={`${runStyles.productPanel} ${kindStateClass ?? ""}`}>
-            <ProductIcon className={runStyles.productIcon} />
-            <div className={runStyles.productInfo}>
-              <div className={runStyles.infoRow}>
-                <span className={runStyles.infoLabel}>{t("productLabel")}</span>
-                <span className={runStyles.infoValue}>{lastExecutedStep.product.article}</span>
-              </div>
-              <div className={runStyles.infoRow}>
-                <span className={runStyles.infoLabel}>{t("sapCodeLabel")}</span>
-                <span className={runStyles.infoValue}>{lastExecutedStep.product.sap}</span>
-              </div>
-              {lastExecutedStep.product.ean && (
-                <div className={runStyles.infoRow}>
-                  <span className={runStyles.infoLabel}>{t("eanCodeLabel")}</span>
-                  <span className={runStyles.infoValue}>{lastExecutedStep.product.ean}</span>
-                </div>
-              )}
-            </div>
-          </section>
-
-          <div className={runStyles.arrowDown}>▾</div>
-
-          <ShelfRow
-            shelfNum={lastExecutedStep.shelf}
-            items={state.racks[lastExecutedStep.rack][lastExecutedStep.shelf].items}
-            scale={SCALE}
-            highlightIndex={lastExecutedStep.product.index}
-          />
-        </>
-      )}
-
       <section className={styles.instructionCard} data-kind={state.navigator.kind}>
         <div className={styles.instructionTag}>{tStepLabel(state.navigator.kind)}</div>
-        <div className={runStyles.stepDescLabel}>{t("stepDescriptionLabel")}</div>
+        {lastExecutedStep && (
+          <div className={styles.instructionProduct}>
+            {lastExecutedStep.product.article}
+            <span className={styles.instructionSap}>
+              SAP {lastExecutedStep.product.sap}
+              {lastExecutedStep.product.ean ? ` · EAN ${lastExecutedStep.product.ean}` : ""}
+            </span>
+          </div>
+        )}
         <p className={styles.instructionText}>{tInstructions(state.navigator.key, state.navigator.params)}</p>
       </section>
 

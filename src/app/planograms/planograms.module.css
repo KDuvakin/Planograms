@@ -87,8 +87,14 @@
   border-radius: 50%;
 }
 
-.categoryName {
+.categoryNameCol {
   flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.categoryName {
   font-size: 15px;
   font-weight: 600;
   color: var(--ink);
@@ -99,17 +105,17 @@
   color: var(--ink-faint);
 }
 
+.categoryNewCount {
+  font-size: 11px;
+  color: var(--ink-faint);
+}
+
 .subGroupLabel {
   font-size: 12px;
   font-weight: 600;
   color: var(--ink-soft);
   padding: 0 0 0 8px;
   margin-top: 2px;
-}
-
-.newCount {
-  font-size: 13px;
-  color: var(--ink-soft);
 }
 
 .chevron {
