@@ -26,6 +26,14 @@
   font-weight: 600;
 }
 
+.categoryBreadcrumb {
+  font-size: 12px;
+  color: var(--ink-soft);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
 .title {
   font-family: var(--font-display);
   font-size: 22px;
@@ -107,6 +115,7 @@
   font-size: 14px;
   color: var(--ink-soft);
   line-height: 1.4;
+  min-height: calc(1.4em * 3);
 }
 
 .controls {

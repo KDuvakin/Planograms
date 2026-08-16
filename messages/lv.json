@@ -37,6 +37,20 @@
       "DONE": "izpildīts"
     }
   },
+  "categories": {
+    "departments": {
+      "groceries": "Pārtikas preces",
+      "babyProducts": "Bērnu preces"
+    },
+    "subcategories": {
+      "coffee": "Kafija",
+      "candy": "Konfektes",
+      "cookies": "Cepumi",
+      "chips": "Čipsi",
+      "babyFood": "Bērnu pārtika",
+      "soups": "Zupas, buljoni"
+    }
+  },
   "preview": {
     "back": "← Visas planogrammas",
     "releaseDate": "Izlaiduma datums: {date}",
@@ -63,7 +77,9 @@
     "eanCodeLabel": "EAN kods",
     "stepDescriptionLabel": "Soļa apraksts",
     "backWithStep": "◀ Solis {step} no {total}",
-    "nextWithStep": "Solis {step} no {total} ▶"
+    "nextWithStep": "Solis {step} no {total} ▶",
+    "rackCompleteTitle": "Plaukts {rack} ir gatavs",
+    "continueToRack": "Tālāk — plaukts {rack}"
   },
   "stepLabel": {
     "pick": "Noņemt",

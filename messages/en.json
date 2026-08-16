@@ -37,6 +37,20 @@
       "DONE": "done"
     }
   },
+  "categories": {
+    "departments": {
+      "groceries": "Groceries",
+      "babyProducts": "Baby products"
+    },
+    "subcategories": {
+      "coffee": "Coffee",
+      "candy": "Candy",
+      "cookies": "Cookies",
+      "chips": "Chips",
+      "babyFood": "Baby food",
+      "soups": "Soups & broths"
+    }
+  },
   "preview": {
     "back": "← All planograms",
     "releaseDate": "Release date: {date}",
@@ -63,7 +77,9 @@
     "eanCodeLabel": "EAN code",
     "stepDescriptionLabel": "Step description",
     "backWithStep": "◀ Step {step} of {total}",
-    "nextWithStep": "Step {step} of {total} ▶"
+    "nextWithStep": "Step {step} of {total} ▶",
+    "rackCompleteTitle": "Rack {rack} complete",
+    "continueToRack": "Next — rack {rack}"
   },
   "stepLabel": {
     "pick": "Remove",

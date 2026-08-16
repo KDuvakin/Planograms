@@ -37,6 +37,20 @@
       "DONE": "valmis"
     }
   },
+  "categories": {
+    "departments": {
+      "groceries": "Toidukaubad",
+      "babyProducts": "Lastekaubad"
+    },
+    "subcategories": {
+      "coffee": "Kohv",
+      "candy": "Kompvekid",
+      "cookies": "Küpsised",
+      "chips": "Krõpsud",
+      "babyFood": "Beebitoit",
+      "soups": "Supid, puljongid"
+    }
+  },
   "preview": {
     "back": "← Kõik planogrammid",
     "releaseDate": "Väljalaske kuupäev: {date}",
@@ -63,7 +77,9 @@
     "eanCodeLabel": "EAN kood",
     "stepDescriptionLabel": "Sammu kirjeldus",
     "backWithStep": "◀ Samm {step} / {total}",
-    "nextWithStep": "Samm {step} / {total} ▶"
+    "nextWithStep": "Samm {step} / {total} ▶",
+    "rackCompleteTitle": "Riiul {rack} on valmis",
+    "continueToRack": "Järgmine — riiul {rack}"
   },
   "stepLabel": {
     "pick": "Eemalda",

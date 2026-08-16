@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
-import { rackNumbers } from "@/lib/engine";
+import { rackNumbers, shelfNumbers } from "@/lib/engine";
 import type { NavigatorKind } from "@/lib/engine";
 import type { PlanogramItemLike } from "@/lib/engine/loadProducts";
 import { createRunStore } from "@/lib/engine/runStore";
@@ -14,6 +14,7 @@ import { ProductIcon } from "@/components/run/ProductIcon";
 import { DiffLegend } from "@/components/run/DiffLegend";
 import { FeedbackDialog, type FeedbackProductInfo } from "@/components/run/FeedbackDialog";
 import { CompletionScreen } from "@/components/run/CompletionScreen";
+import { categoryForNode } from "@/lib/categories";
 import type { RunRecord } from "./page";
 import styles from "./run.module.css";
 import runStyles from "@/components/run/run.module.css";
@@ -61,12 +62,15 @@ export function RunView({
   const tCommon = useTranslations("common");
   const tStepLabel = useTranslations("stepLabel");
   const tInstructions = useTranslations("instructions");
+  const tCategories = useTranslations("categories");
   const router = useRouter();
   const { data: session } = useSession();
   const [useRunState] = useState(() => createRunStore(items, run.currentRealStep));
   const state = useRunState();
   const [feedbackOpen, setFeedbackOpen] = useState(false);
   const [feedbackCount, setFeedbackCount] = useState(0);
+  const [rackTransition, setRackTransition] = useState<{ completedRack: string; nextRack: string } | null>(null);
+  const category = categoryForNode(meta.node);
 
   // Mark the run IN_PROGRESS as soon as the screen opens (once per run id).
   const startedRunId = useRef<string | null>(null);
@@ -123,6 +127,65 @@ export function RunView({
     );
   }
 
+  // Advances to the next real step — unless it would move onto a different rack,
+  // in which case it first shows a "rack complete" summary and waits for a second click.
+  function handleNext() {
+    if (rackTransition) {
+      setRackTransition(null);
+      state.nextStep();
+      return;
+    }
+    if (lastExecutedStep) {
+      const nextRealStep = state.currentRealStep + 1;
+      const upcomingStep =
+        nextRealStep <= state.realStepsTotal ? state.steps[state.clickBoundaries[nextRealStep] - 1] : null;
+      if (upcomingStep && upcomingStep.rack !== lastExecutedStep.rack) {
+        setRackTransition({ completedRack: lastExecutedStep.rack, nextRack: upcomingStep.rack });
+        return;
+      }
+    }
+    state.nextStep();
+  }
+
+  if (rackTransition) {
+    return (
+      <main className={styles.page}>
+        <header className={styles.header}>
+          <div className={styles.store}>{meta.store.code}</div>
+          {category && (
+            <div className={styles.categoryBreadcrumb}>
+              <span>{category.icon}</span>
+              <span>
+                {tCategories(`departments.${category.departmentKey}`)} →{" "}
+                {tCategories(`subcategories.${category.subcategoryKey}`)}
+              </span>
+            </div>
+          )}
+          <h1 className={styles.title}>{meta.node}</h1>
+        </header>
+
+        <div className={styles.stepHeading}>{t("rackCompleteTitle", { rack: rackTransition.completedRack })}</div>
+
+        {shelfNumbers(state, rackTransition.completedRack).map((shelf) => (
+          <ShelfRow
+            key={shelf}
+            shelfNum={shelf}
+            items={state.racks[rackTransition.completedRack][shelf].items}
+            scale={SCALE}
+          />
+        ))}
+
+        <div className={styles.controls}>
+          <div className={styles.controlsRow}>
+            <button type="button" className={styles.btnPrimary} onClick={handleNext}>
+              {t("continueToRack", { rack: rackTransition.nextRack })}
+            </button>
+          </div>
+        </div>
+      </main>
+    );
+  }
+
   const feedbackProduct: FeedbackProductInfo | null = lastExecutedStep
     ? {
         id: lastExecutedStep.product.id,
@@ -145,6 +208,15 @@ export function RunView({
         <div className={styles.headerTop}>
           <div>
             <div className={styles.store}>{meta.store.code}</div>
+            {category && (
+              <div className={styles.categoryBreadcrumb}>
+                <span>{category.icon}</span>
+                <span>
+                  {tCategories(`departments.${category.departmentKey}`)} →{" "}
+                  {tCategories(`subcategories.${category.subcategoryKey}`)}
+                </span>
+              </div>
+            )}
             <h1 className={styles.title}>{meta.node}</h1>
             <p className={styles.subtitle}>{tCommon("planogramSubtitle")}</p>
           </div>
@@ -212,7 +284,7 @@ export function RunView({
           >
             {t("backWithStep", { step: Math.max(state.currentRealStep - 1, 0), total: state.realStepsTotal })}
           </button>
-          <button type="button" className={styles.btnPrimary} onClick={() => state.nextStep()}>
+          <button type="button" className={styles.btnPrimary} onClick={handleNext}>
             {t("nextWithStep", {
               step: Math.min(state.currentRealStep + 1, state.realStepsTotal),
               total: state.realStepsTotal,

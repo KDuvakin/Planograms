@@ -10,6 +10,7 @@ import type { PlanogramItemLike } from "@/lib/engine/loadProducts";
 import { RackTabs } from "@/components/run/RackTabs";
 import { ShelfRow } from "@/components/run/ShelfRow";
 import { DiffLegend } from "@/components/run/DiffLegend";
+import { categoryForNode } from "@/lib/categories";
 import styles from "./preview.module.css";
 import { fetcher } from "@/lib/swrFetcher";
 
@@ -29,6 +30,7 @@ export default function PlanogramPreviewPage({ params }: { params: Promise<{ id:
   const t = useTranslations("preview");
   const tCommon = useTranslations("common");
   const tRun = useTranslations("run");
+  const tCategories = useTranslations("categories");
   const locale = useLocale();
   const router = useRouter();
   const [starting, setStarting] = useState(false);
@@ -62,6 +64,8 @@ export default function PlanogramPreviewPage({ params }: { params: Promise<{ id:
     return <main className={styles.page}>{tCommon("loading")}</main>;
   }
 
+  const category = categoryForNode(meta.node);
+
   return (
     <main className={styles.page}>
       <Link href="/planograms" className={styles.back}>
@@ -70,6 +74,15 @@ export default function PlanogramPreviewPage({ params }: { params: Promise<{ id:
 
       <header className={styles.header}>
         <div className={styles.store}>{meta.store.code}</div>
+        {category && (
+          <div className={styles.categoryBreadcrumb}>
+            <span>{category.icon}</span>
+            <span>
+              {tCategories(`departments.${category.departmentKey}`)} →{" "}
+              {tCategories(`subcategories.${category.subcategoryKey}`)}
+            </span>
+          </div>
+        )}
         <h1 className={styles.title}>{meta.node}</h1>
         <p className={styles.subtitle}>{tCommon("planogramSubtitle")}</p>
       </header>

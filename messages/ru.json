@@ -37,6 +37,20 @@
       "DONE": "собрано"
     }
   },
+  "categories": {
+    "departments": {
+      "groceries": "Бакалея",
+      "babyProducts": "Детские товары"
+    },
+    "subcategories": {
+      "coffee": "Кофе",
+      "candy": "Конфеты",
+      "cookies": "Печенье",
+      "chips": "Чипсы",
+      "babyFood": "Детское питание",
+      "soups": "Супы, бульоны"
+    }
+  },
   "preview": {
     "back": "← Все планограммы",
     "releaseDate": "Дата релиза: {date}",
@@ -63,7 +77,9 @@
     "eanCodeLabel": "EAN код",
     "stepDescriptionLabel": "Описание шага",
     "backWithStep": "◀ Шаг {step} из {total}",
-    "nextWithStep": "Шаг {step} из {total} ▶"
+    "nextWithStep": "Шаг {step} из {total} ▶",
+    "rackCompleteTitle": "Стеллаж {rack} собран",
+    "continueToRack": "Далее — стеллаж {rack}"
   },
   "stepLabel": {
     "pick": "Убери",
