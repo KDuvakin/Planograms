@@ -83,8 +83,6 @@ export default function PlanogramPreviewPage({ params }: { params: Promise<{ id:
             </span>
           </div>
         )}
-        <h1 className={styles.title}>{meta.node}</h1>
-        <p className={styles.subtitle}>{tCommon("planogramSubtitle")}</p>
       </header>
 
       {rackIndex >= 0 && (

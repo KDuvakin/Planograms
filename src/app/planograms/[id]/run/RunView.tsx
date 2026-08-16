@@ -7,10 +7,11 @@ import { useSession } from "next-auth/react";
 import { useLocale, useTranslations } from "next-intl";
 import useSWR from "swr";
 import { rackNumbers, shelfNumbers } from "@/lib/engine";
+import type { NavigatorKind } from "@/lib/engine";
 import type { PlanogramItemLike } from "@/lib/engine/loadProducts";
 import { createRunStore } from "@/lib/engine/runStore";
-import { RackTabs } from "@/components/run/RackTabs";
 import { ShelfRow } from "@/components/run/ShelfRow";
+import { ProductIcon } from "@/components/run/ProductIcon";
 import { DiffLegend } from "@/components/run/DiffLegend";
 import { FeedbackDialog, type FeedbackProductInfo } from "@/components/run/FeedbackDialog";
 import { CompletionScreen } from "@/components/run/CompletionScreen";
@@ -18,8 +19,20 @@ import { resolveNodeCategory, type CategoryWithNodes } from "@/lib/nodeCategory"
 import { fetcher } from "@/lib/swrFetcher";
 import type { RunRecord } from "./page";
 import styles from "./run.module.css";
+import runStyles from "@/components/run/run.module.css";
 
 const SCALE = 3.2;
+
+/** Which of the shared `ok/move/danger/new` state-color classes a step's kind renders in. */
+const KIND_STATE_CLASS: Partial<Record<NavigatorKind, string>> = {
+  delete: runStyles.danger,
+  pick: runStyles.move,
+  move: runStyles.move,
+  resize: runStyles.move,
+  place: runStyles.new,
+  confirm: runStyles.ok,
+  done: runStyles.ok,
+};
 
 interface Meta {
   id: string;
@@ -94,19 +107,7 @@ export function RunView({
 
   const lastExecutedStep = state.currentStep > 0 ? state.steps[state.currentStep - 1] : null;
   const focusRack = lastExecutedStep?.rack ?? racks[0] ?? null;
-
-  // "Adjust state during render" (react.dev pattern) instead of an effect: whenever the real
-  // step count changes, snap the rack tabs back to wherever that step happened, while still
-  // letting the user freely browse other racks in between.
-  const [trackedRealStep, setTrackedRealStep] = useState(state.currentRealStep);
-  const [selectedRack, setSelectedRack] = useState<string | null>(focusRack);
-  if (trackedRealStep !== state.currentRealStep) {
-    setTrackedRealStep(state.currentRealStep);
-    setSelectedRack(focusRack);
-  }
-
-  const currentRack = selectedRack && racks.includes(selectedRack) ? selectedRack : racks[0];
-  const rackIndex = currentRack ? racks.indexOf(currentRack) : -1;
+  const rackIndex = focusRack ? racks.indexOf(focusRack) : -1;
 
   const isDone = state.currentRealStep >= state.realStepsTotal;
   const progressPct = state.realStepsTotal ? Math.round((state.currentRealStep / state.realStepsTotal) * 100) : 0;
@@ -163,7 +164,6 @@ export function RunView({
               </span>
             </div>
           )}
-          <h1 className={styles.title}>{meta.node}</h1>
         </header>
 
         <p className={styles.subtitle}>{t("rackCompleteTitle", { rack: rackTransition.completedRack })}</p>
@@ -209,48 +209,27 @@ export function RunView({
       }
     : null;
 
+  const kindStateClass = lastExecutedStep ? KIND_STATE_CLASS[state.navigator.kind] : undefined;
+
   return (
     <main className={styles.page}>
       <header className={styles.header}>
-        <div className={styles.headerTop}>
-          <div>
-            <div className={styles.store}>{meta.store.code}</div>
-            {category && (
-              <div className={styles.categoryBreadcrumb}>
-                <span>{category.categoryIcon}</span>
-                <span>
-                  {category.categoryName}
-                  {category.nodeName ? ` → ${category.nodeName}` : ""}
-                </span>
-              </div>
-            )}
-            <h1 className={styles.title}>{meta.node}</h1>
-            <p className={styles.subtitle}>{tCommon("planogramSubtitle")}</p>
+        <div className={styles.store}>{meta.store.code}</div>
+        {category && (
+          <div className={styles.categoryBreadcrumb}>
+            <span>{category.categoryIcon}</span>
+            <span>
+              {category.categoryName}
+              {category.nodeName ? ` → ${category.nodeName}` : ""}
+            </span>
           </div>
-        </div>
+        )}
         {rackIndex >= 0 && (
           <div className={styles.rackHeading}>{t("rackCounter", { current: rackIndex + 1, total: racks.length })}</div>
         )}
       </header>
 
       <DiffLegend />
-
-      {currentRack && (
-        <>
-          <RackTabs racks={racks} current={currentRack} onSelect={setSelectedRack} />
-          <div className={styles.shelves}>
-            {shelfNumbers(state, currentRack).map((shelf) => (
-              <ShelfRow
-                key={shelf}
-                shelfNum={shelf}
-                items={state.racks[currentRack][shelf].items}
-                scale={SCALE}
-                highlightIndex={lastExecutedStep?.product.index}
-              />
-            ))}
-          </div>
-        </>
-      )}
 
       <div className={styles.stepHeading}>
         {t("stepCounter", { current: state.currentRealStep, total: state.realStepsTotal })}
@@ -259,17 +238,42 @@ export function RunView({
         <div className={styles.progressFill} style={{ width: `${progressPct}%` }} />
       </div>
 
+      {lastExecutedStep && (
+        <>
+          <section className={`${runStyles.productPanel} ${kindStateClass ?? ""}`}>
+            <ProductIcon className={runStyles.productIcon} />
+            <div className={runStyles.productInfo}>
+              <div className={runStyles.infoRow}>
+                <span className={runStyles.infoLabel}>{t("productLabel")}</span>
+                <span className={runStyles.infoValue}>{lastExecutedStep.product.article}</span>
+              </div>
+              <div className={runStyles.infoRow}>
+                <span className={runStyles.infoLabel}>{t("sapCodeLabel")}</span>
+                <span className={runStyles.infoValue}>{lastExecutedStep.product.sap}</span>
+              </div>
+              {lastExecutedStep.product.ean && (
+                <div className={runStyles.infoRow}>
+                  <span className={runStyles.infoLabel}>{t("eanCodeLabel")}</span>
+                  <span className={runStyles.infoValue}>{lastExecutedStep.product.ean}</span>
+                </div>
+              )}
+            </div>
+          </section>
+
+          <div className={runStyles.arrowDown}>▾</div>
+
+          <ShelfRow
+            shelfNum={lastExecutedStep.shelf}
+            items={state.racks[lastExecutedStep.rack][lastExecutedStep.shelf].items}
+            scale={SCALE}
+            highlightIndex={lastExecutedStep.product.index}
+          />
+        </>
+      )}
+
       <section className={styles.instructionCard} data-kind={state.navigator.kind}>
         <div className={styles.instructionTag}>{tStepLabel(state.navigator.kind)}</div>
-        {lastExecutedStep && (
-          <div className={styles.instructionProduct}>
-            {lastExecutedStep.product.article}
-            <span className={styles.instructionSap}>
-              SAP {lastExecutedStep.product.sap}
-              {lastExecutedStep.product.ean ? ` · EAN ${lastExecutedStep.product.ean}` : ""}
-            </span>
-          </div>
-        )}
+        <div className={runStyles.stepDescLabel}>{t("stepDescriptionLabel")}</div>
         <p className={styles.instructionText}>{tInstructions(state.navigator.key, state.navigator.params)}</p>
       </section>
 

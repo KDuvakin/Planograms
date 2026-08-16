@@ -6,8 +6,7 @@
     "save": "Сохранить",
     "delete": "Удалить",
     "close": "Закрыть",
-    "description": "Пересборка полки по планограмме",
-    "planogramSubtitle": "Внедрение новой планограммы"
+    "description": "Пересборка полки по планограмме"
   },
   "nav": {
     "planograms": "Планограммы",
@@ -63,7 +62,11 @@
     "backWithStep": "◀ Шаг {step} из {total}",
     "nextWithStep": "Шаг {step} из {total} ▶",
     "rackCompleteTitle": "Стеллаж {rack} собран",
-    "continueToRack": "Далее — стеллаж {rack}"
+    "continueToRack": "Далее — стеллаж {rack}",
+    "productLabel": "Товар",
+    "sapCodeLabel": "SAP код",
+    "eanCodeLabel": "EAN код",
+    "stepDescriptionLabel": "Описание шага"
   },
   "stepLabel": {
     "pick": "Убери",

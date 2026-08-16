@@ -6,8 +6,7 @@
     "save": "Saglabāt",
     "delete": "Dzēst",
     "close": "Aizvērt",
-    "description": "Plaukta pārkārtošana atbilstoši planogrammai",
-    "planogramSubtitle": "Jaunas planogrammas ieviešana"
+    "description": "Plaukta pārkārtošana atbilstoši planogrammai"
   },
   "nav": {
     "planograms": "Planogrammas",
@@ -63,7 +62,11 @@
     "backWithStep": "◀ Solis {step} no {total}",
     "nextWithStep": "Solis {step} no {total} ▶",
     "rackCompleteTitle": "Plaukts {rack} ir gatavs",
-    "continueToRack": "Tālāk — plaukts {rack}"
+    "continueToRack": "Tālāk — plaukts {rack}",
+    "productLabel": "Prece",
+    "sapCodeLabel": "SAP kods",
+    "eanCodeLabel": "EAN kods",
+    "stepDescriptionLabel": "Soļa apraksts"
   },
   "stepLabel": {
     "pick": "Noņemt",

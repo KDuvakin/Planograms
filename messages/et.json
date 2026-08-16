@@ -6,8 +6,7 @@
     "save": "Salvesta",
     "delete": "Kustuta",
     "close": "Sulge",
-    "description": "Riiuli ümberpaigutamine vastavalt planogrammile",
-    "planogramSubtitle": "Uue planogrammi rakendamine"
+    "description": "Riiuli ümberpaigutamine vastavalt planogrammile"
   },
   "nav": {
     "planograms": "Planogrammid",
@@ -63,7 +62,11 @@
     "backWithStep": "◀ Samm {step} / {total}",
     "nextWithStep": "Samm {step} / {total} ▶",
     "rackCompleteTitle": "Riiul {rack} on valmis",
-    "continueToRack": "Järgmine — riiul {rack}"
+    "continueToRack": "Järgmine — riiul {rack}",
+    "productLabel": "Toode",
+    "sapCodeLabel": "SAP kood",
+    "eanCodeLabel": "EAN kood",
+    "stepDescriptionLabel": "Sammu kirjeldus"
   },
   "stepLabel": {
     "pick": "Eemalda",

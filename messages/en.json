@@ -6,8 +6,7 @@
     "save": "Save",
     "delete": "Delete",
     "close": "Close",
-    "description": "Resetting a shelf to a planogram",
-    "planogramSubtitle": "New Planogram Implementation"
+    "description": "Resetting a shelf to a planogram"
   },
   "nav": {
     "planograms": "Planograms",
@@ -63,7 +62,11 @@
     "backWithStep": "◀ Step {step} of {total}",
     "nextWithStep": "Step {step} of {total} ▶",
     "rackCompleteTitle": "Rack {rack} complete",
-    "continueToRack": "Next — rack {rack}"
+    "continueToRack": "Next — rack {rack}",
+    "productLabel": "Product",
+    "sapCodeLabel": "SAP code",
+    "eanCodeLabel": "EAN code",
+    "stepDescriptionLabel": "Step description"
   },
   "stepLabel": {
     "pick": "Remove",
