@@ -22,19 +22,48 @@ interface PlanogramListItem {
   realStepsTotal: number;
 }
 
-interface StoreGroup {
-  store: PlanogramListItem["store"];
+interface Category {
+  id: string;
+  name: string;
+  icon: string;
+  nodePrefix: string | null;
+  sortOrder: number;
+}
+
+interface CategoryGroup {
+  key: string;
+  name: string;
+  icon: string;
   items: PlanogramListItem[];
 }
 
-function groupByStore(items: PlanogramListItem[]): StoreGroup[] {
-  const map = new Map<string, StoreGroup>();
+function dotClassFor(item: PlanogramListItem, styles: Record<string, string>) {
+  return item.runStatus === "DONE" ? styles.dotGreen : item.runStatus === "IN_PROGRESS" ? styles.dotYellow : styles.dotRed;
+}
+
+/** Worst status among a category's items — drives the small dot on its icon. Empty categories get none. */
+function worstDotClass(items: PlanogramListItem[], styles: Record<string, string>): string | null {
+  if (items.length === 0) return null;
+  if (items.some((i) => i.runStatus === "NOT_STARTED" || i.runStatus === "ABANDONED")) return styles.dotRed;
+  if (items.some((i) => i.runStatus === "IN_PROGRESS")) return styles.dotYellow;
+  return styles.dotGreen;
+}
+
+function groupByCategory(items: PlanogramListItem[], categories: Category[], uncategorizedLabel: string): CategoryGroup[] {
+  const groups: CategoryGroup[] = categories.map((c) => ({ key: c.id, name: c.name, icon: c.icon, items: [] }));
+  const byPrefix = categories.filter((c) => c.nodePrefix);
+  const leftover: PlanogramListItem[] = [];
+
   for (const item of items) {
-    const existing = map.get(item.store.id);
-    if (existing) existing.items.push(item);
-    else map.set(item.store.id, { store: item.store, items: [item] });
+    const match = byPrefix.find((c) => item.node.startsWith(c.nodePrefix!));
+    if (match) groups.find((g) => g.key === match.id)!.items.push(item);
+    else leftover.push(item);
   }
-  return Array.from(map.values());
+
+  if (leftover.length > 0) {
+    groups.push({ key: "uncategorized", name: uncategorizedLabel, icon: "📦", items: leftover });
+  }
+  return groups;
 }
 
 export default function PlanogramsPage() {
@@ -42,15 +71,17 @@ export default function PlanogramsPage() {
   const tNav = useTranslations("nav");
   const tCommon = useTranslations("common");
   const { data, isLoading } = useSWR<PlanogramListItem[]>("/api/planograms", fetcher);
+  const { data: categories } = useSWR<Category[]>("/api/categories", fetcher);
 
-  const groups = groupByStore(data ?? []);
+  const groups = groupByCategory(data ?? [], categories ?? [], t("uncategorized"));
+  const showStoreCode = new Set((data ?? []).map((p) => p.store.id)).size > 1;
   const [collapsed, setCollapsed] = useState<Set<string>>(new Set());
 
-  function toggleStore(id: string) {
+  function toggleCategory(key: string) {
     setCollapsed((prev) => {
       const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
+      if (next.has(key)) next.delete(key);
+      else next.add(key);
       return next;
     });
   }
@@ -74,29 +105,29 @@ export default function PlanogramsPage() {
 
       <div className={styles.tree}>
         {groups.map((group) => {
-          const isCollapsed = collapsed.has(group.store.id);
+          const isCollapsed = collapsed.has(group.key);
+          const dotClass = worstDotClass(group.items, styles);
           return (
-            <section key={group.store.id} className={styles.storeGroup}>
+            <section key={group.key} className={styles.categoryGroup}>
               <button
                 type="button"
-                className={styles.storeHeader}
-                onClick={() => toggleStore(group.store.id)}
+                className={styles.categoryHeader}
+                onClick={() => toggleCategory(group.key)}
                 aria-expanded={!isCollapsed}
               >
+                <span className={styles.categoryIconWrap}>
+                  {dotClass && <span className={`${styles.categoryDot} ${dotClass}`} />}
+                  {group.icon}
+                </span>
+                <span className={styles.categoryName}>
+                  {group.name} <span className={styles.categoryCount}>({group.items.length})</span>
+                </span>
                 <span className={`${styles.chevron} ${isCollapsed ? styles.chevronCollapsed : ""}`}>▾</span>
-                <span className={styles.storeCode}>{group.store.code}</span>
-                {group.store.name && <span className={styles.storeName}>{group.store.name}</span>}
               </button>
 
-              {!isCollapsed && (
+              {!isCollapsed && group.items.length > 0 && (
                 <ul className={styles.list}>
                   {group.items.map((p) => {
-                    const dotClass =
-                      p.runStatus === "DONE"
-                        ? styles.dotGreen
-                        : p.runStatus === "IN_PROGRESS"
-                          ? styles.dotYellow
-                          : styles.dotRed;
                     const statusLabel =
                       p.runStatus === "IN_PROGRESS" || p.runStatus === "DONE"
                         ? t(`status.${p.runStatus}`)
@@ -104,9 +135,12 @@ export default function PlanogramsPage() {
                     return (
                       <li key={p.id}>
                         <Link href={`/planograms/${p.id}`} className={styles.card}>
-                          <span className={`${styles.statusDot} ${dotClass}`} />
+                          <span className={`${styles.statusDot} ${dotClassFor(p, styles)}`} />
                           <div className={styles.cardBody}>
-                            <div className={styles.cardNode}>{p.node}</div>
+                            <div className={styles.cardNode}>
+                              {showStoreCode && <span className={styles.rowStore}>{p.store.code} · </span>}
+                              {p.node}
+                            </div>
                             <div className={styles.cardMeta}>
                               {t("meta", { itemCount: p.itemCount, version: p.version })}
                               {statusLabel && (

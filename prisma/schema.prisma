@@ -56,6 +56,18 @@ model Printer {
   @@index([storeId])
 }
 
+// Top-level product department (Бакалея, Напитки, ...). Which planograms fall
+// under a category is derived at query time by matching `Planogram.node`
+// against `nodePrefix` — there's no per-planogram category assignment yet.
+model Category {
+  id         String   @id @default(cuid())
+  name       String   @unique
+  icon       String
+  nodePrefix String?
+  sortOrder  Int      @default(0)
+  createdAt  DateTime @default(now())
+}
+
 model Planogram {
   id             String   @id @default(cuid())
   storeId        String

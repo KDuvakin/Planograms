@@ -35,7 +35,8 @@
     "status": {
       "IN_PROGRESS": "in progress",
       "DONE": "done"
-    }
+    },
+    "uncategorized": "Uncategorized"
   },
   "categories": {
     "departments": {

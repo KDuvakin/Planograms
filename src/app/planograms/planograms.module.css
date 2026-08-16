@@ -48,21 +48,59 @@
   gap: 16px;
 }
 
-.storeGroup {
+.categoryGroup {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
-.storeHeader {
+.categoryHeader {
   display: flex;
   align-items: center;
-  gap: 8px;
-  background: none;
+  gap: 10px;
+  background: var(--surface);
   border: none;
-  padding: 4px 0;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-1);
+  padding: 10px 12px;
   cursor: pointer;
   text-align: left;
+  width: 100%;
+}
+
+.categoryIconWrap {
+  position: relative;
+  flex: 0 0 auto;
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 17px;
+}
+
+.categoryDot {
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  border: 2px solid var(--surface);
+}
+
+.categoryName {
+  flex: 1;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.categoryCount {
+  font-weight: 400;
+  color: var(--ink-faint);
 }
 
 .chevron {
@@ -76,22 +114,16 @@
   transform: rotate(-90deg);
 }
 
-.storeCode {
+.rowStore {
   font-family: var(--font-mono);
-  font-size: 13px;
   color: var(--accent);
   font-weight: 700;
-}
-
-.storeName {
-  font-size: 13px;
-  color: var(--ink-soft);
 }
 
 .list {
   list-style: none;
   margin: 0;
-  padding: 0;
+  padding: 0 0 0 8px;
   display: flex;
   flex-direction: column;
   gap: 8px;

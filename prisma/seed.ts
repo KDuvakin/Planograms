@@ -13,12 +13,33 @@ const adapter = new PrismaMssql({
 });
 const prisma = new PrismaClient({ adapter });
 
+const CATEGORIES: { name: string; icon: string; nodePrefix: string | null }[] = [
+  { name: "Скоропорт", icon: "🥩", nodePrefix: null },
+  { name: "Заморозка", icon: "❄️", nodePrefix: null },
+  { name: "Бакалея", icon: "🌾", nodePrefix: "B4" },
+  { name: "Напитки", icon: "🥤", nodePrefix: null },
+  { name: "Алкоголь", icon: "🍷", nodePrefix: null },
+  { name: "Детские товары", icon: "🍼", nodePrefix: "BA" },
+  { name: "Товары для домашних питомцев", icon: "🐾", nodePrefix: null },
+  { name: "Товары первой необходимости", icon: "🧻", nodePrefix: null },
+  { name: "Промышленные товары", icon: "🔧", nodePrefix: null },
+  { name: "Цветы", icon: "💐", nodePrefix: null },
+];
+
 async function main() {
   const store = await prisma.store.upsert({
     where: { code: "DEMO" },
     update: {},
     create: { code: "DEMO", name: "Demo store" },
   });
+
+  for (const [index, category] of CATEGORIES.entries()) {
+    await prisma.category.upsert({
+      where: { name: category.name },
+      update: { icon: category.icon, nodePrefix: category.nodePrefix, sortOrder: index },
+      create: { ...category, sortOrder: index },
+    });
+  }
 
   const email = process.env.SEED_ADMIN_EMAIL ?? "admin@planograms.local";
   const password = process.env.SEED_ADMIN_PASSWORD ?? "change-me";
