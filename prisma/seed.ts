@@ -26,6 +26,16 @@ const CATEGORIES: { name: string; icon: string; nodePrefix: string | null }[] = 
   { name: "Цветы", icon: "💐", nodePrefix: null },
 ];
 
+// Exact Node code -> name, within a category (by name, matched against CATEGORIES above).
+const NODES: { code: string; name: string; categoryName: string }[] = [
+  { code: "B41", name: "Кофе", categoryName: "Бакалея" },
+  { code: "B42A", name: "Конфеты", categoryName: "Бакалея" },
+  { code: "B43D", name: "Печенье", categoryName: "Бакалея" },
+  { code: "B44", name: "Чипсы", categoryName: "Бакалея" },
+  { code: "B47A", name: "Супы, бульоны", categoryName: "Бакалея" },
+  { code: "BA0", name: "Детское питание", categoryName: "Детские товары" },
+];
+
 async function main() {
   const store = await prisma.store.upsert({
     where: { code: "DEMO" },
@@ -33,11 +43,23 @@ async function main() {
     create: { code: "DEMO", name: "Demo store" },
   });
 
+  const categoryIdByName = new Map<string, string>();
   for (const [index, category] of CATEGORIES.entries()) {
-    await prisma.category.upsert({
+    const row = await prisma.category.upsert({
       where: { name: category.name },
       update: { icon: category.icon, nodePrefix: category.nodePrefix, sortOrder: index },
       create: { ...category, sortOrder: index },
+    });
+    categoryIdByName.set(row.name, row.id);
+  }
+
+  for (const node of NODES) {
+    const categoryId = categoryIdByName.get(node.categoryName);
+    if (!categoryId) continue;
+    await prisma.node.upsert({
+      where: { code: node.code },
+      update: { name: node.name, categoryId },
+      create: { code: node.code, name: node.name, categoryId },
     });
   }
 

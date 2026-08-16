@@ -13,7 +13,6 @@ interface Summary {
     notStarted: number;
     inProgress: number;
     done: number;
-    abandoned: number;
     notDonePlanograms: number;
     totalPlanograms: number;
   };

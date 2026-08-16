@@ -28,6 +28,12 @@ interface Category {
   icon: string;
   nodePrefix: string | null;
   sortOrder: number;
+  nodes: { code: string; name: string }[];
+}
+
+interface SubGroup {
+  name: string | null;
+  items: PlanogramListItem[];
 }
 
 interface CategoryGroup {
@@ -35,13 +41,14 @@ interface CategoryGroup {
   name: string;
   icon: string;
   items: PlanogramListItem[];
+  subGroups: SubGroup[];
 }
 
 function dotClassFor(item: PlanogramListItem, styles: Record<string, string>) {
   return item.runStatus === "DONE" ? styles.dotGreen : item.runStatus === "IN_PROGRESS" ? styles.dotYellow : styles.dotRed;
 }
 
-/** Worst status among a category's items — drives the small dot on its icon. Empty categories get none. */
+/** Worst status among a category's items — drives the status dot in its header. Empty categories get none. */
 function worstDotClass(items: PlanogramListItem[], styles: Record<string, string>): string | null {
   if (items.length === 0) return null;
   if (items.some((i) => i.runStatus === "NOT_STARTED" || i.runStatus === "ABANDONED")) return styles.dotRed;
@@ -49,19 +56,54 @@ function worstDotClass(items: PlanogramListItem[], styles: Record<string, string
   return styles.dotGreen;
 }
 
+/** Splits a category's items by their Node's given name (e.g. "Кофе") — items on a Node with no name stay flat. */
+function subGroupsFor(category: Category, items: PlanogramListItem[]): SubGroup[] {
+  const nameByCode = new Map(category.nodes.map((n) => [n.code, n.name]));
+  const named = new Map<string, PlanogramListItem[]>();
+  const flat: PlanogramListItem[] = [];
+  for (const item of items) {
+    const name = nameByCode.get(item.node);
+    if (!name) {
+      flat.push(item);
+      continue;
+    }
+    if (!named.has(name)) named.set(name, []);
+    named.get(name)!.push(item);
+  }
+  const result: SubGroup[] = Array.from(named.entries()).map(([name, groupItems]) => ({ name, items: groupItems }));
+  if (flat.length > 0) result.push({ name: null, items: flat });
+  return result;
+}
+
 function groupByCategory(items: PlanogramListItem[], categories: Category[], uncategorizedLabel: string): CategoryGroup[] {
-  const groups: CategoryGroup[] = categories.map((c) => ({ key: c.id, name: c.name, icon: c.icon, items: [] }));
+  const byId = new Map(categories.map((c) => [c.id, [] as PlanogramListItem[]]));
   const byPrefix = categories.filter((c) => c.nodePrefix);
   const leftover: PlanogramListItem[] = [];
 
   for (const item of items) {
-    const match = byPrefix.find((c) => item.node.startsWith(c.nodePrefix!));
-    if (match) groups.find((g) => g.key === match.id)!.items.push(item);
+    const exactOwner = categories.find((c) => c.nodes.some((n) => n.code === item.node));
+    if (exactOwner) {
+      byId.get(exactOwner.id)!.push(item);
+      continue;
+    }
+    const prefixOwner = byPrefix.find((c) => item.node.startsWith(c.nodePrefix!));
+    if (prefixOwner) byId.get(prefixOwner.id)!.push(item);
     else leftover.push(item);
   }
 
+  const groups: CategoryGroup[] = categories.map((c) => {
+    const categoryItems = byId.get(c.id)!;
+    return { key: c.id, name: c.name, icon: c.icon, items: categoryItems, subGroups: subGroupsFor(c, categoryItems) };
+  });
+
   if (leftover.length > 0) {
-    groups.push({ key: "uncategorized", name: uncategorizedLabel, icon: "📦", items: leftover });
+    groups.push({
+      key: "uncategorized",
+      name: uncategorizedLabel,
+      icon: "📦",
+      items: leftover,
+      subGroups: [{ name: null, items: leftover }],
+    });
   }
   return groups;
 }
@@ -75,10 +117,13 @@ export default function PlanogramsPage() {
 
   const groups = groupByCategory(data ?? [], categories ?? [], t("uncategorized"));
   const showStoreCode = new Set((data ?? []).map((p) => p.store.id)).size > 1;
-  const [collapsed, setCollapsed] = useState<Set<string>>(new Set());
+  const newCount = (data ?? []).filter((p) => p.runStatus === "NOT_STARTED").length;
+
+  // Tree starts fully collapsed — a category only opens once the user taps it.
+  const [expanded, setExpanded] = useState<Set<string>>(new Set());
 
   function toggleCategory(key: string) {
-    setCollapsed((prev) => {
+    setExpanded((prev) => {
       const next = new Set(prev);
       if (next.has(key)) next.delete(key);
       else next.add(key);
@@ -102,10 +147,13 @@ export default function PlanogramsPage() {
 
       {isLoading && <p className={styles.hint}>{tCommon("loading")}</p>}
       {!isLoading && data?.length === 0 && <p className={styles.hint}>{t("empty")}</p>}
+      {!isLoading && (data?.length ?? 0) > 0 && (
+        <p className={styles.newCount}>{t("newCount", { count: newCount, total: data!.length })}</p>
+      )}
 
       <div className={styles.tree}>
         {groups.map((group) => {
-          const isCollapsed = collapsed.has(group.key);
+          const isExpanded = expanded.has(group.key);
           const dotClass = worstDotClass(group.items, styles);
           return (
             <section key={group.key} className={styles.categoryGroup}>
@@ -113,51 +161,56 @@ export default function PlanogramsPage() {
                 type="button"
                 className={styles.categoryHeader}
                 onClick={() => toggleCategory(group.key)}
-                aria-expanded={!isCollapsed}
+                aria-expanded={isExpanded}
               >
-                <span className={styles.categoryIconWrap}>
-                  {dotClass && <span className={`${styles.categoryDot} ${dotClass}`} />}
-                  {group.icon}
-                </span>
+                <span className={styles.categoryIconWrap}>{group.icon}</span>
                 <span className={styles.categoryName}>
                   {group.name} <span className={styles.categoryCount}>({group.items.length})</span>
                 </span>
-                <span className={`${styles.chevron} ${isCollapsed ? styles.chevronCollapsed : ""}`}>▾</span>
+                {dotClass && <span className={`${styles.categoryStatusDot} ${dotClass}`} />}
+                <span className={`${styles.chevron} ${isExpanded ? "" : styles.chevronCollapsed}`}>▾</span>
               </button>
 
-              {!isCollapsed && group.items.length > 0 && (
-                <ul className={styles.list}>
-                  {group.items.map((p) => {
-                    const statusLabel =
-                      p.runStatus === "IN_PROGRESS" || p.runStatus === "DONE"
-                        ? t(`status.${p.runStatus}`)
-                        : null;
-                    return (
-                      <li key={p.id}>
-                        <Link href={`/planograms/${p.id}`} className={styles.card}>
-                          <span className={`${styles.statusDot} ${dotClassFor(p, styles)}`} />
-                          <div className={styles.cardBody}>
-                            <div className={styles.cardNode}>
-                              {showStoreCode && <span className={styles.rowStore}>{p.store.code} · </span>}
-                              {p.node}
-                            </div>
-                            <div className={styles.cardMeta}>
-                              {t("meta", { itemCount: p.itemCount, version: p.version })}
-                              {statusLabel && (
-                                <span className={`${styles.statusBadge} ${styles[`status_${p.runStatus}`]}`}>
-                                  {statusLabel}
-                                  {p.runStatus === "IN_PROGRESS"
-                                    ? ` ${p.currentRealStep}/${p.realStepsTotal}`
-                                    : ""}
-                                </span>
-                              )}
-                            </div>
-                          </div>
-                        </Link>
-                      </li>
-                    );
-                  })}
-                </ul>
+              {isExpanded && group.items.length > 0 && (
+                <>
+                  {group.subGroups.map((sub) => (
+                    <div key={sub.name ?? "flat"}>
+                      {sub.name && <div className={styles.subGroupLabel}>{sub.name}</div>}
+                      <ul className={styles.list}>
+                        {sub.items.map((p) => {
+                          const statusLabel =
+                            p.runStatus === "IN_PROGRESS" || p.runStatus === "DONE"
+                              ? t(`status.${p.runStatus}`)
+                              : null;
+                          return (
+                            <li key={p.id}>
+                              <Link href={`/planograms/${p.id}`} className={styles.card}>
+                                <span className={`${styles.statusDot} ${dotClassFor(p, styles)}`} />
+                                <div className={styles.cardBody}>
+                                  <div className={styles.cardNode}>
+                                    {showStoreCode && <span className={styles.rowStore}>{p.store.code} · </span>}
+                                    {p.node}
+                                  </div>
+                                  <div className={styles.cardMeta}>
+                                    {t("meta", { itemCount: p.itemCount, version: p.version })}
+                                    {statusLabel && (
+                                      <span className={`${styles.statusBadge} ${styles[`status_${p.runStatus}`]}`}>
+                                        {statusLabel}
+                                        {p.runStatus === "IN_PROGRESS"
+                                          ? ` ${p.currentRealStep}/${p.realStepsTotal}`
+                                          : ""}
+                                      </span>
+                                    )}
+                                  </div>
+                                </div>
+                              </Link>
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    </div>
+                  ))}
+                </>
               )}
             </section>
           );

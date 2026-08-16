@@ -36,21 +36,8 @@
       "IN_PROGRESS": "in progress",
       "DONE": "done"
     },
-    "uncategorized": "Uncategorized"
-  },
-  "categories": {
-    "departments": {
-      "groceries": "Groceries",
-      "babyProducts": "Baby products"
-    },
-    "subcategories": {
-      "coffee": "Coffee",
-      "candy": "Candy",
-      "cookies": "Cookies",
-      "chips": "Chips",
-      "babyFood": "Baby food",
-      "soups": "Soups & broths"
-    }
+    "uncategorized": "Uncategorized",
+    "newCount": "New: {count} of {total}"
   },
   "preview": {
     "back": "← All planograms",

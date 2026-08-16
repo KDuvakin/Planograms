@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
+import useSWR from "swr";
 import { rackNumbers, shelfNumbers } from "@/lib/engine";
 import type { NavigatorKind } from "@/lib/engine";
 import type { PlanogramItemLike } from "@/lib/engine/loadProducts";
@@ -14,7 +15,8 @@ import { ProductIcon } from "@/components/run/ProductIcon";
 import { DiffLegend } from "@/components/run/DiffLegend";
 import { FeedbackDialog, type FeedbackProductInfo } from "@/components/run/FeedbackDialog";
 import { CompletionScreen } from "@/components/run/CompletionScreen";
-import { categoryForNode } from "@/lib/categories";
+import { resolveNodeCategory, type CategoryWithNodes } from "@/lib/nodeCategory";
+import { fetcher } from "@/lib/swrFetcher";
 import type { RunRecord } from "./page";
 import styles from "./run.module.css";
 import runStyles from "@/components/run/run.module.css";
@@ -62,7 +64,6 @@ export function RunView({
   const tCommon = useTranslations("common");
   const tStepLabel = useTranslations("stepLabel");
   const tInstructions = useTranslations("instructions");
-  const tCategories = useTranslations("categories");
   const router = useRouter();
   const { data: session } = useSession();
   const [useRunState] = useState(() => createRunStore(items, run.currentRealStep));
@@ -70,7 +71,8 @@ export function RunView({
   const [feedbackOpen, setFeedbackOpen] = useState(false);
   const [feedbackCount, setFeedbackCount] = useState(0);
   const [rackTransition, setRackTransition] = useState<{ completedRack: string; nextRack: string } | null>(null);
-  const category = categoryForNode(meta.node);
+  const { data: categories } = useSWR<CategoryWithNodes[]>("/api/categories", fetcher);
+  const category = resolveNodeCategory(categories ?? [], meta.node);
 
   // Mark the run IN_PROGRESS as soon as the screen opens (once per run id).
   const startedRunId = useRef<string | null>(null);
@@ -154,23 +156,30 @@ export function RunView({
           <div className={styles.store}>{meta.store.code}</div>
           {category && (
             <div className={styles.categoryBreadcrumb}>
-              <span>{category.icon}</span>
+              <span>{category.categoryIcon}</span>
               <span>
-                {tCategories(`departments.${category.departmentKey}`)} →{" "}
-                {tCategories(`subcategories.${category.subcategoryKey}`)}
+                {category.categoryName}
+                {category.nodeName ? ` → ${category.nodeName}` : ""}
               </span>
             </div>
           )}
           <h1 className={styles.title}>{meta.node}</h1>
         </header>
 
-        <div className={styles.stepHeading}>{t("rackCompleteTitle", { rack: rackTransition.completedRack })}</div>
+        <p className={styles.subtitle}>{t("rackCompleteTitle", { rack: rackTransition.completedRack })}</p>
 
-        {shelfNumbers(state, rackTransition.completedRack).map((shelf) => (
+        <div className={styles.rackHeading}>
+          {t("rackCounter", { current: racks.indexOf(rackTransition.nextRack) + 1, total: racks.length })}
+        </div>
+
+        <DiffLegend />
+
+        {/* Steps for this rack haven't executed yet, so its shelves still show the pre-reset diff. */}
+        {shelfNumbers(state, rackTransition.nextRack).map((shelf) => (
           <ShelfRow
             key={shelf}
             shelfNum={shelf}
-            items={state.racks[rackTransition.completedRack][shelf].items}
+            items={state.racks[rackTransition.nextRack][shelf].items}
             scale={SCALE}
           />
         ))}
@@ -210,10 +219,10 @@ export function RunView({
             <div className={styles.store}>{meta.store.code}</div>
             {category && (
               <div className={styles.categoryBreadcrumb}>
-                <span>{category.icon}</span>
+                <span>{category.categoryIcon}</span>
                 <span>
-                  {tCategories(`departments.${category.departmentKey}`)} →{" "}
-                  {tCategories(`subcategories.${category.subcategoryKey}`)}
+                  {category.categoryName}
+                  {category.nodeName ? ` → ${category.nodeName}` : ""}
                 </span>
               </div>
             )}

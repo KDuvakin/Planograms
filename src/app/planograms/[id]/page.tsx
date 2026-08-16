@@ -10,7 +10,7 @@ import type { PlanogramItemLike } from "@/lib/engine/loadProducts";
 import { RackTabs } from "@/components/run/RackTabs";
 import { ShelfRow } from "@/components/run/ShelfRow";
 import { DiffLegend } from "@/components/run/DiffLegend";
-import { categoryForNode } from "@/lib/categories";
+import { resolveNodeCategory, type CategoryWithNodes } from "@/lib/nodeCategory";
 import styles from "./preview.module.css";
 import { fetcher } from "@/lib/swrFetcher";
 
@@ -30,13 +30,13 @@ export default function PlanogramPreviewPage({ params }: { params: Promise<{ id:
   const t = useTranslations("preview");
   const tCommon = useTranslations("common");
   const tRun = useTranslations("run");
-  const tCategories = useTranslations("categories");
   const locale = useLocale();
   const router = useRouter();
   const [starting, setStarting] = useState(false);
 
   const { data: meta } = useSWR<PlanogramMeta>(`/api/planograms/${id}`, fetcher);
   const { data: items } = useSWR<PlanogramItemLike[]>(`/api/planograms/${id}/items`, fetcher);
+  const { data: categories } = useSWR<CategoryWithNodes[]>("/api/categories", fetcher);
   const { data: run } = useSWR<{ status: string; currentRealStep: number; realStepsTotal: number }>(
     `/api/planograms/${id}/run`,
     fetcher
@@ -64,7 +64,7 @@ export default function PlanogramPreviewPage({ params }: { params: Promise<{ id:
     return <main className={styles.page}>{tCommon("loading")}</main>;
   }
 
-  const category = categoryForNode(meta.node);
+  const category = resolveNodeCategory(categories ?? [], meta.node);
 
   return (
     <main className={styles.page}>
@@ -76,10 +76,10 @@ export default function PlanogramPreviewPage({ params }: { params: Promise<{ id:
         <div className={styles.store}>{meta.store.code}</div>
         {category && (
           <div className={styles.categoryBreadcrumb}>
-            <span>{category.icon}</span>
+            <span>{category.categoryIcon}</span>
             <span>
-              {tCategories(`departments.${category.departmentKey}`)} →{" "}
-              {tCategories(`subcategories.${category.subcategoryKey}`)}
+              {category.categoryName}
+              {category.nodeName ? ` → ${category.nodeName}` : ""}
             </span>
           </div>
         )}

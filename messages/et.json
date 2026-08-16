@@ -36,21 +36,8 @@
       "IN_PROGRESS": "pooleli",
       "DONE": "valmis"
     },
-    "uncategorized": "Kategoriseerimata"
-  },
-  "categories": {
-    "departments": {
-      "groceries": "Toidukaubad",
-      "babyProducts": "Lastekaubad"
-    },
-    "subcategories": {
-      "coffee": "Kohv",
-      "candy": "Kompvekid",
-      "cookies": "Küpsised",
-      "chips": "Krõpsud",
-      "babyFood": "Beebitoit",
-      "soups": "Supid, puljongid"
-    }
+    "uncategorized": "Kategoriseerimata",
+    "newCount": "Uued: {count} / {total}"
   },
   "preview": {
     "back": "← Kõik planogrammid",

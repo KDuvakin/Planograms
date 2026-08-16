@@ -36,21 +36,8 @@
       "IN_PROGRESS": "izpildē",
       "DONE": "izpildīts"
     },
-    "uncategorized": "Bez kategorijas"
-  },
-  "categories": {
-    "departments": {
-      "groceries": "Pārtikas preces",
-      "babyProducts": "Bērnu preces"
-    },
-    "subcategories": {
-      "coffee": "Kafija",
-      "candy": "Konfektes",
-      "cookies": "Cepumi",
-      "chips": "Čipsi",
-      "babyFood": "Bērnu pārtika",
-      "soups": "Zupas, buljoni"
-    }
+    "uncategorized": "Bez kategorijas",
+    "newCount": "Jaunas: {count} no {total}"
   },
   "preview": {
     "back": "← Visas planogrammas",

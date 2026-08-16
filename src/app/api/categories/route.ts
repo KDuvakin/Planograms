@@ -7,7 +7,10 @@ export async function GET() {
   try {
     await requireUser();
 
-    const categories = await prisma.category.findMany({ orderBy: { sortOrder: "asc" } });
+    const categories = await prisma.category.findMany({
+      orderBy: { sortOrder: "asc" },
+      include: { nodes: { select: { code: true, name: true } } },
+    });
 
     return NextResponse.json(categories);
   } catch (e) {

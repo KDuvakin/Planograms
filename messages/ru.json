@@ -36,21 +36,8 @@
       "IN_PROGRESS": "в процессе",
       "DONE": "собрано"
     },
-    "uncategorized": "Без категории"
-  },
-  "categories": {
-    "departments": {
-      "groceries": "Бакалея",
-      "babyProducts": "Детские товары"
-    },
-    "subcategories": {
-      "coffee": "Кофе",
-      "candy": "Конфеты",
-      "cookies": "Печенье",
-      "chips": "Чипсы",
-      "babyFood": "Детское питание",
-      "soups": "Супы, бульоны"
-    }
+    "uncategorized": "Без категории",
+    "newCount": "Новые: {count} из {total}"
   },
   "preview": {
     "back": "← Все планограммы",

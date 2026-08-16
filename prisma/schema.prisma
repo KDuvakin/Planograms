@@ -56,15 +56,28 @@ model Printer {
   @@index([storeId])
 }
 
-// Top-level product department (Бакалея, Напитки, ...). Which planograms fall
-// under a category is derived at query time by matching `Planogram.node`
-// against `nodePrefix` — there's no per-planogram category assignment yet.
+// Top-level product department (Бакалея, Напитки, ...). `nodePrefix` is a
+// fallback bucket rule (e.g. "B4") for Node codes with no explicit Node row yet.
 model Category {
   id         String   @id @default(cuid())
   name       String   @unique
   icon       String
   nodePrefix String?
   sortOrder  Int      @default(0)
+  createdAt  DateTime @default(now())
+
+  nodes Node[]
+}
+
+// A specific Node code's identity (e.g. "B41" = "Кофе") and which category it
+// belongs to. `Planogram.node` is matched against `Node.code` — kept as a plain
+// string rather than a FK since imported Nodes may briefly have no Node row yet.
+model Node {
+  id         String   @id @default(cuid())
+  code       String   @unique
+  name       String
+  categoryId String
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   createdAt  DateTime @default(now())
 }
 

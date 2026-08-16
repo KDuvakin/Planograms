@@ -1,0 +1,30 @@
+BEGIN TRY
+
+BEGIN TRAN;
+
+-- CreateTable
+CREATE TABLE [dbo].[Node] (
+    [id] NVARCHAR(1000) NOT NULL,
+    [code] NVARCHAR(1000) NOT NULL,
+    [name] NVARCHAR(1000) NOT NULL,
+    [categoryId] NVARCHAR(1000) NOT NULL,
+    [createdAt] DATETIME2 NOT NULL CONSTRAINT [Node_createdAt_df] DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT [Node_pkey] PRIMARY KEY CLUSTERED ([id]),
+    CONSTRAINT [Node_code_key] UNIQUE NONCLUSTERED ([code])
+);
+
+-- AddForeignKey
+ALTER TABLE [dbo].[Node] ADD CONSTRAINT [Node_categoryId_fkey] FOREIGN KEY ([categoryId]) REFERENCES [dbo].[Category]([id]) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+COMMIT TRAN;
+
+END TRY
+BEGIN CATCH
+
+IF @@TRANCOUNT > 0
+BEGIN
+    ROLLBACK TRAN;
+END;
+THROW
+
+END CATCH
