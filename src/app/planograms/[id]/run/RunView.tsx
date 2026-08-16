@@ -177,7 +177,10 @@ export function RunView({
         {lastExecutedStep && (
           <div className={styles.instructionProduct}>
             {lastExecutedStep.product.article}
-            <span className={styles.instructionSap}>SAP {lastExecutedStep.product.sap}</span>
+            <span className={styles.instructionSap}>
+              SAP {lastExecutedStep.product.sap}
+              {lastExecutedStep.product.ean ? ` · EAN ${lastExecutedStep.product.ean}` : ""}
+            </span>
           </div>
         )}
         <p className={styles.instructionText}>{tInstructions(state.navigator.key, state.navigator.params)}</p>

@@ -57,7 +57,8 @@
     "feedback": "Atsauksme",
     "prevRackAria": "Iepriekšējais plaukts",
     "nextRackAria": "Nākamais plaukts",
-    "shelfLabel": "Līmenis {n}"
+    "shelfLabel": "Līmenis {n}",
+    "rackLabel": "Plaukts"
   },
   "stepLabel": {
     "pick": "Noņemt",
@@ -188,10 +189,12 @@
   "analytics": {
     "title": "Analītika",
     "stats": {
+      "total": "kopā planogrammu",
       "done": "izpildīts",
       "inProgress": "izpildē",
       "notStarted": "nav sākts",
-      "avgDuration": "vidējais ieviešanas laiks"
+      "avgDuration": "vidējais ieviešanas laiks",
+      "notDone": "nav pabeigts"
     },
     "byStoreTitle": "Pēc veikaliem",
     "byStoreTable": {

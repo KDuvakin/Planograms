@@ -119,6 +119,10 @@
   background: var(--ok);
 }
 
+.dotYellow {
+  background: var(--move);
+}
+
 .dotRed {
   background: var(--danger);
 }

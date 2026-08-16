@@ -1,6 +1,5 @@
 "use client";
 
-import { useTranslations } from "next-intl";
 import { isGap, type ShelfSlot } from "@/lib/engine";
 import { Block } from "./Block";
 import styles from "./run.module.css";
@@ -16,11 +15,9 @@ export function ShelfRow({
   scale: number;
   highlightIndex?: number;
 }) {
-  const t = useTranslations("run");
   return (
     <div className={styles.shelfRow}>
-      <div className={styles.shelfLabel}>{t("shelfLabel", { n: shelfNum })}</div>
-      <div className={styles.shelf}>
+      <div className={styles.shelfProducts}>
         {items.map((slot, i) => (
           <Block
             key={isGap(slot) ? `gap-${i}` : slot.index}
@@ -29,6 +26,9 @@ export function ShelfRow({
             highlighted={!isGap(slot) && slot.index === highlightIndex}
           />
         ))}
+      </div>
+      <div className={styles.shelfLedge}>
+        <span className={styles.shelfNumberTag}>{shelfNum}</span>
       </div>
     </div>
   );

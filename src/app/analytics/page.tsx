@@ -9,7 +9,14 @@ import styles from "@/components/admin/admin.module.css";
 import { fetcher } from "@/lib/swrFetcher";
 
 interface Summary {
-  totals: { notStarted: number; inProgress: number; done: number; abandoned: number };
+  totals: {
+    notStarted: number;
+    inProgress: number;
+    done: number;
+    abandoned: number;
+    notDonePlanograms: number;
+    totalPlanograms: number;
+  };
   avgDurationMinutes: number | null;
   byStore: { storeCode: string; done: number; inProgress: number }[];
   recentCompletions: { storeCode: string; userLabel: string; finishedAt: string; durationMinutes: number }[];
@@ -71,6 +78,10 @@ export default function AnalyticsPage() {
         <>
           <div className={styles.statCards}>
             <div className={styles.statCard}>
+              <div className={styles.statValue}>{summary.totals.totalPlanograms}</div>
+              <div className={styles.statLabel}>{t("stats.total")}</div>
+            </div>
+            <div className={styles.statCard}>
               <div className={styles.statValue}>{summary.totals.done}</div>
               <div className={styles.statLabel}>{t("stats.done")}</div>
             </div>
@@ -81,6 +92,10 @@ export default function AnalyticsPage() {
             <div className={styles.statCard}>
               <div className={styles.statValue}>{summary.totals.notStarted}</div>
               <div className={styles.statLabel}>{t("stats.notStarted")}</div>
+            </div>
+            <div className={styles.statCard}>
+              <div className={styles.statValue}>{summary.totals.notDonePlanograms}</div>
+              <div className={styles.statLabel}>{t("stats.notDone")}</div>
             </div>
             <div className={styles.statCard}>
               <div className={styles.statValue}>

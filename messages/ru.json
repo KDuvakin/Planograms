@@ -57,7 +57,8 @@
     "feedback": "Отзыв",
     "prevRackAria": "Предыдущий стеллаж",
     "nextRackAria": "Следующий стеллаж",
-    "shelfLabel": "Полка {n}"
+    "shelfLabel": "Полка {n}",
+    "rackLabel": "Стеллаж"
   },
   "stepLabel": {
     "pick": "Убери",
@@ -188,10 +189,12 @@
   "analytics": {
     "title": "Аналитика",
     "stats": {
+      "total": "всего планограмм",
       "done": "собрано",
       "inProgress": "в процессе",
       "notStarted": "не начато",
-      "avgDuration": "среднее время сборки"
+      "avgDuration": "среднее время сборки",
+      "notDone": "не сделано"
     },
     "byStoreTitle": "По магазинам",
     "byStoreTable": {

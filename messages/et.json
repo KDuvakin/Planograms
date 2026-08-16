@@ -57,7 +57,8 @@
     "feedback": "Tagasiside",
     "prevRackAria": "Eelmine riiul",
     "nextRackAria": "Järgmine riiul",
-    "shelfLabel": "Tasand {n}"
+    "shelfLabel": "Tasand {n}",
+    "rackLabel": "Riiul"
   },
   "stepLabel": {
     "pick": "Eemalda",
@@ -188,10 +189,12 @@
   "analytics": {
     "title": "Analüütika",
     "stats": {
+      "total": "planogramme kokku",
       "done": "valmis",
       "inProgress": "pooleli",
       "notStarted": "alustamata",
-      "avgDuration": "keskmine teostusaeg"
+      "avgDuration": "keskmine teostusaeg",
+      "notDone": "tegemata"
     },
     "byStoreTitle": "Poodide kaupa",
     "byStoreTable": {

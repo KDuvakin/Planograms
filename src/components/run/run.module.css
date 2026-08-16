@@ -65,22 +65,56 @@
 .shelfRow {
   display: flex;
   flex-direction: column;
-  gap: 4px;
 }
 
-.shelfLabel {
-  font-size: 12px;
-  color: var(--ink-faint);
-}
-
-.shelf {
+.shelfProducts {
   display: flex;
-  gap: 4px;
+  align-items: flex-end;
+  gap: 3px;
   overflow-x: auto;
-  padding-bottom: 4px;
+  padding: 0 2px 2px;
+}
+
+/* the shelf itself — a physical plank the products sit on, not just a text label */
+.shelfLedge {
+  position: relative;
+  height: 20px;
+  border-radius: 3px;
+  background: linear-gradient(180deg, var(--surface-3) 0%, var(--line) 85%, var(--ink-faint) 100%);
+  box-shadow: 0 3px 5px rgba(20, 35, 31, 0.2);
+  margin-bottom: 8px;
+}
+
+.shelfNumberTag {
+  position: absolute;
+  left: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: var(--ink);
+  color: var(--surface);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-1);
 }
 
 /* ===== rack tabs ===== */
+
+.rackTabsWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.rackTabsLabel {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--ink-faint);
+}
 
 .rackTabs {
   display: flex;

@@ -91,7 +91,12 @@ export default function PlanogramsPage() {
               {!isCollapsed && (
                 <ul className={styles.list}>
                   {group.items.map((p) => {
-                    const isDone = p.runStatus === "DONE";
+                    const dotClass =
+                      p.runStatus === "DONE"
+                        ? styles.dotGreen
+                        : p.runStatus === "IN_PROGRESS"
+                          ? styles.dotYellow
+                          : styles.dotRed;
                     const statusLabel =
                       p.runStatus === "IN_PROGRESS" || p.runStatus === "DONE"
                         ? t(`status.${p.runStatus}`)
@@ -99,7 +104,7 @@ export default function PlanogramsPage() {
                     return (
                       <li key={p.id}>
                         <Link href={`/planograms/${p.id}`} className={styles.card}>
-                          <span className={`${styles.statusDot} ${isDone ? styles.dotGreen : styles.dotRed}`} />
+                          <span className={`${styles.statusDot} ${dotClass}`} />
                           <div className={styles.cardBody}>
                             <div className={styles.cardNode}>{p.node}</div>
                             <div className={styles.cardMeta}>

@@ -18,6 +18,19 @@ export async function GET() {
       prisma.planogramRun.count({ where: { status: "ABANDONED", ...planogramFilter } }),
     ]);
 
+    // "Not done" counts PLANOGRAMS (not runs) that have never been completed —
+    // including ones nobody has even opened yet, which the run-status counts
+    // above miss entirely (a planogram with zero runs shows up nowhere in them).
+    const totalPlanograms = await prisma.planogram.count({
+      where: { isCurrent: true, ...(storeId ? { storeId } : {}) },
+    });
+    const donePlanograms = await prisma.planogramRun.findMany({
+      where: { status: "DONE", planogram: { isCurrent: true, ...(storeId ? { storeId } : {}) } },
+      select: { planogramId: true },
+      distinct: ["planogramId"],
+    });
+    const notDonePlanograms = Math.max(0, totalPlanograms - donePlanograms.length);
+
     const doneRuns = await prisma.planogramRun.findMany({
       where: { status: "DONE", startedAt: { not: null }, finishedAt: { not: null }, ...planogramFilter },
       select: {
@@ -58,7 +71,7 @@ export async function GET() {
     }));
 
     return NextResponse.json({
-      totals: { notStarted, inProgress, done, abandoned },
+      totals: { notStarted, inProgress, done, abandoned, notDonePlanograms, totalPlanograms },
       avgDurationMinutes,
       byStore: Array.from(byStore.values()).sort((a, b) => a.storeCode.localeCompare(b.storeCode)),
       recentCompletions,
