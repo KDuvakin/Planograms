@@ -3,6 +3,7 @@
 import { use, useMemo, useState } from "react";
 import useSWR from "swr";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { createEngineState, rackNumbers, shelfNumbers, type EngineState } from "@/lib/engine";
 import type { PlanogramItemLike } from "@/lib/engine/loadProducts";
@@ -27,7 +28,10 @@ export default function PlanogramPreviewPage({ params }: { params: Promise<{ id:
   const { id } = use(params);
   const t = useTranslations("preview");
   const tCommon = useTranslations("common");
+  const tRun = useTranslations("run");
   const locale = useLocale();
+  const router = useRouter();
+  const [starting, setStarting] = useState(false);
 
   const { data: meta } = useSWR<PlanogramMeta>(`/api/planograms/${id}`, fetcher);
   const { data: items } = useSWR<PlanogramItemLike[]>(`/api/planograms/${id}/items`, fetcher);
@@ -40,6 +44,19 @@ export default function PlanogramPreviewPage({ params }: { params: Promise<{ id:
   const racks = useMemo(() => (state ? rackNumbers(state) : []), [state]);
   const [selectedRack, setSelectedRack] = useState<string | null>(null);
   const currentRack = selectedRack && racks.includes(selectedRack) ? selectedRack : racks[0];
+  const rackIndex = currentRack ? racks.indexOf(currentRack) : -1;
+
+  const canResume = !!run && run.status === "IN_PROGRESS" && run.currentRealStep > 0;
+
+  async function handleStart() {
+    setStarting(true);
+    try {
+      await fetch(`/api/planograms/${id}/run/restart`, { method: "POST" });
+      router.push(`/planograms/${id}/run`);
+    } catch {
+      setStarting(false);
+    }
+  }
 
   if (!meta || !state) {
     return <main className={styles.page}>{tCommon("loading")}</main>;
@@ -54,13 +71,14 @@ export default function PlanogramPreviewPage({ params }: { params: Promise<{ id:
       <header className={styles.header}>
         <div className={styles.store}>{meta.store.code}</div>
         <h1 className={styles.title}>{meta.node}</h1>
-        <p className={styles.sub}>
-          {t("importedMeta", {
-            date: new Date(meta.importedAt).toLocaleDateString(locale),
-            version: meta.version,
-          })}
-        </p>
+        <p className={styles.subtitle}>{tCommon("planogramSubtitle")}</p>
       </header>
+
+      {rackIndex >= 0 && (
+        <div className={styles.rackHeading}>
+          {tRun("rackCounter", { current: rackIndex + 1, total: racks.length })}
+        </div>
+      )}
 
       <DiffLegend />
 
@@ -80,15 +98,24 @@ export default function PlanogramPreviewPage({ params }: { params: Promise<{ id:
         </>
       )}
 
+      <p className={styles.releaseDate}>
+        {t("releaseDate", { date: new Date(meta.importedAt).toLocaleDateString(locale) })}
+      </p>
+
       <div className={styles.actions}>
-        <Link href={`/planograms/${id}/run`} className={styles.startBtn}>
-          {run && run.status === "IN_PROGRESS" && run.currentRealStep > 0
-            ? t("continueFromStep", { step: run.currentRealStep })
-            : t("start")}
-        </Link>
-        <Link href="/planograms" className={styles.cancelBtn}>
-          {tCommon("cancel")}
-        </Link>
+        <button type="button" className={styles.startBtn} disabled={starting} onClick={handleStart}>
+          {t("start")}
+        </button>
+        <div className={styles.secondaryRow}>
+          <Link href="/planograms" className={styles.cancelBtn}>
+            {tCommon("cancel")}
+          </Link>
+          {canResume && (
+            <Link href={`/planograms/${id}/run`} className={styles.continueBtn}>
+              {t("continueFromStep", { step: run!.currentRealStep })}
+            </Link>
+          )}
+        </div>
       </div>
     </main>
   );

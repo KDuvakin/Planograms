@@ -32,10 +32,17 @@
   color: var(--ink);
 }
 
-.sub {
+.subtitle {
   margin: 0;
   font-size: 12px;
-  color: var(--ink-faint);
+  color: var(--ink-soft);
+}
+
+.rackHeading {
+  text-align: center;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink);
 }
 
 .shelves {
@@ -44,27 +51,55 @@
   gap: 2px;
 }
 
+.releaseDate {
+  text-align: center;
+  font-size: 12px;
+  color: var(--ink-faint);
+}
+
 .actions {
   display: flex;
+  flex-direction: column;
   gap: 10px;
   margin-top: 4px;
 }
 
+.secondaryRow {
+  display: flex;
+  gap: 10px;
+}
+
 .startBtn,
-.cancelBtn {
+.cancelBtn,
+.continueBtn {
   flex: 1;
   text-align: center;
   padding: 13px;
   border-radius: var(--radius-sm);
   font-weight: 600;
+  border: none;
+  cursor: pointer;
+  font-size: 15px;
+  font-family: inherit;
 }
 
 .startBtn {
   background: var(--accent);
   color: var(--accent-ink);
+  width: 100%;
+}
+
+.startBtn:disabled {
+  opacity: 0.6;
+  cursor: default;
 }
 
 .cancelBtn {
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+
+.continueBtn {
   background: var(--surface-2);
   color: var(--ink);
 }

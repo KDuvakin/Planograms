@@ -6,7 +6,8 @@
     "save": "Salvesta",
     "delete": "Kustuta",
     "close": "Sulge",
-    "description": "Riiuli ümberpaigutamine vastavalt planogrammile"
+    "description": "Riiuli ümberpaigutamine vastavalt planogrammile",
+    "planogramSubtitle": "Uue planogrammi rakendamine"
   },
   "nav": {
     "planograms": "Planogrammid",
@@ -38,7 +39,7 @@
   },
   "preview": {
     "back": "← Kõik planogrammid",
-    "importedMeta": "Imporditud {date} · versioon {version}",
+    "releaseDate": "Väljalaske kuupäev: {date}",
     "start": "Alusta",
     "continueFromStep": "Jätka sammust {step}",
     "legend": {
@@ -52,13 +53,17 @@
     "empty": "Sellel planogrammil pole positsioone.",
     "rackCounter": "Riiul {current} / {total}",
     "stepCounter": "Samm {current} / {total}",
-    "back": "◀ Tagasi",
-    "next": "▶ Samm",
     "feedback": "Tagasiside",
     "prevRackAria": "Eelmine riiul",
     "nextRackAria": "Järgmine riiul",
     "shelfLabel": "Tasand {n}",
-    "rackLabel": "Riiul"
+    "rackLabel": "Riiul",
+    "productLabel": "Toode",
+    "sapCodeLabel": "SAP kood",
+    "eanCodeLabel": "EAN kood",
+    "stepDescriptionLabel": "Sammu kirjeldus",
+    "backWithStep": "◀ Samm {step} / {total}",
+    "nextWithStep": "Samm {step} / {total} ▶"
   },
   "stepLabel": {
     "pick": "Eemalda",

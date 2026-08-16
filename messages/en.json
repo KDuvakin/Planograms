@@ -6,7 +6,8 @@
     "save": "Save",
     "delete": "Delete",
     "close": "Close",
-    "description": "Resetting a shelf to a planogram"
+    "description": "Resetting a shelf to a planogram",
+    "planogramSubtitle": "New Planogram Implementation"
   },
   "nav": {
     "planograms": "Planograms",
@@ -38,7 +39,7 @@
   },
   "preview": {
     "back": "← All planograms",
-    "importedMeta": "Imported {date} · version {version}",
+    "releaseDate": "Release date: {date}",
     "start": "Start",
     "continueFromStep": "Continue from step {step}",
     "legend": {
@@ -52,13 +53,17 @@
     "empty": "This planogram has no items.",
     "rackCounter": "Rack {current} of {total}",
     "stepCounter": "Step {current} / {total}",
-    "back": "◀ Back",
-    "next": "▶ Step",
     "feedback": "Feedback",
     "prevRackAria": "Previous rack",
     "nextRackAria": "Next rack",
     "shelfLabel": "Shelf {n}",
-    "rackLabel": "Rack"
+    "rackLabel": "Rack",
+    "productLabel": "Product",
+    "sapCodeLabel": "SAP code",
+    "eanCodeLabel": "EAN code",
+    "stepDescriptionLabel": "Step description",
+    "backWithStep": "◀ Step {step} of {total}",
+    "nextWithStep": "Step {step} of {total} ▶"
   },
   "stepLabel": {
     "pick": "Remove",

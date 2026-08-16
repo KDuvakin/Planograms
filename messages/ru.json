@@ -6,7 +6,8 @@
     "save": "Сохранить",
     "delete": "Удалить",
     "close": "Закрыть",
-    "description": "Пересборка полки по планограмме"
+    "description": "Пересборка полки по планограмме",
+    "planogramSubtitle": "Внедрение новой планограммы"
   },
   "nav": {
     "planograms": "Планограммы",
@@ -38,7 +39,7 @@
   },
   "preview": {
     "back": "← Все планограммы",
-    "importedMeta": "Импортировано {date} · версия {version}",
+    "releaseDate": "Дата релиза: {date}",
     "start": "Начать",
     "continueFromStep": "Продолжить с шага {step}",
     "legend": {
@@ -52,13 +53,17 @@
     "empty": "В этой планограмме нет позиций.",
     "rackCounter": "Стеллаж {current} из {total}",
     "stepCounter": "Шаг {current} / {total}",
-    "back": "◀ Назад",
-    "next": "▶ Шаг",
     "feedback": "Отзыв",
     "prevRackAria": "Предыдущий стеллаж",
     "nextRackAria": "Следующий стеллаж",
     "shelfLabel": "Полка {n}",
-    "rackLabel": "Стеллаж"
+    "rackLabel": "Стеллаж",
+    "productLabel": "Товар",
+    "sapCodeLabel": "SAP код",
+    "eanCodeLabel": "EAN код",
+    "stepDescriptionLabel": "Описание шага",
+    "backWithStep": "◀ Шаг {step} из {total}",
+    "nextWithStep": "Шаг {step} из {total} ▶"
   },
   "stepLabel": {
     "pick": "Убери",

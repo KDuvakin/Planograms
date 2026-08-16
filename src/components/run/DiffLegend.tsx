@@ -8,18 +8,10 @@ export function DiffLegend() {
 
   return (
     <ul className={styles.legend}>
-      <li>
-        <span className={`${styles.legendDot} ${styles.ok}`} /> {t("ok")}
-      </li>
-      <li>
-        <span className={`${styles.legendDot} ${styles.move}`} /> {t("changed")}
-      </li>
-      <li>
-        <span className={`${styles.legendDot} ${styles.new}`} /> {t("new")}
-      </li>
-      <li>
-        <span className={`${styles.legendDot} ${styles.danger}`} /> {t("removed")}
-      </li>
+      <li className={`${styles.legendPill} ${styles.ok}`}>{t("ok")}</li>
+      <li className={`${styles.legendPill} ${styles.move}`}>{t("changed")}</li>
+      <li className={`${styles.legendPill} ${styles.new}`}>{t("new")}</li>
+      <li className={`${styles.legendPill} ${styles.danger}`}>{t("removed")}</li>
     </ul>
   );
 }

@@ -6,7 +6,8 @@
     "save": "Saglabāt",
     "delete": "Dzēst",
     "close": "Aizvērt",
-    "description": "Plaukta pārkārtošana atbilstoši planogrammai"
+    "description": "Plaukta pārkārtošana atbilstoši planogrammai",
+    "planogramSubtitle": "Jaunas planogrammas ieviešana"
   },
   "nav": {
     "planograms": "Planogrammas",
@@ -38,7 +39,7 @@
   },
   "preview": {
     "back": "← Visas planogrammas",
-    "importedMeta": "Importēts {date} · versija {version}",
+    "releaseDate": "Izlaiduma datums: {date}",
     "start": "Sākt",
     "continueFromStep": "Turpināt no soļa {step}",
     "legend": {
@@ -52,13 +53,17 @@
     "empty": "Šai planogrammai nav pozīciju.",
     "rackCounter": "Plaukts {current} no {total}",
     "stepCounter": "Solis {current} / {total}",
-    "back": "◀ Atpakaļ",
-    "next": "▶ Solis",
     "feedback": "Atsauksme",
     "prevRackAria": "Iepriekšējais plaukts",
     "nextRackAria": "Nākamais plaukts",
     "shelfLabel": "Līmenis {n}",
-    "rackLabel": "Plaukts"
+    "rackLabel": "Plaukts",
+    "productLabel": "Prece",
+    "sapCodeLabel": "SAP kods",
+    "eanCodeLabel": "EAN kods",
+    "stepDescriptionLabel": "Soļa apraksts",
+    "backWithStep": "◀ Solis {step} no {total}",
+    "nextWithStep": "Solis {step} no {total} ▶"
   },
   "stepLabel": {
     "pick": "Noņemt",
