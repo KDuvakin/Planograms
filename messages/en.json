@@ -181,7 +181,8 @@
       "format": "Format",
       "address": "Address",
       "email": "Email",
-      "printers": "Printers"
+      "printers": "Printers",
+      "actions": "Actions"
     },
     "configure": "Configure",
     "hide": "Hide",
@@ -190,8 +191,10 @@
     "printerIp": "IP",
     "noPrinters": "No printers yet",
     "addPrinter": "Add printer",
+    "confirmDelete": "Delete store \"{store}\"? This action cannot be undone.",
     "errors": {
-      "createStoreFailed": "Couldn't create the store"
+      "createStoreFailed": "Couldn't create the store",
+      "deleteStoreFailed": "Couldn't delete the store"
     }
   },
   "analytics": {

@@ -33,3 +33,20 @@ export async function PATCH(req: Request, ctx: RouteContext<"/api/stores/[id]">)
     return handleApiError(e);
   }
 }
+
+export async function DELETE(_req: Request, ctx: RouteContext<"/api/stores/[id]">) {
+  try {
+    await requireRole("ADMIN");
+    const { id } = await ctx.params;
+    await prisma.store.delete({ where: { id } });
+    return new NextResponse(null, { status: 204 });
+  } catch (e) {
+    if (e && typeof e === "object" && "code" in e && (e.code === "P2003" || e.code === "P2014")) {
+      return NextResponse.json(
+        { error: "Нельзя удалить магазин: с ним связаны пользователи или планограммы" },
+        { status: 409 }
+      );
+    }
+    return handleApiError(e);
+  }
+}

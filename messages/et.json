@@ -181,7 +181,8 @@
       "format": "Formaat",
       "address": "Aadress",
       "email": "E-post",
-      "printers": "Printerid"
+      "printers": "Printerid",
+      "actions": "Tegevused"
     },
     "configure": "Seadista",
     "hide": "Peida",
@@ -190,8 +191,10 @@
     "printerIp": "IP",
     "noPrinters": "Printereid pole veel",
     "addPrinter": "Lisa printer",
+    "confirmDelete": "Kustutada pood \"{store}\"? Seda toimingut ei saa tagasi võtta.",
     "errors": {
-      "createStoreFailed": "Poe loomine ebaõnnestus"
+      "createStoreFailed": "Poe loomine ebaõnnestus",
+      "deleteStoreFailed": "Poe kustutamine ebaõnnestus"
     }
   },
   "analytics": {

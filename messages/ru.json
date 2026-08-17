@@ -181,7 +181,8 @@
       "format": "Формат",
       "address": "Адрес",
       "email": "Email",
-      "printers": "Принтеры"
+      "printers": "Принтеры",
+      "actions": "Действия"
     },
     "configure": "Настроить",
     "hide": "Скрыть",
@@ -190,8 +191,10 @@
     "printerIp": "IP",
     "noPrinters": "Принтеров пока нет",
     "addPrinter": "Добавить принтер",
+    "confirmDelete": "Удалить магазин «{store}»? Это действие необратимо.",
     "errors": {
-      "createStoreFailed": "Не удалось создать магазин"
+      "createStoreFailed": "Не удалось создать магазин",
+      "deleteStoreFailed": "Не удалось удалить магазин"
     }
   },
   "analytics": {

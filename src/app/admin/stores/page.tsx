@@ -27,6 +27,7 @@ interface Printer {
 
 export default function StoresAdminPage() {
   const t = useTranslations("adminStores");
+  const tCommon = useTranslations("common");
   const { data: stores, mutate } = useSWR<Store[]>("/api/stores", fetcher);
 
   const [code, setCode] = useState("");
@@ -36,6 +37,7 @@ export default function StoresAdminPage() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [expanded, setExpanded] = useState<string | null>(null);
+  const [rowError, setRowError] = useState<{ id: string; message: string } | null>(null);
 
   async function handleCreate(e: FormEvent) {
     e.preventDefault();
@@ -70,6 +72,19 @@ export default function StoresAdminPage() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(patch),
     });
+    mutate();
+  }
+
+  async function handleDelete(id: string, label: string) {
+    if (!window.confirm(t("confirmDelete", { store: label }))) return;
+    setRowError(null);
+    const res = await fetch(`/api/stores/${id}`, { method: "DELETE" });
+    if (!res.ok) {
+      const body = await res.json().catch(() => null);
+      setRowError({ id, message: body?.error ?? t("errors.deleteStoreFailed") });
+      return;
+    }
+    if (expanded === id) setExpanded(null);
     mutate();
   }
 
@@ -118,12 +133,23 @@ export default function StoresAdminPage() {
                 <th>{t("table.address")}</th>
                 <th>{t("table.email")}</th>
                 <th>{t("table.printers")}</th>
+                <th>{t("table.actions")}</th>
               </tr>
             </thead>
             <tbody>
               {stores?.map((s) => (
                 <tr key={s.id}>
-                  <td>{s.code}</td>
+                  <td>
+                    <input
+                      className={styles.input}
+                      defaultValue={s.code}
+                      onBlur={(e) => {
+                        if (e.target.value.trim() && e.target.value !== s.code) {
+                          updateStore(s.id, { code: e.target.value });
+                        }
+                      }}
+                    />
+                  </td>
                   <td>
                     <input
                       className={styles.input}
@@ -177,6 +203,16 @@ export default function StoresAdminPage() {
                     >
                       {expanded === s.id ? t("hide") : t("configure")}
                     </button>
+                  </td>
+                  <td>
+                    <button
+                      type="button"
+                      className={styles.btnGhost}
+                      onClick={() => handleDelete(s.id, s.name ?? s.code)}
+                    >
+                      {tCommon("delete")}
+                    </button>
+                    {rowError?.id === s.id && <p className={styles.error}>{rowError.message}</p>}
                   </td>
                 </tr>
               ))}

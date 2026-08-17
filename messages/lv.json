@@ -181,7 +181,8 @@
       "format": "Formāts",
       "address": "Adrese",
       "email": "E-pasts",
-      "printers": "Printeri"
+      "printers": "Printeri",
+      "actions": "Darbības"
     },
     "configure": "Konfigurēt",
     "hide": "Slēpt",
@@ -190,8 +191,10 @@
     "printerIp": "IP",
     "noPrinters": "Printeru vēl nav",
     "addPrinter": "Pievienot printeri",
+    "confirmDelete": "Dzēst veikalu \"{store}\"? Šo darbību nevar atsaukt.",
     "errors": {
-      "createStoreFailed": "Neizdevās izveidot veikalu"
+      "createStoreFailed": "Neizdevās izveidot veikalu",
+      "deleteStoreFailed": "Neizdevās dzēst veikalu"
     }
   },
   "analytics": {
