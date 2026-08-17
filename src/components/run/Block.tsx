@@ -14,21 +14,30 @@ const STATE_CLASS: Record<Product["state"], string> = {
 export function Block({
   slot,
   scale,
-  highlighted,
+  highlightIndex,
 }: {
   slot: ShelfSlot;
   scale: number;
-  highlighted?: boolean;
+  highlightIndex?: number;
 }) {
   if (isGap(slot)) {
-    return <div className={styles.gap} style={{ width: Math.max(slot.width * scale, 2) }} />;
+    // The gap a just-picked/moved-away item left behind — outline it so it's clear
+    // where that item used to be, instead of it just silently vanishing.
+    const isVacatedSpot = highlightIndex !== undefined && slot.fromProductIndex === highlightIndex;
+    return (
+      <div
+        className={`${styles.gap} ${isVacatedSpot ? styles.gapHighlighted : ""}`}
+        style={{ width: Math.max(slot.width * scale, 2) }}
+      />
+    );
   }
 
   const widthPx = Math.max(slot.faceWidth * slot.currentFaces * scale, 30);
+  const isHighlighted = slot.index === highlightIndex;
 
   return (
     <div
-      className={`${styles.block} ${STATE_CLASS[slot.state]} ${highlighted ? styles.highlighted : ""}`}
+      className={`${styles.block} ${STATE_CLASS[slot.state]} ${isHighlighted ? styles.highlighted : ""}`}
       style={{ width: widthPx }}
       title={`${slot.article} · SAP ${slot.sap}`}
     >

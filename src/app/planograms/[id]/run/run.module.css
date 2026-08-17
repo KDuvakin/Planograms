@@ -7,6 +7,11 @@
   gap: 12px;
 }
 
+.topRow {
+  display: flex;
+  justify-content: flex-end;
+}
+
 .header {
   display: flex;
   flex-direction: column;

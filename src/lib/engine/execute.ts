@@ -72,7 +72,7 @@ function removeFromOldShelf(state: EngineState, p: Product): void {
   const rs = state.racks[p.rackOld]?.[p.shelfOld];
   if (!rs) return;
   const idx = rs.items.findIndex((x) => (x as Product).index === p.index);
-  if (idx !== -1) rs.items[idx] = { __gap: true, width: widthOf(p) } satisfies GapMarker;
+  if (idx !== -1) rs.items[idx] = { __gap: true, width: widthOf(p), fromProductIndex: p.index } satisfies GapMarker;
   coalesceGaps(rs);
 }
 
@@ -83,7 +83,7 @@ export function execute(state: EngineState, step: Step, silent: boolean): void {
 
   if (step.type === "evict") {
     const idx = rs.items.findIndex((x) => (x as Product).index === p.index);
-    if (idx !== -1) rs.items[idx] = { __gap: true, width: widthOf(p) } satisfies GapMarker;
+    if (idx !== -1) rs.items[idx] = { __gap: true, width: widthOf(p), fromProductIndex: p.index } satisfies GapMarker;
     coalesceGaps(rs);
 
     if (step.to === "deleted") {
@@ -93,7 +93,7 @@ export function execute(state: EngineState, step: Step, silent: boolean): void {
         state.navigator = {
           kind: "delete",
           key: "delete",
-          params: { article: p.article, sap: p.sap, rack: step.rack, shelf: step.shelf },
+          params: { article: p.article, sap: p.sap, rack: step.rack, shelf: step.shelf, pos: p.positionNumberOld },
         };
       }
     } else {
@@ -103,14 +103,14 @@ export function execute(state: EngineState, step: Step, silent: boolean): void {
         state.navigator = {
           kind: "pick",
           key: "pick",
-          params: { article: p.article, sap: p.sap, rack: step.rack, shelf: step.shelf },
+          params: { article: p.article, sap: p.sap, rack: step.rack, shelf: step.shelf, pos: p.positionNumberOld },
         };
       }
     }
   } else if (step.type === "move") {
     const fromRs = ensureShelf(state, step.fromRack, step.fromShelf);
     const idx = fromRs.items.findIndex((x) => (x as Product).index === p.index);
-    if (idx !== -1) fromRs.items[idx] = { __gap: true, width: widthOf(p) } satisfies GapMarker;
+    if (idx !== -1) fromRs.items[idx] = { __gap: true, width: widthOf(p), fromProductIndex: p.index } satisfies GapMarker;
     coalesceGaps(fromRs);
 
     const sameShelf = step.fromRack === step.rack && step.fromShelf === step.shelf;

@@ -7,6 +7,12 @@
   gap: 14px;
 }
 
+.topRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
 .back {
   font-size: 13px;
   color: var(--ink-soft);

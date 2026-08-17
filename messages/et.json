@@ -81,8 +81,8 @@
   "instructions": {
     "idle": "Vajuta „Samm“, et alustada riiuli ümberpaigutamist",
     "done": "Kõik sammud on tehtud — riiul vastab uuele plaanile",
-    "delete": "Võta {article} ({sap}) riiulist {rack} tasandilt {shelf} — toodet uues plaanis pole, pane korvi „Sortimendist väljas“",
-    "pick": "Tee ruumi: eemalda {article} ({sap}) riiulist {rack} tasandilt {shelf} ajutisse korvi",
+    "delete": "Võta {article} ({sap}) riiulist {rack} tasandilt {shelf} positsioon {pos} — toodet uues plaanis pole, pane korvi „Sortimendist väljas“",
+    "pick": "Tee ruumi: eemalda {article} ({sap}) riiulist {rack} tasandilt {shelf} positsioon {pos} ajutisse korvi",
     "moveSame": "Nihuta {article} ({sap}) riiulil {rack} tasandil {shelf}: positsioonilt {oldPos} positsioonile {newPos}",
     "moveDifferent": "Tõsta {article} ({sap}) riiulist {fromRack} tasandilt {fromShelf} riiulisse {rack} tasandile {shelf}, positsioon {newPos}, esipindu {faces}",
     "confirm": "{article} ({sap}) on juba õigel kohal — midagi teha pole vaja",

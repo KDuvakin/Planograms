@@ -81,8 +81,8 @@
   "instructions": {
     "idle": "Press \"Step\" to start resetting the shelf",
     "done": "All steps completed — the shelf now matches the new plan",
-    "delete": "Take {article} ({sap}) from rack {rack} shelf {shelf} — it's not in the new plan, put it in the \"not assorted\" basket",
-    "pick": "Free up space: remove {article} ({sap}) from rack {rack} shelf {shelf} into the temporary basket",
+    "delete": "Take {article} ({sap}) from rack {rack} shelf {shelf} position {pos} — it's not in the new plan, put it in the \"not assorted\" basket",
+    "pick": "Free up space: remove {article} ({sap}) from rack {rack} shelf {shelf} position {pos} into the temporary basket",
     "moveSame": "Shift {article} ({sap}) on rack {rack} shelf {shelf}: from position {oldPos} to position {newPos}",
     "moveDifferent": "Move {article} ({sap}) from rack {fromRack} shelf {fromShelf} to rack {rack} shelf {shelf}, position {newPos}, {faces} faces",
     "confirm": "{article} ({sap}) is already in place — nothing to do",

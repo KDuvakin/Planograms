@@ -81,8 +81,8 @@
   "instructions": {
     "idle": "Spied „Solis“, lai sāktu plaukta pārkārtošanu",
     "done": "Visi soļi pabeigti — plaukts atbilst jaunajam plānam",
-    "delete": "Paņem {article} ({sap}) no plaukta {rack} plaukta līmeņa {shelf} — preces jaunajā plānā nav, ievieto grozā „Ārpus sortimenta“",
-    "pick": "Atbrīvo vietu: noņem {article} ({sap}) no plaukta {rack} plaukta līmeņa {shelf} pagaidu grozā",
+    "delete": "Paņem {article} ({sap}) no plaukta {rack} plaukta līmeņa {shelf} pozīcija {pos} — preces jaunajā plānā nav, ievieto grozā „Ārpus sortimenta“",
+    "pick": "Atbrīvo vietu: noņem {article} ({sap}) no plaukta {rack} plaukta līmeņa {shelf} pozīcija {pos} pagaidu grozā",
     "moveSame": "Pārbīdi {article} ({sap}) plauktā {rack} līmenī {shelf}: no pozīcijas {oldPos} uz pozīciju {newPos}",
     "moveDifferent": "Pārvieto {article} ({sap}) no plaukta {fromRack} līmeņa {fromShelf} uz plauktu {rack} līmeni {shelf}, pozīcija {newPos}, {faces} sejas",
     "confirm": "{article} ({sap}) jau ir savā vietā — nekas nav jādara",

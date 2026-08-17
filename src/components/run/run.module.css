@@ -62,6 +62,11 @@
   flex: 0 0 auto;
 }
 
+.gapHighlighted {
+  border: 2px dashed var(--accent);
+  background: var(--accent-soft);
+}
+
 .shelfRow {
   display: flex;
   flex-direction: column;
@@ -77,27 +82,22 @@
 
 /* the shelf itself — a physical plank the products sit on, not just a text label */
 .shelfLedge {
-  position: relative;
-  height: 20px;
-  border-radius: 3px;
-  background: linear-gradient(180deg, var(--surface-3) 0%, var(--line) 85%, var(--ink-faint) 100%);
-  box-shadow: 0 3px 5px rgba(20, 35, 31, 0.2);
-  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 26px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, var(--ink) 0%, #0d1815 100%);
+  box-shadow: var(--shadow-1);
+  margin-bottom: 10px;
 }
 
 .shelfNumberTag {
-  position: absolute;
-  left: 8px;
-  top: 50%;
-  transform: translateY(-50%);
-  background: var(--ink);
   color: var(--surface);
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 700;
-  padding: 2px 7px;
-  border-radius: var(--radius-sm);
-  box-shadow: var(--shadow-1);
+  letter-spacing: 0.03em;
 }
 
 /* ===== rack tabs ===== */

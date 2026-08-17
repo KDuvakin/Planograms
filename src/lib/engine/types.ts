@@ -40,6 +40,8 @@ export interface Product {
 export interface GapMarker {
   __gap: true;
   width: number;
+  /** Index of the product this gap was just vacated by (evict/move-away/place-elsewhere) — lets the UI highlight "this is the empty spot you're working on". Undefined for leftover-space gaps that never held a specific product. */
+  fromProductIndex?: number;
 }
 
 export type ShelfSlot = Product | GapMarker;

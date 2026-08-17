@@ -10,6 +10,7 @@ import type { PlanogramItemLike } from "@/lib/engine/loadProducts";
 import { RackTabs } from "@/components/run/RackTabs";
 import { ShelfRow } from "@/components/run/ShelfRow";
 import { DiffLegend } from "@/components/run/DiffLegend";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { resolveNodeCategory, type CategoryWithNodes } from "@/lib/nodeCategory";
 import styles from "./preview.module.css";
 import { fetcher } from "@/lib/swrFetcher";
@@ -68,9 +69,12 @@ export default function PlanogramPreviewPage({ params }: { params: Promise<{ id:
 
   return (
     <main className={styles.page}>
-      <Link href="/planograms" className={styles.back}>
-        {t("back")}
-      </Link>
+      <div className={styles.topRow}>
+        <Link href="/planograms" className={styles.back}>
+          {t("back")}
+        </Link>
+        <LanguageSwitcher />
+      </div>
 
       <header className={styles.header}>
         <div className={styles.store}>{meta.store.code}</div>

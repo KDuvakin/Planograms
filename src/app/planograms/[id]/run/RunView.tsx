@@ -13,6 +13,7 @@ import { createRunStore } from "@/lib/engine/runStore";
 import { ShelfRow } from "@/components/run/ShelfRow";
 import { ProductIcon } from "@/components/run/ProductIcon";
 import { DiffLegend } from "@/components/run/DiffLegend";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { FeedbackDialog, type FeedbackProductInfo } from "@/components/run/FeedbackDialog";
 import { CompletionScreen } from "@/components/run/CompletionScreen";
 import { resolveNodeCategory, type CategoryWithNodes } from "@/lib/nodeCategory";
@@ -153,6 +154,10 @@ export function RunView({
   if (rackTransition) {
     return (
       <main className={styles.page}>
+        <div className={styles.topRow}>
+          <LanguageSwitcher />
+        </div>
+
         <header className={styles.header}>
           <div className={styles.store}>{meta.store.code}</div>
           {category && (
@@ -213,6 +218,10 @@ export function RunView({
 
   return (
     <main className={styles.page}>
+      <div className={styles.topRow}>
+        <LanguageSwitcher />
+      </div>
+
       <header className={styles.header}>
         <div className={styles.store}>{meta.store.code}</div>
         {category && (
