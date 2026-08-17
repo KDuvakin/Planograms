@@ -241,11 +241,19 @@
   text-align: right;
 }
 
+.arrowTrack {
+  position: relative;
+  height: 30px;
+}
+
 .arrowDown {
-  align-self: center;
+  position: absolute;
+  top: 0;
+  left: calc(50% - 13px);
   color: var(--accent);
   filter: drop-shadow(0 3px 4px color-mix(in srgb, var(--accent) 45%, transparent));
   animation: arrowBounce 1.3s ease-in-out infinite;
+  transition: left 0.25s ease;
 }
 
 @keyframes arrowBounce {
