@@ -28,6 +28,7 @@ export function Block({
       <div
         className={`${styles.gap} ${isVacatedSpot ? styles.gapHighlighted : ""}`}
         style={{ width: Math.max(slot.width * scale, 2) }}
+        data-shelf-highlight={isVacatedSpot || undefined}
       />
     );
   }
