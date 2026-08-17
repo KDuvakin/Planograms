@@ -40,6 +40,7 @@ export function Block({
       className={`${styles.block} ${STATE_CLASS[slot.state]} ${isHighlighted ? styles.highlighted : ""}`}
       style={{ width: widthPx }}
       title={`${slot.article} · SAP ${slot.sap}`}
+      data-shelf-highlight={isHighlighted || undefined}
     >
       <div className={styles.blockSap}>{slot.sap}</div>
       <div className={styles.blockName}>{slot.article}</div>

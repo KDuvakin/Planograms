@@ -35,8 +35,18 @@
 
 .highlighted {
   outline: 3px solid var(--accent);
-  outline-offset: 1px;
-  box-shadow: var(--shadow-2);
+  outline-offset: 2px;
+  background: color-mix(in srgb, var(--accent) 30%, var(--state-soft));
+  animation: highlightPulse 1.3s ease-in-out infinite;
+}
+
+@keyframes highlightPulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 var(--accent-soft);
+  }
+  50% {
+    box-shadow: 0 0 0 7px var(--accent-soft);
+  }
 }
 
 .blockSap {
@@ -84,12 +94,13 @@
 .shelfLedge {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   height: 26px;
   border-radius: 999px;
   background: linear-gradient(180deg, var(--ink) 0%, #0d1815 100%);
   box-shadow: var(--shadow-1);
   margin-bottom: 10px;
+  padding: 0 14px;
 }
 
 .shelfNumberTag {
