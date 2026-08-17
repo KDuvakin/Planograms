@@ -100,7 +100,7 @@
   background: linear-gradient(180deg, var(--ink) 0%, #0d1815 100%);
   box-shadow: var(--shadow-1);
   margin-bottom: 10px;
-  padding: 0 14px;
+  padding: 0 8px;
 }
 
 .shelfNumberTag {
