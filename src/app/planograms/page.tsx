@@ -3,9 +3,8 @@
 import { useState } from "react";
 import useSWR from "swr";
 import Link from "next/link";
-import { signOut } from "next-auth/react";
 import { useLocale, useTranslations } from "next-intl";
-import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { PageHeader } from "@/components/PageHeader";
 import { TopNav } from "@/components/TopNav";
 import { localizedName, type CategoryWithNodes } from "@/lib/nodeCategory";
 import styles from "./planograms.module.css";
@@ -114,7 +113,6 @@ function groupByCategory(
 
 export default function PlanogramsPage() {
   const t = useTranslations("planograms");
-  const tNav = useTranslations("nav");
   const tCommon = useTranslations("common");
   const locale = useLocale();
   const { data, isLoading } = useSWR<PlanogramListItem[]>("/api/planograms", fetcher);
@@ -137,15 +135,7 @@ export default function PlanogramsPage() {
 
   return (
     <main className={styles.page}>
-      <header className={styles.header}>
-        <h1 className={styles.title}>{t("title")}</h1>
-        <div className={styles.headerActions}>
-          <LanguageSwitcher />
-          <button className={styles.signOut} onClick={() => signOut({ redirectTo: "/login" })}>
-            {tNav("signOut")}
-          </button>
-        </div>
-      </header>
+      <PageHeader title={t("title")} />
 
       <TopNav />
 

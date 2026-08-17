@@ -3,6 +3,7 @@
 import { useState, type FormEvent } from "react";
 import useSWR from "swr";
 import { useTranslations } from "next-intl";
+import { PageHeader } from "@/components/PageHeader";
 import { TopNav } from "@/components/TopNav";
 import styles from "./import.module.css";
 import { fetcher } from "@/lib/swrFetcher";
@@ -73,9 +74,9 @@ export default function ImportPage() {
 
   return (
     <main className={styles.page}>
-      <TopNav />
+      <PageHeader title={t("title")} />
 
-      <h1 className={styles.title}>{t("title")}</h1>
+      <TopNav />
 
       <section className={styles.card}>
         <h2 className={styles.subtitle}>{t("storeLabel")}</h2>
