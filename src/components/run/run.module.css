@@ -243,9 +243,18 @@
 
 .arrowDown {
   align-self: center;
-  color: var(--ink-faint);
-  font-size: 16px;
-  line-height: 1;
+  color: var(--accent);
+  filter: drop-shadow(0 3px 4px color-mix(in srgb, var(--accent) 45%, transparent));
+  animation: arrowBounce 1.3s ease-in-out infinite;
+}
+
+@keyframes arrowBounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(5px);
+  }
 }
 
 .stepDescLabel {

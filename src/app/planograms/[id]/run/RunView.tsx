@@ -269,7 +269,16 @@ export function RunView({
             </div>
           </section>
 
-          <div className={runStyles.arrowDown}>▾</div>
+          <svg
+            className={runStyles.arrowDown}
+            width="26"
+            height="30"
+            viewBox="0 0 28 30"
+            fill="currentColor"
+            aria-hidden="true"
+          >
+            <path d="M10 0H18V15H26L14 29L2 15H10V0Z" />
+          </svg>
 
           <ShelfRow
             shelfNum={lastExecutedStep.shelf}
