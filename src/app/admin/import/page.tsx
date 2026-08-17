@@ -122,26 +122,28 @@ export default function ImportPage() {
       {result && (
         <section className={styles.card}>
           <h2 className={styles.subtitle}>{t("resultTitle", { store: result.store })}</h2>
-          <table className={styles.table}>
-            <thead>
-              <tr>
-                <th>{t("table.node")}</th>
-                <th>{t("table.version")}</th>
-                <th>{t("table.items")}</th>
-                <th>{t("table.duplicates")}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {result.results.map((r) => (
-                <tr key={r.node}>
-                  <td>{r.node}</td>
-                  <td>{r.version}</td>
-                  <td>{r.itemCount}</td>
-                  <td>{r.duplicates.length ? r.duplicates.join(", ") : "—"}</td>
+          <div className={styles.tableWrap}>
+            <table className={styles.table}>
+              <thead>
+                <tr>
+                  <th>{t("table.node")}</th>
+                  <th>{t("table.version")}</th>
+                  <th>{t("table.items")}</th>
+                  <th>{t("table.duplicates")}</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {result.results.map((r) => (
+                  <tr key={r.node}>
+                    <td>{r.node}</td>
+                    <td>{r.version}</td>
+                    <td>{r.itemCount}</td>
+                    <td>{r.duplicates.length ? r.duplicates.join(", ") : "—"}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </section>
       )}
     </main>

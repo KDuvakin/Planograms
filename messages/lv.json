@@ -36,7 +36,7 @@
       "DONE": "izpildīts"
     },
     "uncategorized": "Bez kategorijas",
-    "newCount": "Jaunas: {count} no {total}"
+    "categoryStats": "Jaunas: {newCount} · Izpildē: {inProgress} · Kopā: {total}"
   },
   "preview": {
     "back": "← Visas planogrammas",

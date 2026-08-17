@@ -36,7 +36,7 @@
       "DONE": "собрано"
     },
     "uncategorized": "Без категории",
-    "newCount": "Новые: {count} из {total}"
+    "categoryStats": "Новые: {newCount} · В процессе: {inProgress} · Всего: {total}"
   },
   "preview": {
     "back": "← Все планограммы",

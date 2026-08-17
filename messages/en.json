@@ -36,7 +36,7 @@
       "DONE": "done"
     },
     "uncategorized": "Uncategorized",
-    "newCount": "New: {count} of {total}"
+    "categoryStats": "New: {newCount} · In progress: {inProgress} · Total: {total}"
   },
   "preview": {
     "back": "← All planograms",

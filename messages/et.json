@@ -36,7 +36,7 @@
       "DONE": "valmis"
     },
     "uncategorized": "Kategoriseerimata",
-    "newCount": "Uued: {count} / {total}"
+    "categoryStats": "Uued: {newCount} · Pooleli: {inProgress} · Kokku: {total}"
   },
   "preview": {
     "back": "← Kõik planogrammid",

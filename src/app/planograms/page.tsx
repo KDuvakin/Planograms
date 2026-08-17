@@ -157,6 +157,7 @@ export default function PlanogramsPage() {
           const isExpanded = expanded.has(group.key);
           const dotClass = worstDotClass(group.items, styles);
           const newInGroup = group.items.filter((p) => p.runStatus === "NOT_STARTED").length;
+          const inProgressInGroup = group.items.filter((p) => p.runStatus === "IN_PROGRESS").length;
           return (
             <section key={group.key} className={styles.categoryGroup}>
               <button
@@ -172,7 +173,11 @@ export default function PlanogramsPage() {
                   </span>
                   {group.items.length > 0 && (
                     <span className={styles.categoryNewCount}>
-                      {t("newCount", { count: newInGroup, total: group.items.length })}
+                      {t("categoryStats", {
+                        newCount: newInGroup,
+                        inProgress: inProgressInGroup,
+                        total: group.items.length,
+                      })}
                     </span>
                   )}
                 </div>
