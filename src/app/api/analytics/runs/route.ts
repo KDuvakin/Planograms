@@ -3,8 +3,6 @@ import { requireRole } from "@/lib/rbac";
 import { handleApiError } from "@/lib/apiError";
 import { prisma } from "@/lib/db";
 
-const BUCKET_RANK: Record<string, number> = { DONE: 2, IN_PROGRESS: 1 };
-
 export async function GET(req: NextRequest) {
   try {
     const session = await requireRole("ADMIN", "MANAGER");
@@ -20,6 +18,9 @@ export async function GET(req: NextRequest) {
     const allRuns = await prisma.planogramRun.findMany({
       where: {
         planogram: { isCurrent: true, ...(storeId ? { storeId } : {}) },
+        // ABANDONED runs are explicitly superseded — never let a stale one represent a
+        // planogram's row (matches /api/planograms and /api/analytics/summary).
+        status: { not: "ABANDONED" },
         ...(userId ? { userId } : {}),
       },
       orderBy: { lastActivityAt: "desc" },
@@ -29,24 +30,17 @@ export async function GET(req: NextRequest) {
       },
     });
 
-    // A planogram can have several runs (different users, abandoned retries) — collapse to
-    // ONE row per planogram: DONE beats IN_PROGRESS beats everything else, and within that
-    // bucket the most recently active run represents it (allRuns is already newest-first).
+    // A planogram can have several runs (different users, restarts) — collapse to ONE row
+    // per planogram, represented by whichever run was touched most recently (allRuns is
+    // already newest-first by lastActivityAt), not by "has anyone ever finished it" — a
+    // restarted planogram must show as in-progress again, not stuck on an old completion.
     const byPlanogram = new Map<string, (typeof allRuns)[number]>();
     for (const run of allRuns) {
-      const existing = byPlanogram.get(run.planogramId);
-      if (!existing) {
-        byPlanogram.set(run.planogramId, run);
-        continue;
-      }
-      if ((BUCKET_RANK[run.status] ?? 0) > (BUCKET_RANK[existing.status] ?? 0)) {
-        byPlanogram.set(run.planogramId, run);
-      }
+      if (!byPlanogram.has(run.planogramId)) byPlanogram.set(run.planogramId, run);
     }
 
     let result = Array.from(byPlanogram.values());
     if (status) result = result.filter((r) => r.status === status);
-    result.sort((a, b) => b.lastActivityAt.getTime() - a.lastActivityAt.getTime());
     result = result.slice(0, 100);
 
     // Feedback count is per *planogram*, summed across every run attempt on it — not just the

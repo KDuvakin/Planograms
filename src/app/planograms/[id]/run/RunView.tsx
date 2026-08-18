@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
@@ -23,7 +23,6 @@ import styles from "./run.module.css";
 import runStyles from "@/components/run/run.module.css";
 
 const SCALE = 3.2;
-const ARROW_WIDTH = 26;
 
 /** Which of the shared `ok/move/danger/new` state-color classes a step's kind renders in. */
 const KIND_STATE_CLASS: Partial<Record<NavigatorKind, string>> = {
@@ -76,27 +75,6 @@ export function RunView({
   const [rackTransition, setRackTransition] = useState<{ completedRack: string; nextRack: string } | null>(null);
   const { data: categories } = useSWR<CategoryWithNodes[]>("/api/categories", fetcher);
   const category = resolveNodeCategory(categories ?? [], meta.node, locale);
-
-  // Tracks the actual on-screen position of the highlighted shelf slot so the down-arrow
-  // can point at it precisely, even when the item sits near either end of the shelf and
-  // can't be scrolled all the way to the horizontal center.
-  const arrowTrackRef = useRef<HTMLDivElement>(null);
-  const [arrowLeft, setArrowLeft] = useState<number | null>(null);
-  const handleHighlightRectChange = useCallback((rect: DOMRect | null) => {
-    const track = arrowTrackRef.current;
-    if (!track) return;
-    const trackRect = track.getBoundingClientRect();
-    if (!rect) {
-      setArrowLeft(null);
-      return;
-    }
-    const blockCenter = rect.left + rect.width / 2 - trackRect.left;
-    const clamped = Math.min(
-      Math.max(blockCenter - ARROW_WIDTH / 2, 4),
-      Math.max(trackRect.width - ARROW_WIDTH - 4, 4)
-    );
-    setArrowLeft(clamped);
-  }, []);
 
   // Mark the run IN_PROGRESS as soon as the screen opens (once per run id).
   const startedRunId = useRef<string | null>(null);
@@ -291,26 +269,11 @@ export function RunView({
             </div>
           </section>
 
-          <div className={runStyles.arrowTrack} ref={arrowTrackRef}>
-            <svg
-              className={runStyles.arrowDown}
-              style={arrowLeft !== null ? { left: arrowLeft } : undefined}
-              width="26"
-              height="30"
-              viewBox="0 0 28 30"
-              fill="currentColor"
-              aria-hidden="true"
-            >
-              <path d="M10 0H18V15H26L14 29L2 15H10V0Z" />
-            </svg>
-          </div>
-
           <ShelfRow
             shelfNum={lastExecutedStep.shelf}
             items={state.racks[lastExecutedStep.rack][lastExecutedStep.shelf].items}
             scale={SCALE}
             highlightIndex={lastExecutedStep.product.index}
-            onHighlightRectChange={handleHighlightRectChange}
           />
         </>
       )}

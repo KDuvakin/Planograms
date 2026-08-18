@@ -17,23 +17,25 @@ export async function GET() {
     });
     const totalPlanograms = planograms.length;
 
-    // A planogram can have several runs (one per user, plus abandoned retries) —
-    // counting runs directly double-counts. Each planogram gets exactly one
-    // bucket: DONE if anyone finished it, else IN_PROGRESS if anyone is on it,
-    // else NOT_STARTED (covers zero runs and abandoned-only runs).
+    // A planogram can have several runs (one per user, plus restarts and abandoned
+    // retries) — counting runs directly double-counts, and "DONE if anyone ever
+    // finished it" goes stale the moment someone restarts: a planogram that was
+    // completed and is now being redone would show as permanently "done". Each
+    // planogram's bucket instead follows whichever non-abandoned run was touched
+    // most recently — the same rule /api/planograms uses for the personal list, so
+    // the two views can't contradict each other.
     const allRuns = await prisma.planogramRun.findMany({
-      where: { planogram: { isCurrent: true, ...(storeId ? { storeId } : {}) } },
-      select: { planogramId: true, status: true },
+      where: {
+        planogram: { isCurrent: true, ...(storeId ? { storeId } : {}) },
+        status: { not: "ABANDONED" },
+      },
+      select: { planogramId: true, status: true, lastActivityAt: true },
     });
-    const bucketByPlanogram = new Map<string, "DONE" | "IN_PROGRESS" | "NOT_STARTED">();
+    const latestByPlanogram = new Map<string, { status: string; lastActivityAt: Date }>();
     for (const r of allRuns) {
-      const current = bucketByPlanogram.get(r.planogramId);
-      if (current === "DONE") continue;
-      if (r.status === "DONE") bucketByPlanogram.set(r.planogramId, "DONE");
-      else if (r.status === "IN_PROGRESS" && current !== "IN_PROGRESS") {
-        bucketByPlanogram.set(r.planogramId, "IN_PROGRESS");
-      } else if (!current) {
-        bucketByPlanogram.set(r.planogramId, "NOT_STARTED");
+      const existing = latestByPlanogram.get(r.planogramId);
+      if (!existing || r.lastActivityAt > existing.lastActivityAt) {
+        latestByPlanogram.set(r.planogramId, { status: r.status, lastActivityAt: r.lastActivityAt });
       }
     }
 
@@ -41,9 +43,9 @@ export async function GET() {
     let inProgress = 0;
     let done = 0;
     for (const p of planograms) {
-      const bucket = bucketByPlanogram.get(p.id) ?? "NOT_STARTED";
-      if (bucket === "DONE") done++;
-      else if (bucket === "IN_PROGRESS") inProgress++;
+      const status = latestByPlanogram.get(p.id)?.status;
+      if (status === "DONE") done++;
+      else if (status === "IN_PROGRESS") inProgress++;
       else notStarted++;
     }
     const notDonePlanograms = totalPlanograms - done;

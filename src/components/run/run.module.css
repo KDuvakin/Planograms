@@ -18,15 +18,21 @@
 
 /* ===== blocks / shelves ===== */
 
-.block {
+.slotWrap {
+  position: relative;
+  flex: 0 0 auto;
   height: 56px;
+}
+
+.block {
+  height: 100%;
+  width: 100%;
   border-radius: var(--radius-sm);
   border: 1px solid var(--state-color);
   background: var(--state-soft);
   color: var(--ink);
   padding: 4px 6px;
   overflow: hidden;
-  flex: 0 0 auto;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -66,10 +72,10 @@
 }
 
 .gap {
-  height: 56px;
+  height: 100%;
+  width: 100%;
   border: 1px dashed var(--line);
   border-radius: var(--radius-sm);
-  flex: 0 0 auto;
 }
 
 .gapHighlighted {
@@ -87,7 +93,8 @@
   align-items: flex-end;
   gap: 3px;
   overflow-x: auto;
-  padding: 0 2px 2px;
+  overflow-y: visible;
+  padding: 26px 2px 2px;
 }
 
 /* the shelf itself — a physical plank the products sit on, not just a text label */
@@ -241,19 +248,17 @@
   text-align: right;
 }
 
-.arrowTrack {
-  position: relative;
-  height: 30px;
-}
-
-.arrowDown {
+.positionArrow {
   position: absolute;
-  top: 0;
-  left: calc(50% - 13px);
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-bottom: 2px;
   color: var(--accent);
   filter: drop-shadow(0 3px 4px color-mix(in srgb, var(--accent) 45%, transparent));
   animation: arrowBounce 1.3s ease-in-out infinite;
-  transition: left 0.25s ease;
+  pointer-events: none;
+  z-index: 1;
 }
 
 @keyframes arrowBounce {

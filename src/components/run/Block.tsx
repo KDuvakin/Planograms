@@ -1,6 +1,7 @@
 "use client";
 
 import { isGap, type Product, type ShelfSlot } from "@/lib/engine";
+import { PositionArrow } from "./PositionArrow";
 import styles from "./run.module.css";
 
 const STATE_CLASS: Record<Product["state"], string> = {
@@ -25,11 +26,13 @@ export function Block({
     // where that item used to be, instead of it just silently vanishing.
     const isVacatedSpot = highlightIndex !== undefined && slot.fromProductIndex === highlightIndex;
     return (
-      <div
-        className={`${styles.gap} ${isVacatedSpot ? styles.gapHighlighted : ""}`}
-        style={{ width: Math.max(slot.width * scale, 2) }}
-        data-shelf-highlight={isVacatedSpot || undefined}
-      />
+      <div className={styles.slotWrap} style={{ width: Math.max(slot.width * scale, 2) }}>
+        {isVacatedSpot && <PositionArrow />}
+        <div
+          className={`${styles.gap} ${isVacatedSpot ? styles.gapHighlighted : ""}`}
+          data-shelf-highlight={isVacatedSpot || undefined}
+        />
+      </div>
     );
   }
 
@@ -37,14 +40,16 @@ export function Block({
   const isHighlighted = slot.index === highlightIndex;
 
   return (
-    <div
-      className={`${styles.block} ${STATE_CLASS[slot.state]} ${isHighlighted ? styles.highlighted : ""}`}
-      style={{ width: widthPx }}
-      title={`${slot.article} · SAP ${slot.sap}`}
-      data-shelf-highlight={isHighlighted || undefined}
-    >
-      <div className={styles.blockSap}>{slot.sap}</div>
-      <div className={styles.blockName}>{slot.article}</div>
+    <div className={styles.slotWrap} style={{ width: widthPx }}>
+      {isHighlighted && <PositionArrow />}
+      <div
+        className={`${styles.block} ${STATE_CLASS[slot.state]} ${isHighlighted ? styles.highlighted : ""}`}
+        title={`${slot.article} · SAP ${slot.sap}`}
+        data-shelf-highlight={isHighlighted || undefined}
+      >
+        <div className={styles.blockSap}>{slot.sap}</div>
+        <div className={styles.blockName}>{slot.article}</div>
+      </div>
     </div>
   );
 }
