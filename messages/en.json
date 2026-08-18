@@ -79,7 +79,7 @@
     "done": "Layout complete"
   },
   "instructions": {
-    "idle": "Press \"Step\" to start resetting the shelf",
+    "idle": "Press \"Step 1\" to start setting up the planogram",
     "done": "All steps completed — the shelf now matches the new plan",
     "delete": "Take {article} ({sap}) from rack {rack} shelf {shelf} position {pos} — it's not in the new plan, put it in the \"not assorted\" basket",
     "pick": "Free up space: remove {article} ({sap}) from rack {rack} shelf {shelf} position {pos} into the temporary basket",

@@ -40,18 +40,18 @@
 }
 
 .highlighted {
-  outline: 3px solid var(--accent);
+  outline: 3px solid var(--highlight-color, var(--accent));
   outline-offset: 2px;
-  background: color-mix(in srgb, var(--accent) 30%, var(--state-soft));
+  background: color-mix(in srgb, var(--highlight-color, var(--accent)) 30%, var(--state-soft));
   animation: highlightPulse 1.3s ease-in-out infinite;
 }
 
 @keyframes highlightPulse {
   0%, 100% {
-    box-shadow: 0 0 0 0 var(--accent-soft);
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--highlight-color, var(--accent)) 45%, transparent);
   }
   50% {
-    box-shadow: 0 0 0 7px var(--accent-soft);
+    box-shadow: 0 0 0 7px color-mix(in srgb, var(--highlight-color, var(--accent)) 45%, transparent);
   }
 }
 
@@ -79,8 +79,8 @@
 }
 
 .gapHighlighted {
-  border: 2px dashed var(--accent);
-  background: var(--accent-soft);
+  border: 2px dashed var(--highlight-color, var(--accent));
+  background: color-mix(in srgb, var(--highlight-color, var(--accent)) 15%, transparent);
 }
 
 .shelfRow {
@@ -94,7 +94,13 @@
   gap: 3px;
   overflow-x: auto;
   overflow-y: visible;
-  padding: 26px 2px 2px;
+  padding: 0 2px 2px;
+}
+
+/* only the step-execution screen ever renders a position arrow above a block — everywhere
+   else (the pre-run preview, the rack-complete summary) this would just be dead space */
+.shelfProductsWithArrow {
+  padding-top: 26px;
 }
 
 /* the shelf itself — a physical plank the products sit on, not just a text label */
@@ -254,11 +260,18 @@
   left: 50%;
   transform: translateX(-50%);
   margin-bottom: 2px;
-  color: var(--accent);
-  filter: drop-shadow(0 3px 4px color-mix(in srgb, var(--accent) 45%, transparent));
+  color: var(--highlight-color, var(--accent));
+  filter: drop-shadow(0 3px 4px color-mix(in srgb, var(--highlight-color, var(--accent)) 45%, transparent));
   animation: arrowBounce 1.3s ease-in-out infinite;
   pointer-events: none;
   z-index: 1;
+}
+
+/* the gap you're taking an item FROM points up ("lift it out") instead of down
+   ("put it here") — a separate `rotate` so it doesn't fight the bounce animation's
+   own `transform`. */
+.arrowUp {
+  rotate: 180deg;
 }
 
 @keyframes arrowBounce {

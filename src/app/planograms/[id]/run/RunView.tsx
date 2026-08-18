@@ -7,7 +7,7 @@ import { useSession } from "next-auth/react";
 import { useLocale, useTranslations } from "next-intl";
 import useSWR from "swr";
 import { rackNumbers, shelfNumbers } from "@/lib/engine";
-import type { NavigatorKind } from "@/lib/engine";
+import type { NavigatorText } from "@/lib/engine";
 import type { PlanogramItemLike } from "@/lib/engine/loadProducts";
 import { createRunStore } from "@/lib/engine/runStore";
 import { ShelfRow } from "@/components/run/ShelfRow";
@@ -24,15 +24,40 @@ import runStyles from "@/components/run/run.module.css";
 
 const SCALE = 3.2;
 
-/** Which of the shared `ok/move/danger/new` state-color classes a step's kind renders in. */
-const KIND_STATE_CLASS: Partial<Record<NavigatorKind, string>> = {
-  delete: runStyles.danger,
-  pick: runStyles.move,
+type HighlightKind = "danger" | "move" | "new" | "ok";
+
+/**
+ * Which color a step's product panel / shelf arrow renders in — red for removing an
+ * item, blue only for a genuinely brand-new item, amber for everything else that's
+ * fundamentally "pick it up from here, put it down there" (temp-basket placement,
+ * cross-shelf move, same-shelf move, resize).
+ */
+function highlightKindFor(navigator: NavigatorText): HighlightKind {
+  switch (navigator.kind) {
+    case "delete":
+      return "danger";
+    case "place":
+      return navigator.key === "placeFromNew" ? "new" : "move";
+    case "confirm":
+    case "done":
+      return "ok";
+    default:
+      return "move";
+  }
+}
+
+const HIGHLIGHT_CLASS: Record<HighlightKind, string> = {
+  danger: runStyles.danger,
   move: runStyles.move,
-  resize: runStyles.move,
-  place: runStyles.new,
-  confirm: runStyles.ok,
-  done: runStyles.ok,
+  new: runStyles.new,
+  ok: runStyles.ok,
+};
+
+const HIGHLIGHT_COLOR_VAR: Record<HighlightKind, string> = {
+  danger: "var(--danger)",
+  move: "var(--move)",
+  new: "var(--new)",
+  ok: "var(--ok)",
 };
 
 interface Meta {
@@ -214,7 +239,9 @@ export function RunView({
       }
     : null;
 
-  const kindStateClass = lastExecutedStep ? KIND_STATE_CLASS[state.navigator.kind] : undefined;
+  const highlightKind = lastExecutedStep ? highlightKindFor(state.navigator) : undefined;
+  const kindStateClass = highlightKind ? HIGHLIGHT_CLASS[highlightKind] : undefined;
+  const highlightColor = highlightKind ? HIGHLIGHT_COLOR_VAR[highlightKind] : undefined;
 
   return (
     <main className={styles.page}>
@@ -274,6 +301,7 @@ export function RunView({
             items={state.racks[lastExecutedStep.rack][lastExecutedStep.shelf].items}
             scale={SCALE}
             highlightIndex={lastExecutedStep.product.index}
+            highlightColor={highlightColor}
           />
         </>
       )}

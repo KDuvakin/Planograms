@@ -79,7 +79,7 @@
     "done": "Riiul on valmis"
   },
   "instructions": {
-    "idle": "Vajuta „Samm“, et alustada riiuli ümberpaigutamist",
+    "idle": "Vajuta „Samm 1“, et alustada planogrammi ülesseadmist",
     "done": "Kõik sammud on tehtud — riiul vastab uuele plaanile",
     "delete": "Võta {article} ({sap}) riiulist {rack} tasandilt {shelf} positsioon {pos} — toodet uues plaanis pole, pane korvi „Sortimendist väljas“",
     "pick": "Tee ruumi: eemalda {article} ({sap}) riiulist {rack} tasandilt {shelf} positsioon {pos} ajutisse korvi",

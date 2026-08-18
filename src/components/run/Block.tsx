@@ -27,7 +27,7 @@ export function Block({
     const isVacatedSpot = highlightIndex !== undefined && (slot.fromProductIndexes?.includes(highlightIndex) ?? false);
     return (
       <div className={styles.slotWrap} style={{ width: Math.max(slot.width * scale, 2) }}>
-        {isVacatedSpot && <PositionArrow />}
+        {isVacatedSpot && <PositionArrow direction="up" />}
         <div
           className={`${styles.gap} ${isVacatedSpot ? styles.gapHighlighted : ""}`}
           data-shelf-highlight={isVacatedSpot || undefined}

@@ -3,11 +3,14 @@
 import styles from "./run.module.css";
 
 /** Sits directly above whichever block/gap it's rendered inside — tied to that
- * element's actual position by DOM structure, not a separately computed pixel offset. */
-export function PositionArrow() {
+ * element's actual position by DOM structure, not a separately computed pixel offset.
+ * `direction="up"` flips it to mean "lift this out of here" (a vacated spot you're
+ * taking an item FROM); the default points down, "put it here" (a spot you're placing
+ * an item INTO). */
+export function PositionArrow({ direction = "down" }: { direction?: "up" | "down" }) {
   return (
     <svg
-      className={styles.positionArrow}
+      className={`${styles.positionArrow} ${direction === "up" ? styles.arrowUp : ""}`}
       width="22"
       height="25"
       viewBox="0 0 28 30"

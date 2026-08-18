@@ -79,7 +79,7 @@
     "done": "Plaukts gatavs"
   },
   "instructions": {
-    "idle": "Spied „Solis“, lai sāktu plaukta pārkārtošanu",
+    "idle": "Spied „Solis 1“, lai sāktu planogrammas izvietošanu",
     "done": "Visi soļi pabeigti — plaukts atbilst jaunajam plānam",
     "delete": "Paņem {article} ({sap}) no plaukta {rack} plaukta līmeņa {shelf} pozīcija {pos} — preces jaunajā plānā nav, ievieto grozā „Ārpus sortimenta“",
     "pick": "Atbrīvo vietu: noņem {article} ({sap}) no plaukta {rack} plaukta līmeņa {shelf} pozīcija {pos} pagaidu grozā",
