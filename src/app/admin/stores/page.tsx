@@ -7,6 +7,7 @@ import { PageHeader } from "@/components/PageHeader";
 import { TopNav } from "@/components/TopNav";
 import styles from "@/components/admin/admin.module.css";
 import { fetcher } from "@/lib/swrFetcher";
+import { filterRows } from "@/lib/tableSearch";
 
 interface Store {
   id: string;
@@ -39,6 +40,9 @@ export default function StoresAdminPage() {
   const [loading, setLoading] = useState(false);
   const [expanded, setExpanded] = useState<string | null>(null);
   const [rowError, setRowError] = useState<{ id: string; message: string } | null>(null);
+  const [query, setQuery] = useState("");
+
+  const filteredStores = filterRows(stores, query, (s) => [s.code, s.name, s.chain, s.format, s.address, s.email]);
 
   async function handleCreate(e: FormEvent) {
     e.preventDefault();
@@ -123,6 +127,16 @@ export default function StoresAdminPage() {
 
       <div className={styles.card}>
         <h2 className={styles.subtitle}>{t("allStoresTitle")}</h2>
+        <div className={styles.searchRow}>
+          <input
+            className={styles.searchInput}
+            type="search"
+            placeholder={t("searchPlaceholder")}
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+          />
+          {stores && <span className={styles.resultCount}>{filteredStores.length}/{stores.length}</span>}
+        </div>
         <div className={styles.tableWrap}>
           <table className={styles.table}>
             <thead>
@@ -138,7 +152,7 @@ export default function StoresAdminPage() {
               </tr>
             </thead>
             <tbody>
-              {stores?.map((s) => (
+              {filteredStores.map((s) => (
                 <tr key={s.id}>
                   <td>
                     <input
@@ -227,12 +241,28 @@ export default function StoresAdminPage() {
   );
 }
 
+/** Parses one printer per line: "name, ip" or just "ip" (name optional), tabs also accepted as the separator. */
+function parseBulkPrinters(text: string): Array<{ name?: string; ip: string }> {
+  return text
+    .split("\n")
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .map((line) => {
+      const [first, second] = line.split(/[,\t]/).map((part) => part.trim());
+      return second ? { name: first || undefined, ip: second } : { ip: first };
+    })
+    .filter((p) => p.ip);
+}
+
 function PrintersPanel({ storeId }: { storeId: string }) {
   const t = useTranslations("adminStores");
   const tCommon = useTranslations("common");
   const { data: printers, mutate } = useSWR<Printer[]>(`/api/stores/${storeId}/printers`, fetcher);
   const [name, setName] = useState("");
   const [ip, setIp] = useState("");
+  const [bulkText, setBulkText] = useState("");
+  const [bulkError, setBulkError] = useState<string | null>(null);
+  const [bulkLoading, setBulkLoading] = useState(false);
 
   async function handleAdd(e: FormEvent) {
     e.preventDefault();
@@ -244,6 +274,27 @@ function PrintersPanel({ storeId }: { storeId: string }) {
     });
     setName("");
     setIp("");
+    mutate();
+  }
+
+  async function handleBulkAdd(e: FormEvent) {
+    e.preventDefault();
+    const parsed = parseBulkPrinters(bulkText);
+    if (parsed.length === 0) return;
+    setBulkLoading(true);
+    setBulkError(null);
+    const res = await fetch(`/api/stores/${storeId}/printers/bulk`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ printers: parsed }),
+    });
+    const body = await res.json();
+    setBulkLoading(false);
+    if (!res.ok) {
+      setBulkError(body.error ?? t("errors.bulkAddPrintersFailed"));
+      return;
+    }
+    setBulkText("");
     mutate();
   }
 
@@ -296,6 +347,24 @@ function PrintersPanel({ storeId }: { storeId: string }) {
         </label>
         <button className={styles.btnPrimary} type="submit">
           {t("addPrinter")}
+        </button>
+      </form>
+
+      <form className={styles.bulkForm} onSubmit={handleBulkAdd}>
+        <label className={styles.field}>
+          {t("bulkAddLabel")}
+          <textarea
+            className={styles.textarea}
+            rows={5}
+            placeholder={t("bulkAddPlaceholder")}
+            value={bulkText}
+            onChange={(e) => setBulkText(e.target.value)}
+          />
+        </label>
+        <p className={styles.hintText}>{t("bulkAddHint", { count: parseBulkPrinters(bulkText).length })}</p>
+        {bulkError && <p className={styles.error}>{bulkError}</p>}
+        <button className={styles.btnGhost} type="submit" disabled={bulkLoading || parseBulkPrinters(bulkText).length === 0}>
+          {bulkLoading ? t("bulkAdding") : t("bulkAdd")}
         </button>
       </form>
     </div>

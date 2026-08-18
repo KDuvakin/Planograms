@@ -7,6 +7,7 @@ import { PageHeader } from "@/components/PageHeader";
 import { TopNav } from "@/components/TopNav";
 import styles from "@/components/admin/admin.module.css";
 import { fetcher } from "@/lib/swrFetcher";
+import { filterRows } from "@/lib/tableSearch";
 
 interface Store {
   id: string;
@@ -38,6 +39,9 @@ export default function UsersAdminPage() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [rowError, setRowError] = useState<{ id: string; message: string } | null>(null);
+  const [query, setQuery] = useState("");
+
+  const filteredUsers = filterRows(users, query, (u) => [u.email, u.name, u.role, u.store?.code]);
 
   async function handleCreate(e: FormEvent) {
     e.preventDefault();
@@ -151,6 +155,16 @@ export default function UsersAdminPage() {
 
       <div className={styles.card}>
         <h2 className={styles.subtitle}>{t("allUsersTitle")}</h2>
+        <div className={styles.searchRow}>
+          <input
+            className={styles.searchInput}
+            type="search"
+            placeholder={t("searchPlaceholder")}
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+          />
+          {users && <span className={styles.resultCount}>{filteredUsers.length}/{users.length}</span>}
+        </div>
         <div className={styles.tableWrap}>
           <table className={styles.table}>
             <thead>
@@ -164,7 +178,7 @@ export default function UsersAdminPage() {
               </tr>
             </thead>
             <tbody>
-              {users?.map((u) => (
+              {filteredUsers.map((u) => (
                 <tr key={u.id}>
                   <td>{u.email}</td>
                   <td>

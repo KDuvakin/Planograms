@@ -152,6 +152,7 @@
     "creating": "Создание…",
     "create": "Создать",
     "allUsersTitle": "Все пользователи",
+    "searchPlaceholder": "Поиск: email, имя, роль, магазин",
     "table": {
       "email": "Email",
       "name": "Имя",
@@ -178,6 +179,7 @@
     "creating": "Создание…",
     "create": "Создать",
     "allStoresTitle": "Все магазины",
+    "searchPlaceholder": "Поиск: код, название, сеть, формат, адрес, email",
     "table": {
       "code": "Код",
       "name": "Название",
@@ -195,10 +197,16 @@
     "printerIp": "IP",
     "noPrinters": "Принтеров пока нет",
     "addPrinter": "Добавить принтер",
+    "bulkAddLabel": "Массовое добавление",
+    "bulkAddPlaceholder": "Название, IP — по одному на строку\nКасса 1, 192.168.1.10\n192.168.1.11",
+    "bulkAddHint": "Будет добавлено принтеров: {count}",
+    "bulkAdd": "Добавить все",
+    "bulkAdding": "Добавление…",
     "confirmDelete": "Удалить магазин «{store}»? Это действие необратимо.",
     "errors": {
       "createStoreFailed": "Не удалось создать магазин",
-      "deleteStoreFailed": "Не удалось удалить магазин"
+      "deleteStoreFailed": "Не удалось удалить магазин",
+      "bulkAddPrintersFailed": "Не удалось добавить принтеры"
     }
   },
   "analytics": {

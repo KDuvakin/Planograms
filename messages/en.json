@@ -152,6 +152,7 @@
     "creating": "Creating…",
     "create": "Create",
     "allUsersTitle": "All users",
+    "searchPlaceholder": "Search: email, name, role, store",
     "table": {
       "email": "Email",
       "name": "Name",
@@ -178,6 +179,7 @@
     "creating": "Creating…",
     "create": "Create",
     "allStoresTitle": "All stores",
+    "searchPlaceholder": "Search: code, name, chain, format, address, email",
     "table": {
       "code": "Code",
       "name": "Name",
@@ -195,10 +197,16 @@
     "printerIp": "IP",
     "noPrinters": "No printers yet",
     "addPrinter": "Add printer",
+    "bulkAddLabel": "Bulk add",
+    "bulkAddPlaceholder": "Name, IP — one per line\nTill 1, 192.168.1.10\n192.168.1.11",
+    "bulkAddHint": "Will add {count} printer(s)",
+    "bulkAdd": "Add all",
+    "bulkAdding": "Adding…",
     "confirmDelete": "Delete store \"{store}\"? This action cannot be undone.",
     "errors": {
       "createStoreFailed": "Couldn't create the store",
-      "deleteStoreFailed": "Couldn't delete the store"
+      "deleteStoreFailed": "Couldn't delete the store",
+      "bulkAddPrintersFailed": "Couldn't add the printers"
     }
   },
   "analytics": {

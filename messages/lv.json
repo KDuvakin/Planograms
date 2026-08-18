@@ -152,6 +152,7 @@
     "creating": "Izveido…",
     "create": "Izveidot",
     "allUsersTitle": "Visi lietotāji",
+    "searchPlaceholder": "Meklēt: e-pasts, vārds, loma, veikals",
     "table": {
       "email": "E-pasts",
       "name": "Vārds",
@@ -178,6 +179,7 @@
     "creating": "Izveido…",
     "create": "Izveidot",
     "allStoresTitle": "Visi veikali",
+    "searchPlaceholder": "Meklēt: kods, nosaukums, tīkls, formāts, adrese, e-pasts",
     "table": {
       "code": "Kods",
       "name": "Nosaukums",
@@ -195,10 +197,16 @@
     "printerIp": "IP",
     "noPrinters": "Printeru vēl nav",
     "addPrinter": "Pievienot printeri",
+    "bulkAddLabel": "Pievienot vairākus",
+    "bulkAddPlaceholder": "Nosaukums, IP — pa vienam rindā\nKase 1, 192.168.1.10\n192.168.1.11",
+    "bulkAddHint": "Tiks pievienoti {count} printeri",
+    "bulkAdd": "Pievienot visus",
+    "bulkAdding": "Pievieno…",
     "confirmDelete": "Dzēst veikalu \"{store}\"? Šo darbību nevar atsaukt.",
     "errors": {
       "createStoreFailed": "Neizdevās izveidot veikalu",
-      "deleteStoreFailed": "Neizdevās dzēst veikalu"
+      "deleteStoreFailed": "Neizdevās dzēst veikalu",
+      "bulkAddPrintersFailed": "Neizdevās pievienot printerus"
     }
   },
   "analytics": {

@@ -152,6 +152,7 @@
     "creating": "Loomine…",
     "create": "Loo",
     "allUsersTitle": "Kõik kasutajad",
+    "searchPlaceholder": "Otsi: e-post, nimi, roll, pood",
     "table": {
       "email": "E-post",
       "name": "Nimi",
@@ -178,6 +179,7 @@
     "creating": "Loomine…",
     "create": "Loo",
     "allStoresTitle": "Kõik poed",
+    "searchPlaceholder": "Otsi: kood, nimi, kett, formaat, aadress, e-post",
     "table": {
       "code": "Kood",
       "name": "Nimi",
@@ -195,10 +197,16 @@
     "printerIp": "IP",
     "noPrinters": "Printereid pole veel",
     "addPrinter": "Lisa printer",
+    "bulkAddLabel": "Lisa hulgi",
+    "bulkAddPlaceholder": "Nimi, IP — üks rea kohta\nKassa 1, 192.168.1.10\n192.168.1.11",
+    "bulkAddHint": "Lisatakse {count} printerit",
+    "bulkAdd": "Lisa kõik",
+    "bulkAdding": "Lisamine…",
     "confirmDelete": "Kustutada pood \"{store}\"? Seda toimingut ei saa tagasi võtta.",
     "errors": {
       "createStoreFailed": "Poe loomine ebaõnnestus",
-      "deleteStoreFailed": "Poe kustutamine ebaõnnestus"
+      "deleteStoreFailed": "Poe kustutamine ebaõnnestus",
+      "bulkAddPrintersFailed": "Printerite lisamine ebaõnnestus"
     }
   },
   "analytics": {
