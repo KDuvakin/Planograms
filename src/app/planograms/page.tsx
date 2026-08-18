@@ -143,7 +143,7 @@ export default function PlanogramsPage() {
       {!isLoading && data?.length === 0 && <p className={styles.hint}>{t("empty")}</p>}
 
       <div className={styles.tree}>
-        {groups.map((group) => {
+        {groups.filter((group) => group.items.length > 0).map((group) => {
           const isExpanded = expanded.has(group.key);
           const dotClass = worstDotClass(group.items, styles);
           const newInGroup = group.items.filter((p) => p.runStatus === "NOT_STARTED").length;
