@@ -120,23 +120,24 @@
   },
   "adminImport": {
     "title": "Planogrammas imports",
-    "storeLabel": "Veikals",
-    "storePlaceholder": "— izvēlieties veikalu —",
-    "newStoreCodePlaceholder": "Jauna veikala kods (piem., T203)",
-    "createStore": "+ Izveidot veikalu",
+    "formatLabel": "Veikala formāts",
+    "formatPlaceholder": "— izvēlieties formātu —",
+    "storeCountHint": "Tiks piemērots šī formāta veikaliem: {count}",
+    "noFormatsHint": "Nevienam veikalam nav aizpildīts lauks «Formāts». Aizpildiet to lapā",
+    "noFormatsLink": "Veikali",
     "fileLabel": "Excel fails",
-    "hint": "Fails var saturēt vairākas planogrammas (Node) — visas tiek importētas uzreiz. Atkārtoti augšupielādējot to pašu Node, tiek izveidota jauna versija.",
+    "hint": "Fails var saturēt vairākas planogrammas (Node) — visas tiek importētas uzreiz, katrā izvēlētā formāta veikalā. Atkārtoti augšupielādējot to pašu Node, tiek izveidota jauna versija.",
     "submitting": "Importē…",
     "submit": "Importēt",
-    "resultTitle": "Rezultāts — veikals {store}",
+    "resultTitle": "Rezultāts — formāts {format}, veikali: {count}",
     "table": {
+      "store": "Veikals",
       "node": "Node",
       "version": "Versija",
       "items": "Pozīcijas",
       "duplicates": "SAP dublikāti"
     },
     "errors": {
-      "createStoreFailed": "Neizdevās izveidot veikalu",
       "importFailed": "Importa kļūda"
     }
   },
@@ -156,10 +157,13 @@
       "name": "Vārds",
       "role": "Loma",
       "store": "Veikals",
-      "active": "Aktīvs"
+      "active": "Aktīvs",
+      "actions": "Darbības"
     },
+    "confirmDelete": "Dzēst lietotāju «{user}»? Šo darbību nevar atsaukt.",
     "errors": {
-      "createUserFailed": "Neizdevās izveidot lietotāju"
+      "createUserFailed": "Neizdevās izveidot lietotāju",
+      "deleteUserFailed": "Neizdevās dzēst lietotāju"
     }
   },
   "adminStores": {

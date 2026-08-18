@@ -120,23 +120,24 @@
   },
   "adminImport": {
     "title": "Import planogram",
-    "storeLabel": "Store",
-    "storePlaceholder": "— select a store —",
-    "newStoreCodePlaceholder": "New store code (e.g. T203)",
-    "createStore": "+ Create store",
+    "formatLabel": "Store format",
+    "formatPlaceholder": "— select a format —",
+    "storeCountHint": "Will be applied to stores of this format: {count}",
+    "noFormatsHint": "No store has its \"Format\" field set yet. Set it on the",
+    "noFormatsLink": "Stores",
     "fileLabel": "Excel file",
-    "hint": "The file can contain several planograms (Node) — all are imported at once. Re-uploading the same Node creates a new version.",
+    "hint": "The file can contain several planograms (Node) — all are imported at once, into every store of the selected format. Re-uploading the same Node creates a new version.",
     "submitting": "Importing…",
     "submit": "Import",
-    "resultTitle": "Result — store {store}",
+    "resultTitle": "Result — format {format}, stores: {count}",
     "table": {
+      "store": "Store",
       "node": "Node",
       "version": "Version",
       "items": "Items",
       "duplicates": "Duplicate SAPs"
     },
     "errors": {
-      "createStoreFailed": "Couldn't create the store",
       "importFailed": "Import error"
     }
   },
@@ -156,10 +157,13 @@
       "name": "Name",
       "role": "Role",
       "store": "Store",
-      "active": "Active"
+      "active": "Active",
+      "actions": "Actions"
     },
+    "confirmDelete": "Delete user \"{user}\"? This cannot be undone.",
     "errors": {
-      "createUserFailed": "Couldn't create the user"
+      "createUserFailed": "Couldn't create the user",
+      "deleteUserFailed": "Couldn't delete the user"
     }
   },
   "adminStores": {

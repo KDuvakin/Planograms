@@ -42,3 +42,23 @@ export async function PATCH(req: Request, ctx: RouteContext<"/api/users/[id]">) 
     return handleApiError(e);
   }
 }
+
+export async function DELETE(_req: Request, ctx: RouteContext<"/api/users/[id]">) {
+  try {
+    const session = await requireRole("ADMIN");
+    const { id } = await ctx.params;
+    if (id === session.user.id) {
+      return NextResponse.json({ error: "Нельзя удалить свою же учётную запись" }, { status: 400 });
+    }
+    await prisma.user.delete({ where: { id } });
+    return new NextResponse(null, { status: 204 });
+  } catch (e) {
+    if (e && typeof e === "object" && "code" in e && (e.code === "P2003" || e.code === "P2014")) {
+      return NextResponse.json(
+        { error: "Нельзя удалить пользователя: с ним связаны импорты, прогоны или отзывы" },
+        { status: 409 }
+      );
+    }
+    return handleApiError(e);
+  }
+}

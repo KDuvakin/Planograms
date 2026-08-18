@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useMemo, useState, type FormEvent } from "react";
 import useSWR from "swr";
+import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { PageHeader } from "@/components/PageHeader";
 import { TopNav } from "@/components/TopNav";
@@ -11,54 +12,41 @@ import { fetcher } from "@/lib/swrFetcher";
 interface Store {
   id: string;
   code: string;
-  name: string | null;
+  format: string | null;
 }
 
 interface ImportResult {
-  store: string;
-  results: Array<{ node: string; version: number; itemCount: number; duplicates: string[] }>;
+  format: string;
+  storeCount: number;
+  results: Array<{ store: string; node: string; version: number; itemCount: number; duplicates: string[] }>;
 }
-
 
 export default function ImportPage() {
   const t = useTranslations("adminImport");
-  const { data: stores, mutate } = useSWR<Store[]>("/api/stores", fetcher);
-  const [storeId, setStoreId] = useState("");
-  const [newStoreCode, setNewStoreCode] = useState("");
+  const { data: stores } = useSWR<Store[]>("/api/stores", fetcher);
+  const [format, setFormat] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<ImportResult | null>(null);
 
-  async function handleCreateStore() {
-    const code = newStoreCode.trim();
-    if (!code) return;
-    setError(null);
-    const res = await fetch("/api/stores", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ code }),
-    });
-    const body = await res.json();
-    if (!res.ok) {
-      setError(body.error ?? t("errors.createStoreFailed"));
-      return;
-    }
-    setNewStoreCode("");
-    await mutate();
-    setStoreId(body.id);
-  }
+  const formats = useMemo(() => {
+    const set = new Set((stores ?? []).map((s) => s.format).filter((f): f is string => !!f));
+    return Array.from(set).sort();
+  }, [stores]);
+
+  const storeCountForFormat = format ? (stores ?? []).filter((s) => s.format === format).length : 0;
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
-    if (!storeId || !file) return;
+    if (!format || !file) return;
 
     setLoading(true);
     setError(null);
     setResult(null);
 
     const formData = new FormData();
-    formData.set("storeId", storeId);
+    formData.set("format", format);
     formData.set("file", file);
 
     const res = await fetch("/api/admin/import", { method: "POST", body: formData });
@@ -79,28 +67,21 @@ export default function ImportPage() {
       <TopNav />
 
       <section className={styles.card}>
-        <h2 className={styles.subtitle}>{t("storeLabel")}</h2>
-        <select className={styles.select} value={storeId} onChange={(e) => setStoreId(e.target.value)}>
-          <option value="">{t("storePlaceholder")}</option>
-          {stores?.map((s) => (
-            <option key={s.id} value={s.id}>
-              {s.code}
-              {s.name ? ` — ${s.name}` : ""}
+        <h2 className={styles.subtitle}>{t("formatLabel")}</h2>
+        <select className={styles.select} value={format} onChange={(e) => setFormat(e.target.value)}>
+          <option value="">{t("formatPlaceholder")}</option>
+          {formats.map((f) => (
+            <option key={f} value={f}>
+              {f}
             </option>
           ))}
         </select>
-
-        <div className={styles.newStoreRow}>
-          <input
-            className={styles.input}
-            placeholder={t("newStoreCodePlaceholder")}
-            value={newStoreCode}
-            onChange={(e) => setNewStoreCode(e.target.value)}
-          />
-          <button type="button" className={styles.btnGhost} onClick={handleCreateStore}>
-            {t("createStore")}
-          </button>
-        </div>
+        {format && <p className={styles.hint}>{t("storeCountHint", { count: storeCountForFormat })}</p>}
+        {formats.length === 0 && (
+          <p className={styles.hint}>
+            {t("noFormatsHint")} <Link href="/admin/stores" className={styles.inlineLink}>{t("noFormatsLink")}</Link>
+          </p>
+        )}
       </section>
 
       <form className={styles.card} onSubmit={handleSubmit}>
@@ -115,18 +96,19 @@ export default function ImportPage() {
 
         {error && <p className={styles.error}>{error}</p>}
 
-        <button className={styles.btnPrimary} type="submit" disabled={!storeId || !file || loading}>
+        <button className={styles.btnPrimary} type="submit" disabled={!format || !file || loading}>
           {loading ? t("submitting") : t("submit")}
         </button>
       </form>
 
       {result && (
         <section className={styles.card}>
-          <h2 className={styles.subtitle}>{t("resultTitle", { store: result.store })}</h2>
+          <h2 className={styles.subtitle}>{t("resultTitle", { format: result.format, count: result.storeCount })}</h2>
           <div className={styles.tableWrap}>
             <table className={styles.table}>
               <thead>
                 <tr>
+                  <th>{t("table.store")}</th>
                   <th>{t("table.node")}</th>
                   <th>{t("table.version")}</th>
                   <th>{t("table.items")}</th>
@@ -135,7 +117,8 @@ export default function ImportPage() {
               </thead>
               <tbody>
                 {result.results.map((r) => (
-                  <tr key={r.node}>
+                  <tr key={`${r.store}-${r.node}`}>
+                    <td>{r.store}</td>
                     <td>{r.node}</td>
                     <td>{r.version}</td>
                     <td>{r.itemCount}</td>

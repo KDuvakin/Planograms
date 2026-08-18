@@ -91,7 +91,8 @@
 }
 
 .table {
-  width: 100%;
+  width: max-content;
+  min-width: 100%;
   border-collapse: collapse;
   font-size: 13px;
 }
@@ -107,6 +108,15 @@
 .table th {
   color: var(--ink-soft);
   font-weight: 600;
+}
+
+/* table cells size to their content by default (unlike the create-form's .input/.select,
+   which stretch to fill a grid column) — without a floor they'd shrink to a sliver and
+   clip whatever's typed into them */
+.table .input,
+.table .select {
+  width: auto;
+  min-width: 110px;
 }
 
 .statCards {

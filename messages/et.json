@@ -120,23 +120,24 @@
   },
   "adminImport": {
     "title": "Planogrammi import",
-    "storeLabel": "Pood",
-    "storePlaceholder": "— vali pood —",
-    "newStoreCodePlaceholder": "Uue poe kood (nt T203)",
-    "createStore": "+ Loo pood",
+    "formatLabel": "Poe formaat",
+    "formatPlaceholder": "— vali formaat —",
+    "storeCountHint": "Rakendatakse selle formaadi poodidele: {count}",
+    "noFormatsHint": "Ühelgi poel pole välja «Formaat» täidetud. Täida see lehel",
+    "noFormatsLink": "Poed",
     "fileLabel": "Exceli fail",
-    "hint": "Fail võib sisaldada mitut planogrammi (Node) — kõik imporditakse korraga. Sama Node uuesti üleslaadimine loob uue versiooni.",
+    "hint": "Fail võib sisaldada mitut planogrammi (Node) — kõik imporditakse korraga, valitud formaadi igasse poodi. Sama Node uuesti üleslaadimine loob uue versiooni.",
     "submitting": "Importimine…",
     "submit": "Impordi",
-    "resultTitle": "Tulemus — pood {store}",
+    "resultTitle": "Tulemus — formaat {format}, poode: {count}",
     "table": {
+      "store": "Pood",
       "node": "Node",
       "version": "Versioon",
       "items": "Positsioone",
       "duplicates": "SAP-i duplikaadid"
     },
     "errors": {
-      "createStoreFailed": "Poe loomine ebaõnnestus",
       "importFailed": "Impordi viga"
     }
   },
@@ -156,10 +157,13 @@
       "name": "Nimi",
       "role": "Roll",
       "store": "Pood",
-      "active": "Aktiivne"
+      "active": "Aktiivne",
+      "actions": "Tegevused"
     },
+    "confirmDelete": "Kustutada kasutaja «{user}»? Seda ei saa tagasi võtta.",
     "errors": {
-      "createUserFailed": "Kasutaja loomine ebaõnnestus"
+      "createUserFailed": "Kasutaja loomine ebaõnnestus",
+      "deleteUserFailed": "Kasutaja kustutamine ebaõnnestus"
     }
   },
   "adminStores": {

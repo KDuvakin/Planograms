@@ -50,6 +50,11 @@
   color: var(--ink-faint);
 }
 
+.inlineLink {
+  color: var(--accent);
+  font-weight: 600;
+}
+
 .error {
   margin: 0;
   color: var(--danger);

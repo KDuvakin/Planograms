@@ -26,6 +26,7 @@ const ROLES = ["ADMIN", "MANAGER", "MERCHANDISER"] as const;
 
 export default function UsersAdminPage() {
   const t = useTranslations("adminUsers");
+  const tCommon = useTranslations("common");
   const { data: users, mutate } = useSWR<UserRow[]>("/api/users", fetcher);
   const { data: stores } = useSWR<Store[]>("/api/stores", fetcher);
 
@@ -36,6 +37,7 @@ export default function UsersAdminPage() {
   const [storeId, setStoreId] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [rowError, setRowError] = useState<{ id: string; message: string } | null>(null);
 
   async function handleCreate(e: FormEvent) {
     e.preventDefault();
@@ -66,6 +68,18 @@ export default function UsersAdminPage() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(patch),
     });
+    mutate();
+  }
+
+  async function handleDelete(id: string, label: string) {
+    if (!window.confirm(t("confirmDelete", { user: label }))) return;
+    setRowError(null);
+    const res = await fetch(`/api/users/${id}`, { method: "DELETE" });
+    if (!res.ok) {
+      const body = await res.json().catch(() => null);
+      setRowError({ id, message: body?.error ?? t("errors.deleteUserFailed") });
+      return;
+    }
     mutate();
   }
 
@@ -146,13 +160,22 @@ export default function UsersAdminPage() {
                 <th>{t("table.role")}</th>
                 <th>{t("table.store")}</th>
                 <th>{t("table.active")}</th>
+                <th>{t("table.actions")}</th>
               </tr>
             </thead>
             <tbody>
               {users?.map((u) => (
                 <tr key={u.id}>
                   <td>{u.email}</td>
-                  <td>{u.name ?? "—"}</td>
+                  <td>
+                    <input
+                      className={styles.input}
+                      defaultValue={u.name ?? ""}
+                      onBlur={(e) => {
+                        if (e.target.value !== (u.name ?? "")) updateUser(u.id, { name: e.target.value });
+                      }}
+                    />
+                  </td>
                   <td>
                     <select
                       className={styles.select}
@@ -186,6 +209,16 @@ export default function UsersAdminPage() {
                       checked={u.active}
                       onChange={(e) => updateUser(u.id, { active: e.target.checked })}
                     />
+                  </td>
+                  <td>
+                    <button
+                      type="button"
+                      className={styles.btnGhost}
+                      onClick={() => handleDelete(u.id, u.name ?? u.email)}
+                    >
+                      {tCommon("delete")}
+                    </button>
+                    {rowError?.id === u.id && <p className={styles.error}>{rowError.message}</p>}
                   </td>
                 </tr>
               ))}
