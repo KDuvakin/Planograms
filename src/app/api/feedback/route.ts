@@ -31,6 +31,7 @@ export async function GET() {
         photos: { select: { url: true } },
         run: {
           select: {
+            planogramId: true,
             planogram: { select: { node: true, store: { select: { code: true } } } },
           },
         },

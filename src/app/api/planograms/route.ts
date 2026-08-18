@@ -25,8 +25,19 @@ export async function GET(req: NextRequest) {
     });
 
     const runs = await prisma.planogramRun.findMany({
-      where: { userId: session.user.id, planogramId: { in: planograms.map((p) => p.id) } },
-      orderBy: { createdAt: "desc" },
+      where: {
+        userId: session.user.id,
+        planogramId: { in: planograms.map((p) => p.id) },
+        // ABANDONED runs are explicitly superseded — never let a stale one represent status.
+        status: { not: "ABANDONED" },
+      },
+      // Ordered by real engagement (lastActivityAt), not creation time: a user can complete a
+      // planogram once (DONE) and later restart it, leaving an older DONE row with a *newer*
+      // createdAt than the fresh IN_PROGRESS one it was created after — createdAt-ordering would
+      // then show "done" here while the run screen (which only looks at active-status runs)
+      // correctly offers to continue the unfinished restart. lastActivityAt reflects whichever
+      // run the user actually touched most recently, so both views agree.
+      orderBy: { lastActivityAt: "desc" },
       select: { planogramId: true, status: true, currentRealStep: true, realStepsTotal: true },
     });
     const runByPlanogram = new Map<string, (typeof runs)[number]>();

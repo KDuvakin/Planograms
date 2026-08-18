@@ -47,8 +47,24 @@ export async function GET(req: NextRequest) {
     let result = Array.from(byPlanogram.values());
     if (status) result = result.filter((r) => r.status === status);
     result.sort((a, b) => b.lastActivityAt.getTime() - a.lastActivityAt.getTime());
+    result = result.slice(0, 100);
 
-    return NextResponse.json(result.slice(0, 100));
+    // Feedback count is per *planogram*, summed across every run attempt on it — not just the
+    // one representative run picked above — so it matches what the feedback drill-down shows.
+    const feedbackCounts = await prisma.feedback.groupBy({
+      by: ["runId"],
+      _count: { _all: true },
+      where: { runId: { in: allRuns.map((r) => r.id) } },
+    });
+    const countByRun = new Map(feedbackCounts.map((f) => [f.runId, f._count._all]));
+    const countByPlanogram = new Map<string, number>();
+    for (const run of allRuns) {
+      countByPlanogram.set(run.planogramId, (countByPlanogram.get(run.planogramId) ?? 0) + (countByRun.get(run.id) ?? 0));
+    }
+
+    return NextResponse.json(
+      result.map((r) => ({ ...r, feedbackCount: countByPlanogram.get(r.planogramId) ?? 0 }))
+    );
   } catch (e) {
     return handleApiError(e);
   }

@@ -6,6 +6,7 @@ import { useSession } from "next-auth/react";
 import { useLocale, useTranslations } from "next-intl";
 import { PageHeader } from "@/components/PageHeader";
 import { TopNav } from "@/components/TopNav";
+import { FeedbackHistoryModal, type FeedbackHistoryItem } from "@/components/admin/FeedbackHistoryModal";
 import styles from "@/components/admin/admin.module.css";
 import { fetcher } from "@/lib/swrFetcher";
 
@@ -22,18 +23,8 @@ interface Summary {
   recentCompletions: { storeCode: string; userLabel: string; finishedAt: string; durationMinutes: number }[];
 }
 
-interface FeedbackRow {
-  id: string;
-  comment: string;
-  photos: { url: string }[];
-  createdAt: string;
-  needSeparator: boolean;
-  doesntFitByHeight: boolean;
-  doesntFitFacesQty: boolean;
-  otherReason: boolean;
-  user: { email: string; name: string | null };
-  planogramItem: { sap: string; article: string } | null;
-  run: { planogram: { node: string; store: { code: string } } };
+interface FeedbackRow extends FeedbackHistoryItem {
+  run: { planogramId: string; planogram: { node: string; store: { code: string } } };
 }
 
 interface Store {
@@ -43,16 +34,16 @@ interface Store {
 
 interface RunRow {
   id: string;
+  planogramId: string;
   status: "NOT_STARTED" | "IN_PROGRESS" | "DONE" | "ABANDONED";
   currentRealStep: number;
   realStepsTotal: number;
   startedAt: string | null;
   finishedAt: string | null;
+  feedbackCount: number;
   user: { email: string; name: string | null };
   planogram: { node: string; store: { code: string } };
 }
-
-const REASON_KEYS = ["needSeparator", "doesntFitByHeight", "doesntFitFacesQty", "otherReason"] as const;
 
 export default function AnalyticsPage() {
   const t = useTranslations("analytics");
@@ -67,6 +58,8 @@ export default function AnalyticsPage() {
   const [storeId, setStoreId] = useState("");
   const runsUrl = storeId ? `/api/analytics/runs?storeId=${storeId}` : "/api/analytics/runs";
   const { data: runs } = useSWR<RunRow[]>(runsUrl, fetcher);
+
+  const [feedbackModal, setFeedbackModal] = useState<{ title: string; planogramId: string } | null>(null);
 
   return (
     <main className={styles.page}>
@@ -148,96 +141,67 @@ export default function AnalyticsPage() {
           </select>
         )}
 
-        <div className={styles.recordList}>
-          {runs?.map((r) => {
-            const durationMinutes =
-              r.startedAt && r.finishedAt
-                ? Math.round(((new Date(r.finishedAt).getTime() - new Date(r.startedAt).getTime()) / 60000) * 10) /
-                  10
-                : null;
-            return (
-              <div key={r.id} className={styles.recordCard}>
-                <div className={styles.recordHeader}>
-                  <span className={styles.recordTitle}>
-                    {r.planogram.store.code} · {r.planogram.node}
-                  </span>
-                  <span className={`${styles.statusPill} ${styles[`pill_${r.status}`]}`}>
-                    {t(`status.${r.status}`)}
-                  </span>
-                </div>
-                <div className={styles.recordRow}>
-                  <span>{t("runsTable.user")}</span>
-                  <span>{r.user.name ?? r.user.email}</span>
-                </div>
-                <div className={styles.recordRow}>
-                  <span>{t("runsTable.step")}</span>
-                  <span>
-                    {r.currentRealStep}/{r.realStepsTotal}
-                  </span>
-                </div>
-                <div className={styles.recordRow}>
-                  <span>{t("runsTable.started")}</span>
-                  <span>{r.startedAt ? new Date(r.startedAt).toLocaleString(locale) : "—"}</span>
-                </div>
-                <div className={styles.recordRow}>
-                  <span>{t("runsTable.finished")}</span>
-                  <span>{r.finishedAt ? new Date(r.finishedAt).toLocaleString(locale) : "—"}</span>
-                </div>
-                {durationMinutes != null && (
-                  <div className={styles.recordRow}>
-                    <span>{t("runsTable.duration")}</span>
-                    <span>{durationMinutes}</span>
-                  </div>
-                )}
-              </div>
-            );
-          })}
-          {runs?.length === 0 && <p className={styles.hintText}>{t("noRuns")}</p>}
+        <div className={styles.tableWrap}>
+          <table className={styles.table}>
+            <thead>
+              <tr>
+                <th>{t("runsTable.store")}</th>
+                <th>{t("runsTable.planogram")}</th>
+                <th>{t("runsTable.duration")}</th>
+                <th>{t("runsTable.started")}</th>
+                <th>{t("runsTable.finished")}</th>
+                <th>{t("runsTable.feedbackCount")}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {runs?.map((r) => {
+                const durationMinutes =
+                  r.startedAt && r.finishedAt
+                    ? Math.round(
+                        ((new Date(r.finishedAt).getTime() - new Date(r.startedAt).getTime()) / 60000) * 10
+                      ) / 10
+                    : null;
+                return (
+                  <tr key={r.id}>
+                    <td>{r.planogram.store.code}</td>
+                    <td>{r.planogram.node}</td>
+                    <td>{durationMinutes != null ? `${durationMinutes} ${t("minutesShort")}` : "—"}</td>
+                    <td>{r.startedAt ? new Date(r.startedAt).toLocaleString(locale) : "—"}</td>
+                    <td>{r.finishedAt ? new Date(r.finishedAt).toLocaleString(locale) : "—"}</td>
+                    <td>
+                      {r.feedbackCount > 0 ? (
+                        <button
+                          type="button"
+                          className={styles.btnGhost}
+                          onClick={() =>
+                            setFeedbackModal({
+                              planogramId: r.planogramId,
+                              title: `${r.planogram.store.code} · ${r.planogram.node}`,
+                            })
+                          }
+                        >
+                          {r.feedbackCount}
+                        </button>
+                      ) : (
+                        "—"
+                      )}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
         </div>
+        {runs?.length === 0 && <p className={styles.hintText}>{t("noRuns")}</p>}
       </div>
 
-      <div className={styles.card}>
-        <h2 className={styles.subtitle}>{t("feedbackTitle")}</h2>
-        <div className={styles.recordList}>
-          {feedback?.map((f) => {
-            const reasons = REASON_KEYS.filter((key) => f[key]);
-            return (
-              <div key={f.id} className={styles.recordCard}>
-                <div className={styles.recordHeader}>
-                  <span className={styles.recordTitle}>
-                    {f.run.planogram.store.code} / {f.run.planogram.node}
-                  </span>
-                  <span>{new Date(f.createdAt).toLocaleString(locale)}</span>
-                </div>
-                {f.photos.length > 0 && (
-                  <div className={styles.thumbRow}>
-                    {f.photos.map((p, i) => (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img key={i} src={p.url} alt="" className={styles.thumb} />
-                    ))}
-                  </div>
-                )}
-                <div className={styles.recordRow}>
-                  <span>{t("feedbackTable.product")}</span>
-                  <span>{f.planogramItem ? `${f.planogramItem.article} (${f.planogramItem.sap})` : "—"}</span>
-                </div>
-                {reasons.length > 0 && (
-                  <div className={styles.recordRow}>
-                    <span>{t("feedbackTable.reasons")}</span>
-                    <span>{reasons.map((r) => t(`reason.${r}`)).join(", ")}</span>
-                  </div>
-                )}
-                {f.comment && <p className={styles.recordComment}>«{f.comment}»</p>}
-                <div className={styles.recordRow}>
-                  <span>{t("feedbackTable.user")}</span>
-                  <span>{f.user.name ?? f.user.email}</span>
-                </div>
-              </div>
-            );
-          })}
-          {feedback?.length === 0 && <p className={styles.hintText}>{t("noFeedback")}</p>}
-        </div>
-      </div>
+      {feedbackModal && (
+        <FeedbackHistoryModal
+          title={feedbackModal.title}
+          items={(feedback ?? []).filter((f) => f.run.planogramId === feedbackModal.planogramId)}
+          onClose={() => setFeedbackModal(null)}
+        />
+      )}
     </main>
   );
 }

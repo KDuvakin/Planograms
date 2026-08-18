@@ -218,21 +218,12 @@
     "runsTable": {
       "store": "Veikals",
       "planogram": "Planograma",
-      "user": "Kas",
-      "status": "Statuss",
-      "step": "Solis",
       "started": "Sākts",
       "finished": "Pabeigts",
-      "duration": "Ilgums, min"
-    },
-    "status": {
-      "NOT_STARTED": "nav sākts",
-      "IN_PROGRESS": "izpildē",
-      "DONE": "izpildīts",
-      "ABANDONED": "atcelts"
+      "duration": "Ilgums, min",
+      "feedbackCount": "Atsauksmes"
     },
     "noRuns": "Vēl nekas nav izpildīts",
-    "feedbackTitle": "Atsauksmes",
     "feedbackTable": {
       "photo": "Foto",
       "storeAndPlanogram": "Veikals / planograma",

@@ -218,21 +218,12 @@
     "runsTable": {
       "store": "Store",
       "planogram": "Planogram",
-      "user": "User",
-      "status": "Status",
-      "step": "Step",
       "started": "Started",
       "finished": "Finished",
-      "duration": "Duration, min"
-    },
-    "status": {
-      "NOT_STARTED": "not started",
-      "IN_PROGRESS": "in progress",
-      "DONE": "done",
-      "ABANDONED": "abandoned"
+      "duration": "Duration, min",
+      "feedbackCount": "Feedback"
     },
     "noRuns": "Nothing implemented yet",
-    "feedbackTitle": "Feedback",
     "feedbackTable": {
       "photo": "Photo",
       "storeAndPlanogram": "Store / planogram",

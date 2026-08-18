@@ -218,21 +218,12 @@
     "runsTable": {
       "store": "Pood",
       "planogram": "Planogramm",
-      "user": "Kes",
-      "status": "Staatus",
-      "step": "Samm",
       "started": "Alustatud",
       "finished": "Lõpetatud",
-      "duration": "Kestus, min"
-    },
-    "status": {
-      "NOT_STARTED": "alustamata",
-      "IN_PROGRESS": "pooleli",
-      "DONE": "valmis",
-      "ABANDONED": "loobutud"
+      "duration": "Kestus, min",
+      "feedbackCount": "Tagasiside"
     },
     "noRuns": "Veel pole midagi tehtud",
-    "feedbackTitle": "Tagasiside",
     "feedbackTable": {
       "photo": "Foto",
       "storeAndPlanogram": "Pood / planogramm",

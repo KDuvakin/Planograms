@@ -218,21 +218,12 @@
     "runsTable": {
       "store": "Магазин",
       "planogram": "Планограмма",
-      "user": "Кто",
-      "status": "Статус",
-      "step": "Шаг",
       "started": "Начато",
       "finished": "Завершено",
-      "duration": "Время, мин"
-    },
-    "status": {
-      "NOT_STARTED": "не начато",
-      "IN_PROGRESS": "в процессе",
-      "DONE": "собрано",
-      "ABANDONED": "отменено"
+      "duration": "Время, мин",
+      "feedbackCount": "Отзывы"
     },
     "noRuns": "Пока ничего не выполнялось",
-    "feedbackTitle": "Обратная связь",
     "feedbackTable": {
       "photo": "Фото",
       "storeAndPlanogram": "Магазин / планограмма",

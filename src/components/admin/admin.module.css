@@ -183,12 +183,6 @@
   color: var(--ink-faint);
 }
 
-.recordTitle {
-  font-weight: 700;
-  font-size: 13px;
-  color: var(--ink);
-}
-
 .recordRow {
   display: flex;
   justify-content: space-between;
@@ -207,33 +201,4 @@
   font-size: 13px;
   color: var(--ink);
   font-style: italic;
-}
-
-.statusPill {
-  flex: 0 0 auto;
-  border-radius: 999px;
-  padding: 2px 8px;
-  font-size: 10px;
-  font-weight: 700;
-  text-transform: uppercase;
-}
-
-.pill_NOT_STARTED {
-  background: var(--surface-3);
-  color: var(--ink-soft);
-}
-
-.pill_IN_PROGRESS {
-  background: var(--move-soft);
-  color: var(--move);
-}
-
-.pill_DONE {
-  background: var(--ok-soft);
-  color: var(--ok);
-}
-
-.pill_ABANDONED {
-  background: var(--danger-soft);
-  color: var(--danger);
 }
