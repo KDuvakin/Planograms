@@ -3,7 +3,6 @@
     "appName": "Planogram",
     "loading": "Loading…",
     "cancel": "Cancel",
-    "save": "Save",
     "delete": "Delete",
     "close": "Close",
     "description": "Resetting a shelf to a planogram"
@@ -174,8 +173,6 @@
     "name": "Name",
     "chain": "Chain",
     "format": "Format",
-    "address": "Address",
-    "email": "Email",
     "creating": "Creating…",
     "create": "Create",
     "allStoresTitle": "All stores",

@@ -3,7 +3,6 @@
     "appName": "Planograma",
     "loading": "Ielādē…",
     "cancel": "Atcelt",
-    "save": "Saglabāt",
     "delete": "Dzēst",
     "close": "Aizvērt",
     "description": "Plaukta pārkārtošana atbilstoši planogrammai"
@@ -174,8 +173,6 @@
     "name": "Nosaukums",
     "chain": "Tīkls",
     "format": "Formāts",
-    "address": "Adrese",
-    "email": "E-pasts",
     "creating": "Izveido…",
     "create": "Izveidot",
     "allStoresTitle": "Visi veikali",

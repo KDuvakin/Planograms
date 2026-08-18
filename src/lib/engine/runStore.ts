@@ -10,12 +10,10 @@ import {
 } from "./controls";
 
 export interface RunState extends EngineState {
-  hideCompletedRacks: boolean;
   nextStep: () => void;
   prevStep: () => void;
   resetAll: () => void;
   seekToRealStep: (n: number) => void;
-  toggleHideCompleted: () => void;
 }
 
 /**
@@ -39,7 +37,6 @@ export function createRunStore(items: PlanogramItemLike[], initialRealStep = 0) 
 
   return create<RunState>((set) => ({
     ...initial,
-    hideCompletedRacks: false,
     nextStep: () =>
       set((s) => {
         engineNextStep(s);
@@ -60,7 +57,6 @@ export function createRunStore(items: PlanogramItemLike[], initialRealStep = 0) 
         engineSeekToRealStep(s, n);
         return { ...s };
       }),
-    toggleHideCompleted: () => set((s) => ({ hideCompletedRacks: !s.hideCompletedRacks })),
   }));
 }
 

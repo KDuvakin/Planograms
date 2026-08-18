@@ -11,26 +11,40 @@ export async function GET() {
     const storeId = session.user.role === "MANAGER" ? session.user.storeId : undefined;
     const planogramFilter = storeId ? { planogram: { storeId } } : {};
 
-    const planograms = await prisma.planogram.findMany({
-      where: { isCurrent: true, ...(storeId ? { storeId } : {}) },
-      select: { id: true, store: { select: { code: true } } },
-    });
+    // These three queries don't depend on each other's results, so they run concurrently
+    // instead of paying for three sequential DB round-trips.
+    const [planograms, allRuns, doneRuns] = await Promise.all([
+      prisma.planogram.findMany({
+        where: { isCurrent: true, ...(storeId ? { storeId } : {}) },
+        select: { id: true, store: { select: { code: true } } },
+      }),
+      // A planogram can have several runs (one per user, plus restarts and abandoned
+      // retries) — counting runs directly double-counts, and "DONE if anyone ever
+      // finished it" goes stale the moment someone restarts: a planogram that was
+      // completed and is now being redone would show as permanently "done". Each
+      // planogram's bucket instead follows whichever non-abandoned run was touched
+      // most recently — the same rule /api/planograms uses for the personal list, so
+      // the two views can't contradict each other.
+      prisma.planogramRun.findMany({
+        where: {
+          planogram: { isCurrent: true, ...(storeId ? { storeId } : {}) },
+          status: { not: "ABANDONED" },
+        },
+        select: { planogramId: true, status: true, lastActivityAt: true },
+      }),
+      prisma.planogramRun.findMany({
+        where: { status: "DONE", startedAt: { not: null }, finishedAt: { not: null }, ...planogramFilter },
+        select: {
+          startedAt: true,
+          finishedAt: true,
+          planogram: { select: { store: { select: { code: true } } } },
+          user: { select: { email: true, name: true } },
+        },
+        orderBy: { finishedAt: "desc" },
+        take: 200,
+      }),
+    ]);
     const totalPlanograms = planograms.length;
-
-    // A planogram can have several runs (one per user, plus restarts and abandoned
-    // retries) — counting runs directly double-counts, and "DONE if anyone ever
-    // finished it" goes stale the moment someone restarts: a planogram that was
-    // completed and is now being redone would show as permanently "done". Each
-    // planogram's bucket instead follows whichever non-abandoned run was touched
-    // most recently — the same rule /api/planograms uses for the personal list, so
-    // the two views can't contradict each other.
-    const allRuns = await prisma.planogramRun.findMany({
-      where: {
-        planogram: { isCurrent: true, ...(storeId ? { storeId } : {}) },
-        status: { not: "ABANDONED" },
-      },
-      select: { planogramId: true, status: true, lastActivityAt: true },
-    });
     const latestByPlanogram = new Map<string, { status: string; lastActivityAt: Date }>();
     for (const r of allRuns) {
       const existing = latestByPlanogram.get(r.planogramId);
@@ -58,18 +72,6 @@ export async function GET() {
       else if (status === "IN_PROGRESS") entry.inProgress++;
     }
     const notDonePlanograms = totalPlanograms - done;
-
-    const doneRuns = await prisma.planogramRun.findMany({
-      where: { status: "DONE", startedAt: { not: null }, finishedAt: { not: null }, ...planogramFilter },
-      select: {
-        startedAt: true,
-        finishedAt: true,
-        planogram: { select: { store: { select: { code: true } } } },
-        user: { select: { email: true, name: true } },
-      },
-      orderBy: { finishedAt: "desc" },
-      take: 200,
-    });
 
     const durationsMinutes = doneRuns.map(
       (r) => (r.finishedAt!.getTime() - r.startedAt!.getTime()) / 60000

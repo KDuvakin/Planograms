@@ -89,6 +89,7 @@ export async function POST(req: NextRequest) {
     }
 
     const photoUrls: string[] = [];
+    if (photos.length > 0) await mkdir(UPLOAD_DIR, { recursive: true });
     for (const photo of photos) {
       const ext = ALLOWED_TYPES[photo.type];
       if (!ext) {
@@ -98,7 +99,6 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: "Файл слишком большой (максимум 8 МБ)" }, { status: 400 });
       }
 
-      await mkdir(UPLOAD_DIR, { recursive: true });
       const filename = `${randomUUID()}.${ext}`;
       const buffer = Buffer.from(await photo.arrayBuffer());
       await writeFile(path.join(UPLOAD_DIR, filename), buffer);

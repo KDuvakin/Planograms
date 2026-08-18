@@ -3,7 +3,6 @@
     "appName": "Planogramm",
     "loading": "Laadimine…",
     "cancel": "Tühista",
-    "save": "Salvesta",
     "delete": "Kustuta",
     "close": "Sulge",
     "description": "Riiuli ümberpaigutamine vastavalt planogrammile"
@@ -174,8 +173,6 @@
     "name": "Nimi",
     "chain": "Kett",
     "format": "Formaat",
-    "address": "Aadress",
-    "email": "E-post",
     "creating": "Loomine…",
     "create": "Loo",
     "allStoresTitle": "Kõik poed",

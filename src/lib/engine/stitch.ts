@@ -137,11 +137,6 @@ export function stitchNodeRows(rows: RawExcelRow[]): StitchResult {
   return { items, duplicates };
 }
 
-/** Distinct, trimmed, non-empty Node values present in a raw workbook sheet. */
-export function distinctNodes(rows: RawExcelRow[]): string[] {
-  return Array.from(new Set(rows.map((r) => String(r.Node ?? "").trim()).filter(Boolean)));
-}
-
 export function groupRowsByNode(rows: RawExcelRow[]): Map<string, RawExcelRow[]> {
   const byNode = new Map<string, RawExcelRow[]>();
   for (const row of rows) {

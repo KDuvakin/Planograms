@@ -70,8 +70,6 @@ export interface Basket {
   temp: Product[];
 }
 
-export type StepType = "evict" | "move" | "resize" | "place" | "confirm";
-
 interface StepBase {
   product: Product;
   rack: string;
@@ -140,7 +138,6 @@ export interface EngineState {
   navigator: NavigatorText;
 }
 
-export const SHELF_LENGTH_CM = 133;
 export const EPS = 0.001;
 /** cm — if short by less than this, treat it as "fits", don't evict a neighbour for a couple of millimetres. */
 export const FIT_SLACK = 1;
