@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import { PageHeader } from "@/components/PageHeader";
 import { TopNav } from "@/components/TopNav";
-import { localizedName, type CategoryWithNodes } from "@/lib/nodeCategory";
+import { localizedName, resolveNodeCategory, type CategoryWithNodes } from "@/lib/nodeCategory";
 import styles from "./planograms.module.css";
 import { fetcher } from "@/lib/swrFetcher";
 
@@ -186,6 +186,7 @@ export default function PlanogramsPage() {
                             p.runStatus === "IN_PROGRESS" || p.runStatus === "DONE"
                               ? t(`status.${p.runStatus}`)
                               : null;
+                          const nodeName = resolveNodeCategory(categories ?? [], p.node, locale)?.nodeName;
                           return (
                             <li key={p.id}>
                               <Link href={`/planograms/${p.id}`} className={styles.card}>
@@ -194,6 +195,7 @@ export default function PlanogramsPage() {
                                   <div className={styles.cardNode}>
                                     {showStoreCode && <span className={styles.rowStore}>{p.store.code} · </span>}
                                     {p.node}
+                                    {nodeName ? ` — ${nodeName}` : ""}
                                   </div>
                                   <div className={styles.cardMeta}>
                                     {t("meta", { itemCount: p.itemCount, version: p.version })}

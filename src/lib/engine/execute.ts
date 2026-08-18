@@ -24,6 +24,9 @@ function coalesceGaps(rs: ShelfState): void {
     const next = rs.items[i + 1];
     if (isGap(cur) && isGap(next)) {
       cur.width += next.width;
+      if (next.fromProductIndexes?.length) {
+        cur.fromProductIndexes = [...(cur.fromProductIndexes ?? []), ...next.fromProductIndexes];
+      }
       rs.items.splice(i + 1, 1);
     }
   }
@@ -72,7 +75,7 @@ function removeFromOldShelf(state: EngineState, p: Product): void {
   const rs = state.racks[p.rackOld]?.[p.shelfOld];
   if (!rs) return;
   const idx = rs.items.findIndex((x) => (x as Product).index === p.index);
-  if (idx !== -1) rs.items[idx] = { __gap: true, width: widthOf(p), fromProductIndex: p.index } satisfies GapMarker;
+  if (idx !== -1) rs.items[idx] = { __gap: true, width: widthOf(p), fromProductIndexes: [p.index] } satisfies GapMarker;
   coalesceGaps(rs);
 }
 
@@ -83,7 +86,7 @@ export function execute(state: EngineState, step: Step, silent: boolean): void {
 
   if (step.type === "evict") {
     const idx = rs.items.findIndex((x) => (x as Product).index === p.index);
-    if (idx !== -1) rs.items[idx] = { __gap: true, width: widthOf(p), fromProductIndex: p.index } satisfies GapMarker;
+    if (idx !== -1) rs.items[idx] = { __gap: true, width: widthOf(p), fromProductIndexes: [p.index] } satisfies GapMarker;
     coalesceGaps(rs);
 
     if (step.to === "deleted") {
@@ -110,7 +113,7 @@ export function execute(state: EngineState, step: Step, silent: boolean): void {
   } else if (step.type === "move") {
     const fromRs = ensureShelf(state, step.fromRack, step.fromShelf);
     const idx = fromRs.items.findIndex((x) => (x as Product).index === p.index);
-    if (idx !== -1) fromRs.items[idx] = { __gap: true, width: widthOf(p), fromProductIndex: p.index } satisfies GapMarker;
+    if (idx !== -1) fromRs.items[idx] = { __gap: true, width: widthOf(p), fromProductIndexes: [p.index] } satisfies GapMarker;
     coalesceGaps(fromRs);
 
     const sameShelf = step.fromRack === step.rack && step.fromShelf === step.shelf;

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { createEngineState } from "../index";
+import { createEngineState, isGap } from "../index";
 import { nextStep, prevStep, resetAll, seekToRealStep } from "../controls";
 import type { PlanogramItemLike } from "../loadProducts";
 import { stitchNodeRows } from "../stitch";
@@ -76,6 +76,28 @@ describe("nextStep / prevStep", () => {
     expect(state.currentStep).toBe(0);
     expect(state.navigator.kind).toBe("idle");
     expect(state.basket.temp).toHaveLength(0);
+  });
+});
+
+describe("gap identity after coalescing", () => {
+  // F is an anchor at pos1; G and H (both discontinued) sit right after it at pos2/pos3
+  // and get evicted back to back — their gaps end up adjacent and merge into one.
+  it("keeps both evicted products' identity so the UI can still highlight whichever one is the current step", () => {
+    const rows = [
+      row("F", "Old", "1", "1", "1", 1, 10),
+      row("F", "New", "1", "1", "1", 1, 10),
+      row("G", "Old", "1", "1", "2", 1, 10), // deleted — no New row
+      row("H", "Old", "1", "1", "3", 1, 10), // deleted — no New row
+    ];
+    const state = createEngineState(items(rows));
+    nextStep(state); // evicts G (F's confirm silently folds into this click)
+    nextStep(state); // evicts H — its gap merges with G's adjacent gap
+
+    const gIndex = state.basket.deleted.find((p) => p.sap === "G")!.index;
+    const hIndex = state.basket.deleted.find((p) => p.sap === "H")!.index;
+
+    const gap = state.racks["1"]["1"].items.find(isGap);
+    expect(gap?.fromProductIndexes).toEqual(expect.arrayContaining([gIndex, hIndex]));
   });
 });
 

@@ -24,7 +24,7 @@ export function Block({
   if (isGap(slot)) {
     // The gap a just-picked/moved-away item left behind — outline it so it's clear
     // where that item used to be, instead of it just silently vanishing.
-    const isVacatedSpot = highlightIndex !== undefined && slot.fromProductIndex === highlightIndex;
+    const isVacatedSpot = highlightIndex !== undefined && (slot.fromProductIndexes?.includes(highlightIndex) ?? false);
     return (
       <div className={styles.slotWrap} style={{ width: Math.max(slot.width * scale, 2) }}>
         {isVacatedSpot && <PositionArrow />}

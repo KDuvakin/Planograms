@@ -40,8 +40,14 @@ export interface Product {
 export interface GapMarker {
   __gap: true;
   width: number;
-  /** Index of the product this gap was just vacated by (evict/move-away/place-elsewhere) — lets the UI highlight "this is the empty spot you're working on". Undefined for leftover-space gaps that never held a specific product. */
-  fromProductIndex?: number;
+  /**
+   * Indexes of the product(s) this gap was vacated by (evict/move-away/place-elsewhere) —
+   * lets the UI highlight "this is the empty spot you're working on". An array because
+   * coalesceGaps() merges neighbouring gaps together — a plain single field would lose
+   * one side's identity whenever two vacated spots end up adjacent. Undefined/empty for
+   * leftover-space gaps that never held a specific product.
+   */
+  fromProductIndexes?: number[];
 }
 
 export type ShelfSlot = Product | GapMarker;
