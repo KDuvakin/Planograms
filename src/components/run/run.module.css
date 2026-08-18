@@ -112,7 +112,7 @@
   border-radius: 999px;
   background: linear-gradient(180deg, var(--ink) 0%, #0d1815 100%);
   box-shadow: var(--shadow-1);
-  margin-bottom: 10px;
+  margin-bottom: 5px;
   padding: 0 8px;
 }
 
@@ -274,12 +274,16 @@
   rotate: 180deg;
 }
 
+/* each step re-states translateX(-50%) — an animated `transform` replaces the whole
+   property, not just the piece the keyframe mentions, so omitting it here would
+   silently drop the base rule's centering for the entire (infinite) animation and let
+   the arrow drift sideways onto a neighbouring block. */
 @keyframes arrowBounce {
   0%, 100% {
-    transform: translateY(0);
+    transform: translateX(-50%) translateY(0);
   }
   50% {
-    transform: translateY(5px);
+    transform: translateX(-50%) translateY(5px);
   }
 }
 
