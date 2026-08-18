@@ -13,7 +13,7 @@ export async function GET() {
 
     const planograms = await prisma.planogram.findMany({
       where: { isCurrent: true, ...(storeId ? { storeId } : {}) },
-      select: { id: true },
+      select: { id: true, store: { select: { code: true } } },
     });
     const totalPlanograms = planograms.length;
 
@@ -42,11 +42,20 @@ export async function GET() {
     let notStarted = 0;
     let inProgress = 0;
     let done = 0;
+    // Keyed by store code — same dedup as the overall totals just below, so "how many
+    // planograms are done" can never disagree with "how many of THIS store's are done".
+    const byStore = new Map<string, { storeCode: string; done: number; inProgress: number }>();
     for (const p of planograms) {
       const status = latestByPlanogram.get(p.id)?.status;
       if (status === "DONE") done++;
       else if (status === "IN_PROGRESS") inProgress++;
       else notStarted++;
+
+      const code = p.store.code;
+      if (!byStore.has(code)) byStore.set(code, { storeCode: code, done: 0, inProgress: 0 });
+      const entry = byStore.get(code)!;
+      if (status === "DONE") entry.done++;
+      else if (status === "IN_PROGRESS") entry.inProgress++;
     }
     const notDonePlanograms = totalPlanograms - done;
 
@@ -68,19 +77,6 @@ export async function GET() {
     const avgDurationMinutes = durationsMinutes.length
       ? Math.round((durationsMinutes.reduce((a, b) => a + b, 0) / durationsMinutes.length) * 10) / 10
       : null;
-
-    const byStore = new Map<string, { storeCode: string; done: number; inProgress: number }>();
-    const storeCounts = await prisma.planogramRun.findMany({
-      where: { status: { in: ["DONE", "IN_PROGRESS"] }, ...planogramFilter },
-      select: { status: true, planogram: { select: { store: { select: { code: true } } } } },
-    });
-    for (const r of storeCounts) {
-      const code = r.planogram.store.code;
-      if (!byStore.has(code)) byStore.set(code, { storeCode: code, done: 0, inProgress: 0 });
-      const entry = byStore.get(code)!;
-      if (r.status === "DONE") entry.done++;
-      else entry.inProgress++;
-    }
 
     const recentCompletions = doneRuns.slice(0, 10).map((r) => ({
       storeCode: r.planogram.store.code,
