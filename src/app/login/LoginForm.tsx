@@ -53,7 +53,13 @@ export default function LoginForm() {
 
       <label className={styles.field}>
         <span>{t("password")}</span>
-        <input name="password" type="password" required autoComplete="current-password" />
+        <input
+          name="password"
+          type="password"
+          required
+          autoComplete="current-password"
+          suppressHydrationWarning
+        />
       </label>
 
       {error && <p className={styles.error}>{error}</p>}

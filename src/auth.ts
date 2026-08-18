@@ -4,6 +4,10 @@ import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/db";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
+  // Self-hosted, no reverse proxy in front yet — trust whatever Host header the
+  // request arrives with instead of forcing everything through NEXTAUTH_URL, so
+  // sign-in works both from localhost and from other devices on the LAN by IP.
+  trustHost: true,
   session: { strategy: "jwt" },
   pages: { signIn: "/login" },
   providers: [
