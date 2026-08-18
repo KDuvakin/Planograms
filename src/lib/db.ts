@@ -16,6 +16,12 @@ function createClient() {
       encrypt: true,
       trustServerCertificate: true,
     },
+    // mssql's own default (10) is tight for a shared web server — every concurrent
+    // request holds a connection for the duration of its query, so a burst of
+    // simultaneous users would queue behind whichever 10 got there first.
+    pool: {
+      max: 20,
+    },
   });
   return new PrismaClient({ adapter });
 }
