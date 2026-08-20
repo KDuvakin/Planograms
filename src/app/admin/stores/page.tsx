@@ -19,14 +19,6 @@ interface Store {
   email: string | null;
 }
 
-interface Printer {
-  id: string;
-  storeId: string;
-  name: string | null;
-  ip: string;
-}
-
-
 export default function StoresAdminPage() {
   const t = useTranslations("adminStores");
   const tCommon = useTranslations("common");
@@ -38,7 +30,6 @@ export default function StoresAdminPage() {
   const [format, setFormat] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const [expanded, setExpanded] = useState<string | null>(null);
   const [rowError, setRowError] = useState<{ id: string; message: string } | null>(null);
   const [query, setQuery] = useState("");
 
@@ -89,7 +80,6 @@ export default function StoresAdminPage() {
       setRowError({ id, message: body?.error ?? t("errors.deleteStoreFailed") });
       return;
     }
-    if (expanded === id) setExpanded(null);
     mutate();
   }
 
@@ -147,7 +137,6 @@ export default function StoresAdminPage() {
                 <th>{t("table.format")}</th>
                 <th>{t("table.address")}</th>
                 <th>{t("table.email")}</th>
-                <th>{t("table.printers")}</th>
                 <th>{t("table.actions")}</th>
               </tr>
             </thead>
@@ -213,15 +202,6 @@ export default function StoresAdminPage() {
                   <td>
                     <button
                       type="button"
-                      className={styles.btnPrimary}
-                      onClick={() => setExpanded(expanded === s.id ? null : s.id)}
-                    >
-                      {expanded === s.id ? t("hide") : t("configure")}
-                    </button>
-                  </td>
-                  <td>
-                    <button
-                      type="button"
                       className={styles.btnGhost}
                       onClick={() => handleDelete(s.id, s.name ?? s.code)}
                     >
@@ -235,138 +215,6 @@ export default function StoresAdminPage() {
           </table>
         </div>
       </div>
-
-      {expanded && <PrintersPanel storeId={expanded} />}
     </main>
-  );
-}
-
-/** Parses one printer per line: "name, ip" or just "ip" (name optional), tabs also accepted as the separator. */
-function parseBulkPrinters(text: string): Array<{ name?: string; ip: string }> {
-  return text
-    .split("\n")
-    .map((line) => line.trim())
-    .filter(Boolean)
-    .map((line) => {
-      const [first, second] = line.split(/[,\t]/).map((part) => part.trim());
-      return second ? { name: first || undefined, ip: second } : { ip: first };
-    })
-    .filter((p) => p.ip);
-}
-
-function PrintersPanel({ storeId }: { storeId: string }) {
-  const t = useTranslations("adminStores");
-  const tCommon = useTranslations("common");
-  const { data: printers, mutate } = useSWR<Printer[]>(`/api/stores/${storeId}/printers`, fetcher);
-  const [name, setName] = useState("");
-  const [ip, setIp] = useState("");
-  const [bulkText, setBulkText] = useState("");
-  const [bulkError, setBulkError] = useState<string | null>(null);
-  const [bulkLoading, setBulkLoading] = useState(false);
-
-  async function handleAdd(e: FormEvent) {
-    e.preventDefault();
-    if (!ip.trim()) return;
-    await fetch(`/api/stores/${storeId}/printers`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name: name || undefined, ip: ip.trim() }),
-    });
-    setName("");
-    setIp("");
-    mutate();
-  }
-
-  async function handleBulkAdd(e: FormEvent) {
-    e.preventDefault();
-    const parsed = parseBulkPrinters(bulkText);
-    if (parsed.length === 0) return;
-    setBulkLoading(true);
-    setBulkError(null);
-    const res = await fetch(`/api/stores/${storeId}/printers/bulk`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ printers: parsed }),
-    });
-    const body = await res.json();
-    setBulkLoading(false);
-    if (!res.ok) {
-      setBulkError(body.error ?? t("errors.bulkAddPrintersFailed"));
-      return;
-    }
-    setBulkText("");
-    mutate();
-  }
-
-  async function handleDelete(id: string) {
-    await fetch(`/api/printers/${id}`, { method: "DELETE" });
-    mutate();
-  }
-
-  return (
-    <div className={styles.card}>
-      <h2 className={styles.subtitle}>{t("printersTitle")}</h2>
-      <div className={styles.tableWrap}>
-        <table className={styles.table}>
-          <thead>
-            <tr>
-              <th>{t("printerName")}</th>
-              <th>{t("printerIp")}</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            {printers?.map((p) => (
-              <tr key={p.id}>
-                <td>{p.name ?? "—"}</td>
-                <td>{p.ip}</td>
-                <td>
-                  <button type="button" className={styles.btnGhost} onClick={() => handleDelete(p.id)}>
-                    {tCommon("delete")}
-                  </button>
-                </td>
-              </tr>
-            ))}
-            {printers?.length === 0 && (
-              <tr>
-                <td colSpan={3}>{t("noPrinters")}</td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
-
-      <form className={styles.form} onSubmit={handleAdd}>
-        <label className={styles.field}>
-          {t("printerName")}
-          <input className={styles.input} value={name} onChange={(e) => setName(e.target.value)} />
-        </label>
-        <label className={styles.field}>
-          {t("printerIp")}
-          <input className={styles.input} value={ip} onChange={(e) => setIp(e.target.value)} required />
-        </label>
-        <button className={styles.btnPrimary} type="submit">
-          {t("addPrinter")}
-        </button>
-      </form>
-
-      <form className={styles.bulkForm} onSubmit={handleBulkAdd}>
-        <label className={styles.field}>
-          {t("bulkAddLabel")}
-          <textarea
-            className={styles.textarea}
-            rows={5}
-            placeholder={t("bulkAddPlaceholder")}
-            value={bulkText}
-            onChange={(e) => setBulkText(e.target.value)}
-          />
-        </label>
-        <p className={styles.hintText}>{t("bulkAddHint", { count: parseBulkPrinters(bulkText).length })}</p>
-        {bulkError && <p className={styles.error}>{bulkError}</p>}
-        <button className={styles.btnGhost} type="submit" disabled={bulkLoading || parseBulkPrinters(bulkText).length === 0}>
-          {bulkLoading ? t("bulkAdding") : t("bulkAdd")}
-        </button>
-      </form>
-    </div>
   );
 }

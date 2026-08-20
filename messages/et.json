@@ -12,6 +12,7 @@
     "import": "Import",
     "users": "Kasutajad",
     "stores": "Poed",
+    "printers": "Printerid",
     "analytics": "Analüütika",
     "feedback": "Tagasiside",
     "signOut": "Logi välja"
@@ -200,27 +201,43 @@
       "format": "Formaat",
       "address": "Aadress",
       "email": "E-post",
-      "printers": "Printerid",
       "actions": "Tegevused"
     },
-    "configure": "Seadista",
-    "hide": "Peida",
-    "printersTitle": "Poe printerid",
-    "printerName": "Nimi",
-    "printerIp": "IP",
-    "noPrinters": "Printereid pole veel",
-    "addPrinter": "Lisa printer",
-    "bulkAddLabel": "Lisa hulgi",
-    "bulkAddPlaceholder": "Nimi, IP — üks rea kohta\nKassa 1, 192.168.1.10\n192.168.1.11",
-    "bulkAddHint": "Lisatakse {count} printerit",
-    "bulkAdd": "Lisa kõik",
-    "bulkAdding": "Lisamine…",
     "confirmDelete": "Kustutada pood \"{store}\"? Seda toimingut ei saa tagasi võtta.",
     "errors": {
       "createStoreFailed": "Poe loomine ebaõnnestus",
-      "deleteStoreFailed": "Poe kustutamine ebaõnnestus",
-      "bulkAddPrintersFailed": "Printerite lisamine ebaõnnestus"
+      "deleteStoreFailed": "Poe kustutamine ebaõnnestus"
     }
+  },
+  "adminPrinters": {
+    "title": "Printerid",
+    "uploadTitle": "Laadi failist",
+    "bulkUploadButton": "Laadi üles",
+    "uploading": "Laadimine…",
+    "downloadButton": "Laadi praegused alla (.xlsx)",
+    "uploadHint": "Veerud: store_number, name, printer_ip, tray (valikuline), .xlsx või .csv. Üleslaadimine asendab kõik failis loetletud poodide printerid; teisi poode ei muudeta.",
+    "uploadResult": "Uuendatud {stores} pood(a), {printers} printerit.",
+    "unknownStores": "Tundmatud poed: {codes}.",
+    "addTitle": "Lisa printer",
+    "storeCodePlaceholder": "nt T233",
+    "add": "Lisa",
+    "searchPlaceholder": "Otsi: pood, nimi, IP",
+    "table": {
+      "store": "Pood",
+      "name": "Nimi",
+      "ip": "Printeri IP",
+      "tray": "Salv",
+      "actions": "Tegevused"
+    },
+    "save": "Salvesta",
+    "saving": "Salvestamine…",
+    "errors": {
+      "ipRequired": "IP on kohustuslik",
+      "addFailed": "Printeri lisamine ebaõnnestus",
+      "saveFailed": "Salvestamine ebaõnnestus",
+      "uploadFailed": "Faili üleslaadimine ebaõnnestus"
+    },
+    "empty": "Midagi ei leitud"
   },
   "analytics": {
     "title": "Analüütika",

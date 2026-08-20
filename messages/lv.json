@@ -12,6 +12,7 @@
     "import": "Imports",
     "users": "Lietotāji",
     "stores": "Veikali",
+    "printers": "Printeri",
     "analytics": "Analītika",
     "feedback": "Atsauksmes",
     "signOut": "Iziet"
@@ -200,27 +201,43 @@
       "format": "Formāts",
       "address": "Adrese",
       "email": "E-pasts",
-      "printers": "Printeri",
       "actions": "Darbības"
     },
-    "configure": "Konfigurēt",
-    "hide": "Slēpt",
-    "printersTitle": "Veikala printeri",
-    "printerName": "Nosaukums",
-    "printerIp": "IP",
-    "noPrinters": "Printeru vēl nav",
-    "addPrinter": "Pievienot printeri",
-    "bulkAddLabel": "Pievienot vairākus",
-    "bulkAddPlaceholder": "Nosaukums, IP — pa vienam rindā\nKase 1, 192.168.1.10\n192.168.1.11",
-    "bulkAddHint": "Tiks pievienoti {count} printeri",
-    "bulkAdd": "Pievienot visus",
-    "bulkAdding": "Pievieno…",
     "confirmDelete": "Dzēst veikalu \"{store}\"? Šo darbību nevar atsaukt.",
     "errors": {
       "createStoreFailed": "Neizdevās izveidot veikalu",
-      "deleteStoreFailed": "Neizdevās dzēst veikalu",
-      "bulkAddPrintersFailed": "Neizdevās pievienot printerus"
+      "deleteStoreFailed": "Neizdevās dzēst veikalu"
     }
+  },
+  "adminPrinters": {
+    "title": "Printeri",
+    "uploadTitle": "Augšupielāde no faila",
+    "bulkUploadButton": "Augšupielādēt",
+    "uploading": "Augšupielāde…",
+    "downloadButton": "Lejupielādēt pašreizējos (.xlsx)",
+    "uploadHint": "Kolonnas: store_number, name, printer_ip, tray (nav obligāts), .xlsx vai .csv. Augšupielāde aizstāj visus printerus veikaliem, kas minēti failā; pārējie veikali netiek mainīti.",
+    "uploadResult": "Atjaunināti {stores} veikali, {printers} printeri.",
+    "unknownStores": "Nezināmi veikali: {codes}.",
+    "addTitle": "Pievienot printeri",
+    "storeCodePlaceholder": "piem., T233",
+    "add": "Pievienot",
+    "searchPlaceholder": "Meklēt: veikals, nosaukums, IP",
+    "table": {
+      "store": "Veikals",
+      "name": "Nosaukums",
+      "ip": "Printera IP",
+      "tray": "Paplāte",
+      "actions": "Darbības"
+    },
+    "save": "Saglabāt",
+    "saving": "Saglabā…",
+    "errors": {
+      "ipRequired": "IP ir obligāts",
+      "addFailed": "Neizdevās pievienot printeri",
+      "saveFailed": "Neizdevās saglabāt",
+      "uploadFailed": "Neizdevās augšupielādēt failu"
+    },
+    "empty": "Nekas nav atrasts"
   },
   "analytics": {
     "title": "Analītika",

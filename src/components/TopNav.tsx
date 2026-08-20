@@ -26,6 +26,7 @@ export function TopNav() {
           { href: "/admin/import", label: t("import") },
           { href: "/admin/users", label: t("users") },
           { href: "/admin/stores", label: t("stores") },
+          { href: "/admin/printers", label: t("printers") },
         ]
       : []),
     { href: "/analytics", label: t("analytics") },

@@ -12,6 +12,7 @@
     "import": "Импорт",
     "users": "Пользователи",
     "stores": "Магазины",
+    "printers": "Принтеры",
     "analytics": "Аналитика",
     "feedback": "Отзывы",
     "signOut": "Выйти"
@@ -200,27 +201,43 @@
       "format": "Формат",
       "address": "Адрес",
       "email": "Email",
-      "printers": "Принтеры",
       "actions": "Действия"
     },
-    "configure": "Настроить",
-    "hide": "Скрыть",
-    "printersTitle": "Принтеры магазина",
-    "printerName": "Название",
-    "printerIp": "IP",
-    "noPrinters": "Принтеров пока нет",
-    "addPrinter": "Добавить принтер",
-    "bulkAddLabel": "Массовое добавление",
-    "bulkAddPlaceholder": "Название, IP — по одному на строку\nКасса 1, 192.168.1.10\n192.168.1.11",
-    "bulkAddHint": "Будет добавлено принтеров: {count}",
-    "bulkAdd": "Добавить все",
-    "bulkAdding": "Добавление…",
     "confirmDelete": "Удалить магазин «{store}»? Это действие необратимо.",
     "errors": {
       "createStoreFailed": "Не удалось создать магазин",
-      "deleteStoreFailed": "Не удалось удалить магазин",
-      "bulkAddPrintersFailed": "Не удалось добавить принтеры"
+      "deleteStoreFailed": "Не удалось удалить магазин"
     }
+  },
+  "adminPrinters": {
+    "title": "Принтеры",
+    "uploadTitle": "Загрузка файлом",
+    "bulkUploadButton": "Загрузить",
+    "uploading": "Загрузка…",
+    "downloadButton": "Скачать текущие (.xlsx)",
+    "uploadHint": "Колонки: store_number, name, printer_ip, tray (необязательно), .xlsx или .csv. Загрузка заменяет все принтеры магазинов из файла; остальные магазины не затрагиваются.",
+    "uploadResult": "Обновлено магазинов: {stores}, принтеров: {printers}.",
+    "unknownStores": "Не найдены магазины: {codes}.",
+    "addTitle": "Добавить принтер",
+    "storeCodePlaceholder": "Например, T233",
+    "add": "Добавить",
+    "searchPlaceholder": "Поиск: магазин, название, IP",
+    "table": {
+      "store": "Магазин",
+      "name": "Название",
+      "ip": "IP принтера",
+      "tray": "Трей",
+      "actions": "Действия"
+    },
+    "save": "Сохранить",
+    "saving": "Сохранение…",
+    "errors": {
+      "ipRequired": "IP обязателен",
+      "addFailed": "Не удалось добавить принтер",
+      "saveFailed": "Не удалось сохранить",
+      "uploadFailed": "Не удалось загрузить файл"
+    },
+    "empty": "Ничего не найдено"
   },
   "analytics": {
     "title": "Аналитика",

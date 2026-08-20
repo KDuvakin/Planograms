@@ -163,7 +163,9 @@ export function CatalogView() {
                           {group.entries.map((e) => (
                             <tr key={`${e.format}::${e.node}`}>
                               <td>{e.node}</td>
-                              <td>{e.nodeName || "—"}</td>
+                              <td className={styles.truncateCell} title={e.nodeName || undefined}>
+                                {e.nodeName || "—"}
+                              </td>
                               <td>{e.format}</td>
                               <td>{e.storeCount}</td>
                               <td>{new Date(e.lastUpdated).toLocaleDateString(locale)}</td>

@@ -12,6 +12,7 @@
     "import": "Import",
     "users": "Users",
     "stores": "Stores",
+    "printers": "Printers",
     "analytics": "Analytics",
     "feedback": "Feedback",
     "signOut": "Sign out"
@@ -200,27 +201,43 @@
       "format": "Format",
       "address": "Address",
       "email": "Email",
-      "printers": "Printers",
       "actions": "Actions"
     },
-    "configure": "Configure",
-    "hide": "Hide",
-    "printersTitle": "Store printers",
-    "printerName": "Name",
-    "printerIp": "IP",
-    "noPrinters": "No printers yet",
-    "addPrinter": "Add printer",
-    "bulkAddLabel": "Bulk add",
-    "bulkAddPlaceholder": "Name, IP — one per line\nTill 1, 192.168.1.10\n192.168.1.11",
-    "bulkAddHint": "Will add {count} printer(s)",
-    "bulkAdd": "Add all",
-    "bulkAdding": "Adding…",
     "confirmDelete": "Delete store \"{store}\"? This action cannot be undone.",
     "errors": {
       "createStoreFailed": "Couldn't create the store",
-      "deleteStoreFailed": "Couldn't delete the store",
-      "bulkAddPrintersFailed": "Couldn't add the printers"
+      "deleteStoreFailed": "Couldn't delete the store"
     }
+  },
+  "adminPrinters": {
+    "title": "Printers",
+    "uploadTitle": "Upload from file",
+    "bulkUploadButton": "Upload",
+    "uploading": "Uploading…",
+    "downloadButton": "Download current (.xlsx)",
+    "uploadHint": "Columns: store_number, name, printer_ip, tray (optional), .xlsx or .csv. Uploading replaces all printers for any store listed in the file; stores not listed are left untouched.",
+    "uploadResult": "Updated {stores} store(s), {printers} printer(s).",
+    "unknownStores": "Unknown stores: {codes}.",
+    "addTitle": "Add printer",
+    "storeCodePlaceholder": "e.g. T233",
+    "add": "Add",
+    "searchPlaceholder": "Search: store, name, IP",
+    "table": {
+      "store": "Store",
+      "name": "Name",
+      "ip": "Printer IP",
+      "tray": "Tray",
+      "actions": "Actions"
+    },
+    "save": "Save",
+    "saving": "Saving…",
+    "errors": {
+      "ipRequired": "IP is required",
+      "addFailed": "Couldn't add the printer",
+      "saveFailed": "Couldn't save",
+      "uploadFailed": "Couldn't upload the file"
+    },
+    "empty": "Nothing found"
   },
   "analytics": {
     "title": "Analytics",

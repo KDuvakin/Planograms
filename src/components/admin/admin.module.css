@@ -76,6 +76,18 @@
   resize: vertical;
 }
 
+.uploadRow {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.rowActions {
+  display: flex;
+  gap: 6px;
+}
+
 .bulkForm {
   display: flex;
   flex-direction: column;
@@ -101,6 +113,8 @@
 }
 
 .btnGhost {
+  display: inline-flex;
+  align-items: center;
   padding: 10px 16px;
   border: 1px solid var(--line);
   border-radius: var(--radius-sm);
@@ -108,6 +122,7 @@
   color: var(--ink);
   font-weight: 600;
   cursor: pointer;
+  text-decoration: none;
   height: fit-content;
 }
 
@@ -121,6 +136,11 @@
 .tableWrap {
   overflow-x: auto;
   max-width: 100%;
+  /* .card is a column flexbox — without this, a flex item's default min-width:auto lets
+     the table push .card (and the whole page) wider than the viewport instead of
+     scrolling within this wrapper, which is exactly what clipped the date column on
+     narrow screens. */
+  min-width: 0;
 }
 
 .table {
@@ -139,8 +159,18 @@
 }
 
 .table th {
+  background: var(--surface-2);
   color: var(--ink-soft);
   font-weight: 600;
+}
+
+/* caps how much width a long free-text column (e.g. a planogram's name) can claim, so
+   short fixed-format columns after it — like a date — don't get pushed off a narrow
+   screen */
+.truncateCell {
+  max-width: 130px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* a run with feedback attached stands out from the rest of the list at a glance */
