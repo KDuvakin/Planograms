@@ -13,6 +13,7 @@
     "users": "Kasutajad",
     "stores": "Poed",
     "analytics": "Analüütika",
+    "feedback": "Tagasiside",
     "signOut": "Logi välja"
   },
   "home": {
@@ -35,7 +36,22 @@
       "DONE": "valmis"
     },
     "uncategorized": "Kategoriseerimata",
-    "categoryStats": "Uued: {newCount} · Pooleli: {inProgress} · Kokku: {total}"
+    "categoryStats": "Uued: {newCount} · Pooleli: {inProgress} · Kokku: {total}",
+    "onlyNotDone": "Ainult lõpetamata",
+    "allDoneFiltered": "Kõik planogrammid on valmis 🎉"
+  },
+  "planogramCatalog": {
+    "totalLabel": "Unikaalseid planogramme kokku",
+    "searchPlaceholder": "Otsi: nimi, number",
+    "formatSearchPlaceholder": "Otsi formaadi järgi",
+    "table": {
+      "node": "Number",
+      "name": "Nimi",
+      "format": "Formaat",
+      "stores": "Poode",
+      "updated": "Uuendatud"
+    },
+    "empty": "Midagi ei leitud"
   },
   "preview": {
     "back": "← Kõik planogrammid",
@@ -220,7 +236,9 @@
     "byStoreTable": {
       "store": "Pood",
       "done": "Valmis",
-      "inProgress": "Pooleli"
+      "inProgress": "Pooleli",
+      "notStarted": "Alustamata",
+      "total": "Kokku"
     },
     "runsTitle": "Planogrammid poodide kaupa",
     "allStores": "Kõik poed",
@@ -229,7 +247,7 @@
       "planogram": "Planogramm",
       "started": "Alustatud",
       "finished": "Lõpetatud",
-      "duration": "Kestus, min",
+      "duration": "Täitmisaeg, min",
       "feedbackCount": "Tagasiside"
     },
     "noRuns": "Veel pole midagi tehtud",
@@ -249,6 +267,18 @@
       "otherReason": "muu"
     },
     "noFeedback": "Tagasisidet pole veel",
-    "minutesShort": "min"
+    "minutesShort": "min",
+    "onlyWithFeedback": "Ainult tagasisidega",
+    "replyPlaceholder": "Vastus poele…",
+    "acceptedLabel": "Kommentaar kinnitatud",
+    "saveReply": "Salvesta",
+    "saving": "Salvestamine…",
+    "repliedByLabel": "Vastas"
+  },
+  "storeFeedback": {
+    "title": "Tagasiside",
+    "empty": "Teie poe kohta pole veel tagasisidet",
+    "flag": "Märgi",
+    "unflag": "Eemalda märge"
   }
 }

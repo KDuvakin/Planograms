@@ -13,6 +13,7 @@
     "users": "Lietotāji",
     "stores": "Veikali",
     "analytics": "Analītika",
+    "feedback": "Atsauksmes",
     "signOut": "Iziet"
   },
   "home": {
@@ -35,7 +36,22 @@
       "DONE": "izpildīts"
     },
     "uncategorized": "Bez kategorijas",
-    "categoryStats": "Jaunas: {newCount} · Izpildē: {inProgress} · Kopā: {total}"
+    "categoryStats": "Jaunas: {newCount} · Izpildē: {inProgress} · Kopā: {total}",
+    "onlyNotDone": "Tikai nepabeigtās",
+    "allDoneFiltered": "Visas planogrammas ir pabeigtas 🎉"
+  },
+  "planogramCatalog": {
+    "totalLabel": "Unikālu planogrammu kopā",
+    "searchPlaceholder": "Meklēt: nosaukums, numurs",
+    "formatSearchPlaceholder": "Meklēt pēc formāta",
+    "table": {
+      "node": "Numurs",
+      "name": "Nosaukums",
+      "format": "Formāts",
+      "stores": "Veikalu",
+      "updated": "Atjaunināts"
+    },
+    "empty": "Nekas nav atrasts"
   },
   "preview": {
     "back": "← Visas planogrammas",
@@ -220,7 +236,9 @@
     "byStoreTable": {
       "store": "Veikals",
       "done": "Izpildīts",
-      "inProgress": "Izpildē"
+      "inProgress": "Izpildē",
+      "notStarted": "Nav sākts",
+      "total": "Kopā"
     },
     "runsTitle": "Planogrammas pēc veikala",
     "allStores": "Visi veikali",
@@ -229,7 +247,7 @@
       "planogram": "Planograma",
       "started": "Sākts",
       "finished": "Pabeigts",
-      "duration": "Ilgums, min",
+      "duration": "Izpildes laiks, min",
       "feedbackCount": "Atsauksmes"
     },
     "noRuns": "Vēl nekas nav izpildīts",
@@ -249,6 +267,18 @@
       "otherReason": "cits"
     },
     "noFeedback": "Atsauksmju vēl nav",
-    "minutesShort": "min"
+    "minutesShort": "min",
+    "onlyWithFeedback": "Tikai ar atsauksmēm",
+    "replyPlaceholder": "Atbilde veikalam…",
+    "acceptedLabel": "Komentārs pieņemts",
+    "saveReply": "Saglabāt",
+    "saving": "Saglabā…",
+    "repliedByLabel": "Atbildēja"
+  },
+  "storeFeedback": {
+    "title": "Atsauksmes",
+    "empty": "Jūsu veikalam vēl nav atsauksmju",
+    "flag": "Atzīmēt",
+    "unflag": "Noņemt atzīmi"
   }
 }

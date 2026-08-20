@@ -12,10 +12,13 @@ export function TopNav() {
   const { data: session } = useSession();
   const role = session?.user?.role;
   const isAdmin = role === "ADMIN";
-  const isStaff = role === "ADMIN" || role === "MANAGER";
+  const isStore = role === "STORE";
 
-  if (!isStaff) return null;
+  if (!role) return null;
 
+  // Every role gets Планограммы + Аналитика (each sees its own slice once inside);
+  // ADMIN additionally gets the admin CRUD pages, STORE additionally gets their
+  // store's feedback inbox.
   const links = [
     { href: "/planograms", label: t("planograms") },
     ...(isAdmin
@@ -26,6 +29,7 @@ export function TopNav() {
         ]
       : []),
     { href: "/analytics", label: t("analytics") },
+    ...(isStore ? [{ href: "/feedback", label: t("feedback") }] : []),
   ];
 
   return (

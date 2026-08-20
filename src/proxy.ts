@@ -2,11 +2,10 @@ import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 
 const PUBLIC_PREFIXES = ["/login", "/api/auth"];
-// /admin (import, users, stores) is ADMIN-only; /analytics is ADMIN+MANAGER
-// (a MANAGER only ever sees their own store's data once inside, enforced by
-// the API routes — see src/app/api/planograms/route.ts and analytics routes).
+// /admin (import, users, stores) is ADMIN-only. /analytics and /feedback are open to
+// every role — each sees a different slice once inside (a STORE user only ever sees
+// their own store's data), enforced by the API routes, not by this gate.
 const ADMIN_ONLY_PREFIXES = ["/admin"];
-const STAFF_ONLY_PREFIXES = ["/analytics"];
 
 export default auth((req) => {
   const { pathname } = req.nextUrl;
@@ -22,14 +21,6 @@ export default auth((req) => {
   const role = req.auth.user.role;
 
   if (ADMIN_ONLY_PREFIXES.some((p) => pathname.startsWith(p)) && role !== "ADMIN") {
-    return NextResponse.redirect(new URL("/planograms", req.nextUrl));
-  }
-
-  if (
-    STAFF_ONLY_PREFIXES.some((p) => pathname.startsWith(p)) &&
-    role !== "ADMIN" &&
-    role !== "MANAGER"
-  ) {
     return NextResponse.redirect(new URL("/planograms", req.nextUrl));
   }
 

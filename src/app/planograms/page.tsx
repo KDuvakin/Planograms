@@ -1,13 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useSWR from "swr";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
 import { useLocale, useTranslations } from "next-intl";
 import { PageHeader } from "@/components/PageHeader";
 import { TopNav } from "@/components/TopNav";
+import { CatalogView } from "@/components/planograms/CatalogView";
 import { localizedName, resolveNodeCategory, type CategoryWithNodes } from "@/lib/nodeCategory";
 import styles from "./planograms.module.css";
+import catalogStyles from "@/components/admin/admin.module.css";
 import { fetcher } from "@/lib/swrFetcher";
 
 interface PlanogramListItem {
@@ -111,14 +114,55 @@ function groupByCategory(
   return groups;
 }
 
+const ONLY_NOT_DONE_KEY = "planograms.onlyNotDone";
+
 export default function PlanogramsPage() {
+  const { data: session } = useSession();
+  const t = useTranslations("planograms");
+  const role = session?.user?.role;
+
+  // ADMIN/SPECIALIST get the wide, desktop-oriented catalog layout (admin.module.css);
+  // STORE keeps the mobile-first operational tree — different enough page containers
+  // (max-width, padding) that sharing one <main> would squeeze one of them.
+  if (!role) return null;
+  if (role !== "STORE") {
+    return (
+      <main className={catalogStyles.page}>
+        <PageHeader title={t("title")} />
+        <TopNav />
+        <CatalogView />
+      </main>
+    );
+  }
+
+  return (
+    <main className={styles.page}>
+      <PageHeader title={t("title")} />
+      <TopNav />
+      <StoreTree />
+    </main>
+  );
+}
+
+/** The operational, run-status-aware view a store user resets shelves from. */
+function StoreTree() {
   const t = useTranslations("planograms");
   const tCommon = useTranslations("common");
   const locale = useLocale();
   const { data, isLoading } = useSWR<PlanogramListItem[]>("/api/planograms", fetcher);
   const { data: categories } = useSWR<CategoryWithNodes[]>("/api/categories", fetcher);
 
-  const groups = groupByCategory(data ?? [], categories ?? [], locale, t("uncategorized"));
+  // Persisted across visits — store users re-open this list constantly mid-shift and
+  // shouldn't have to re-toggle the filter every time.
+  const [onlyNotDone, setOnlyNotDone] = useState(
+    () => typeof window !== "undefined" && localStorage.getItem(ONLY_NOT_DONE_KEY) === "1"
+  );
+  useEffect(() => {
+    localStorage.setItem(ONLY_NOT_DONE_KEY, onlyNotDone ? "1" : "0");
+  }, [onlyNotDone]);
+
+  const filteredData = onlyNotDone ? (data ?? []).filter((p) => p.runStatus !== "DONE") : data;
+  const groups = groupByCategory(filteredData ?? [], categories ?? [], locale, t("uncategorized"));
   const showStoreCode = new Set((data ?? []).map((p) => p.store.id)).size > 1;
 
   // Tree starts fully collapsed — a category only opens once the user taps it.
@@ -134,13 +178,28 @@ export default function PlanogramsPage() {
   }
 
   return (
-    <main className={styles.page}>
-      <PageHeader title={t("title")} />
-
-      <TopNav />
-
+    <>
       {isLoading && <p className={styles.hint}>{tCommon("loading")}</p>}
       {!isLoading && data?.length === 0 && <p className={styles.hint}>{t("empty")}</p>}
+
+      {!isLoading && data && data.length > 0 && (
+        <label className={styles.filterRow}>
+          <span className={styles.filterLabel}>{t("onlyNotDone")}</span>
+          <span className={styles.switch}>
+            <input
+              type="checkbox"
+              className={styles.switchInput}
+              checked={onlyNotDone}
+              onChange={(e) => setOnlyNotDone(e.target.checked)}
+            />
+            <span className={styles.switchTrack} />
+          </span>
+        </label>
+      )}
+
+      {onlyNotDone && filteredData?.length === 0 && data && data.length > 0 && (
+        <p className={styles.hint}>{t("allDoneFiltered")}</p>
+      )}
 
       <div className={styles.tree}>
         {groups.filter((group) => group.items.length > 0).map((group) => {
@@ -222,6 +281,6 @@ export default function PlanogramsPage() {
           );
         })}
       </div>
-    </main>
+    </>
   );
 }

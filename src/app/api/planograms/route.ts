@@ -7,11 +7,11 @@ export async function GET(req: NextRequest) {
   try {
     const session = await requireUser();
 
-    // MERCHANDISER and MANAGER are confined to their own store — a store-scoped
-    // role, not just a default — any ?storeId= override is ignored for them.
-    // Only ADMIN can see (or filter across) every store.
+    // STORE is confined to its own store — a store-scoped role, not just a default —
+    // any ?storeId= override is ignored for it. ADMIN and SPECIALIST see (or filter
+    // across) every store.
     const storeId =
-      session.user.role === "ADMIN"
+      session.user.role === "ADMIN" || session.user.role === "SPECIALIST"
         ? (req.nextUrl.searchParams.get("storeId") ?? undefined)
         : (session.user.storeId ?? undefined);
 

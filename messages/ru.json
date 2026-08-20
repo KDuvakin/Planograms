@@ -13,6 +13,7 @@
     "users": "Пользователи",
     "stores": "Магазины",
     "analytics": "Аналитика",
+    "feedback": "Отзывы",
     "signOut": "Выйти"
   },
   "home": {
@@ -35,7 +36,22 @@
       "DONE": "собрано"
     },
     "uncategorized": "Без категории",
-    "categoryStats": "Новые: {newCount} · В процессе: {inProgress} · Всего: {total}"
+    "categoryStats": "Новые: {newCount} · В процессе: {inProgress} · Всего: {total}",
+    "onlyNotDone": "Только не собранные",
+    "allDoneFiltered": "Все планограммы собраны 🎉"
+  },
+  "planogramCatalog": {
+    "totalLabel": "Всего уникальных планограмм",
+    "searchPlaceholder": "Поиск: название, номер",
+    "formatSearchPlaceholder": "Поиск по формату",
+    "table": {
+      "node": "Номер",
+      "name": "Название",
+      "format": "Формат",
+      "stores": "Магазинов",
+      "updated": "Обновлено"
+    },
+    "empty": "Ничего не найдено"
   },
   "preview": {
     "back": "← Все планограммы",
@@ -220,7 +236,9 @@
     "byStoreTable": {
       "store": "Магазин",
       "done": "Собрано",
-      "inProgress": "В процессе"
+      "inProgress": "В процессе",
+      "notStarted": "Не начато",
+      "total": "Всего"
     },
     "runsTitle": "Планограммы по магазину",
     "allStores": "Все магазины",
@@ -229,7 +247,7 @@
       "planogram": "Планограмма",
       "started": "Начато",
       "finished": "Завершено",
-      "duration": "Время, мин",
+      "duration": "Время выполнения, мин",
       "feedbackCount": "Отзывы"
     },
     "noRuns": "Пока ничего не выполнялось",
@@ -249,6 +267,18 @@
       "otherReason": "другое"
     },
     "noFeedback": "Пока нет отзывов",
-    "minutesShort": "мин"
+    "minutesShort": "мин",
+    "onlyWithFeedback": "Только с отзывами",
+    "replyPlaceholder": "Ответ магазину…",
+    "acceptedLabel": "Комментарий принят",
+    "saveReply": "Сохранить",
+    "saving": "Сохранение…",
+    "repliedByLabel": "Ответил"
+  },
+  "storeFeedback": {
+    "title": "Отзывы",
+    "empty": "По вашему магазину пока нет отзывов",
+    "flag": "Отметить",
+    "unflag": "Снять отметку"
   }
 }

@@ -4,7 +4,7 @@ import { requireRole } from "@/lib/rbac";
 import { handleApiError } from "@/lib/apiError";
 import { prisma } from "@/lib/db";
 
-const VALID_ROLES = new Set(["ADMIN", "MANAGER", "MERCHANDISER"]);
+const VALID_ROLES = new Set(["ADMIN", "SPECIALIST", "STORE"]);
 
 export async function PATCH(req: Request, ctx: RouteContext<"/api/users/[id]">) {
   try {
@@ -25,8 +25,8 @@ export async function PATCH(req: Request, ctx: RouteContext<"/api/users/[id]">) 
     if ("storeId" in body) data.storeId = body.storeId ? String(body.storeId) : null;
     if (typeof body.active === "boolean") data.active = body.active;
     if (typeof body.password === "string" && body.password.length > 0) {
-      if (body.password.length < 8) {
-        return NextResponse.json({ error: "Пароль должен быть не короче 8 символов" }, { status: 400 });
+      if (body.password.length < 4) {
+        return NextResponse.json({ error: "Пароль должен быть не короче 4 символов" }, { status: 400 });
       }
       data.passwordHash = await bcrypt.hash(body.password, 12);
     }

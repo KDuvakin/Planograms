@@ -18,12 +18,12 @@ interface UserRow {
   id: string;
   email: string;
   name: string | null;
-  role: "ADMIN" | "MANAGER" | "MERCHANDISER";
+  role: "ADMIN" | "SPECIALIST" | "STORE";
   active: boolean;
   store: { id: string; code: string } | null;
 }
 
-const ROLES = ["ADMIN", "MANAGER", "MERCHANDISER"] as const;
+const ROLES = ["ADMIN", "SPECIALIST", "STORE"] as const;
 
 export default function UsersAdminPage() {
   const t = useTranslations("adminUsers");
@@ -34,7 +34,7 @@ export default function UsersAdminPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
-  const [role, setRole] = useState<(typeof ROLES)[number]>("MERCHANDISER");
+  const [role, setRole] = useState<(typeof ROLES)[number]>("STORE");
   const [storeId, setStoreId] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -61,7 +61,7 @@ export default function UsersAdminPage() {
     setEmail("");
     setPassword("");
     setName("");
-    setRole("MERCHANDISER");
+    setRole("STORE");
     setStoreId("");
     mutate();
   }
@@ -113,7 +113,7 @@ export default function UsersAdminPage() {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              minLength={8}
+              minLength={4}
               required
             />
           </label>

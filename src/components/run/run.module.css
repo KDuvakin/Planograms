@@ -98,9 +98,14 @@
 }
 
 /* only the step-execution screen ever renders a position arrow above a block — everywhere
-   else (the pre-run preview, the rack-complete summary) this would just be dead space */
+   else (the pre-run preview, the rack-complete summary) this would just be dead space.
+   Needs to fully contain the arrow (25px tall + 2px margin) rather than just clear the
+   block: `.shelfProducts` mixes `overflow-x: auto` with `overflow-y: visible`, and per
+   the CSS overflow spec a `visible` paired with a non-visible value on the other axis is
+   computed as `auto` instead — so anything poking above this padding actually gets
+   clipped, it doesn't escape the box. */
 .shelfProductsWithArrow {
-  padding-top: 26px;
+  padding-top: 34px;
 }
 
 /* the shelf itself — a physical plank the products sit on, not just a text label */

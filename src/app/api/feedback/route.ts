@@ -20,13 +20,19 @@ const UPLOAD_DIR = path.join(process.cwd(), "public", "uploads", "feedback");
 
 export async function GET() {
   try {
-    await requireRole("ADMIN", "MANAGER");
+    const session = await requireRole("ADMIN", "SPECIALIST", "STORE");
+
+    // A store user only ever sees their own store's feedback — everyone else (ADMIN,
+    // SPECIALIST) sees it all, same as the existing analytics access pattern.
+    const isStore = session.user.role === "STORE";
 
     const feedback = await prisma.feedback.findMany({
+      where: isStore ? { run: { planogram: { storeId: session.user.storeId ?? "__none__" } } } : {},
       orderBy: { createdAt: "desc" },
       take: 100,
       include: {
         user: { select: { email: true, name: true } },
+        repliedBy: { select: { email: true, name: true } },
         planogramItem: { select: { sap: true, article: true } },
         photos: { select: { url: true } },
         run: {

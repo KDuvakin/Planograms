@@ -9,7 +9,7 @@ datasource db {
 
 // SQL Server connector doesn't support native enums — Role/RunStatus are
 // plain strings, validated at the application layer (see src/lib/rbac.ts).
-// Role: "ADMIN" | "MANAGER" | "MERCHANDISER"
+// Role: "ADMIN" | "SPECIALIST" | "STORE"
 // RunStatus: "NOT_STARTED" | "IN_PROGRESS" | "DONE" | "ABANDONED"
 
 model User {
@@ -17,15 +17,16 @@ model User {
   email        String   @unique
   passwordHash String
   name         String?
-  role         String   @default("MERCHANDISER")
+  role         String   @default("STORE")
   storeId      String?
   store        Store?   @relation(fields: [storeId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   active       Boolean  @default(true)
   createdAt    DateTime @default(now())
 
-  runs      PlanogramRun[]
-  imports   Planogram[]    @relation("ImportedBy")
-  feedbacks Feedback[]
+  runs            PlanogramRun[]
+  imports         Planogram[]    @relation("ImportedBy")
+  feedbacks       Feedback[]     @relation("FeedbackAuthor")
+  feedbackReplies Feedback[]     @relation("FeedbackReplier")
 }
 
 model Store {
@@ -179,8 +180,20 @@ model Feedback {
 
   comment   String   @db.NVarChar(Max)
   userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  user      User     @relation("FeedbackAuthor", fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   createdAt DateTime @default(now())
+
+  // A planogram specialist's written reply back to the store, plus their
+  // "acknowledged" checkbox — both set together whenever they respond.
+  reply       String?   @db.NVarChar(Max)
+  repliedById String?
+  repliedBy   User?     @relation("FeedbackReplier", fields: [repliedById], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  repliedAt   DateTime?
+  accepted    Boolean   @default(false)
+
+  // The store's own "pay attention to this" marker — independent of the specialist's
+  // reply, so a merchandiser can flag a row before anyone's replied to it.
+  flaggedByStore Boolean @default(false)
 
   photos FeedbackPhoto[]
 

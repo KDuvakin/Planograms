@@ -143,6 +143,16 @@
   font-weight: 600;
 }
 
+/* a run with feedback attached stands out from the rest of the list at a glance */
+.rowWithFeedback td {
+  background: var(--move-soft);
+}
+
+/* every piece of feedback on this row has a specialist reply — nothing left to action */
+.rowFeedbackAnswered td {
+  background: var(--ok-soft);
+}
+
 /* table cells size to their content by default (unlike the create-form's .input/.select,
    which stretch to fill a grid column) — without a floor they'd shrink to a sliver and
    clip whatever's typed into them */
@@ -188,6 +198,33 @@
   border: 1px solid var(--line);
 }
 
+.thumbBtn {
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  line-height: 0;
+}
+
+.photoLightboxOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(20, 35, 31, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  z-index: 60;
+  cursor: zoom-out;
+}
+
+.photoLightboxImg {
+  max-width: 100%;
+  max-height: 100%;
+  border-radius: var(--radius-sm);
+  object-fit: contain;
+}
+
 .thumbRow {
   display: flex;
   gap: 4px;
@@ -217,6 +254,13 @@
   gap: 6px;
 }
 
+/* the store's own "pay attention to this" marker — a distinct color so a flagged
+   row stands out from the rest of the list at a glance */
+.recordCardFlagged {
+  border-color: var(--move);
+  background: var(--move-soft);
+}
+
 .recordHeader {
   display: flex;
   align-items: baseline;
@@ -244,4 +288,156 @@
   font-size: 13px;
   color: var(--ink);
   font-style: italic;
+}
+
+.replyReadout {
+  border-left: 2px solid var(--accent);
+  padding-left: 8px;
+  margin-top: 2px;
+}
+
+.replyBox {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 4px;
+  padding-top: 8px;
+  border-top: 1px dashed var(--line);
+}
+
+.replyActions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.checkboxRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--ink-soft);
+}
+
+/* ===== toggle switch (analytics/planogram list filters) ===== */
+
+.filterRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.filterLabel {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.switch {
+  flex: 0 0 auto;
+  position: relative;
+  width: 42px;
+  height: 24px;
+}
+
+.switchInput {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.switchTrack {
+  position: absolute;
+  inset: 0;
+  background: var(--surface-3);
+  border-radius: 999px;
+  transition: background-color 0.15s ease;
+}
+
+.switchTrack::before {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--surface);
+  box-shadow: var(--shadow-1);
+  transition: transform 0.15s ease;
+}
+
+.switchInput:checked + .switchTrack {
+  background: var(--accent);
+}
+
+.switchInput:checked + .switchTrack::before {
+  transform: translateX(18px);
+}
+
+/* ===== catalog tree (ADMIN/SPECIALIST planogram catalog, grouped by format) ===== */
+
+.catalogTree {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.catalogGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.catalogHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--surface-2);
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+}
+
+.catalogIconWrap {
+  flex: 0 0 auto;
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 17px;
+}
+
+.catalogHeaderLabel {
+  flex: 1;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.categoryCount {
+  font-weight: 400;
+  color: var(--ink-faint);
+}
+
+.chevron {
+  color: var(--ink-faint);
+  font-size: 12px;
+  transition: transform 0.15s ease;
+  transform: rotate(0deg);
+}
+
+.chevronCollapsed {
+  transform: rotate(-90deg);
 }

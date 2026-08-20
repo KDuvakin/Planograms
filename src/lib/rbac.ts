@@ -1,6 +1,6 @@
 import { auth } from "@/auth";
 
-export type Role = "ADMIN" | "MANAGER" | "MERCHANDISER";
+export type Role = "ADMIN" | "SPECIALIST" | "STORE";
 
 export class UnauthorizedError extends Error {}
 export class ForbiddenError extends Error {}

@@ -5,10 +5,10 @@ import { prisma } from "@/lib/db";
 
 export async function GET() {
   try {
-    const session = await requireRole("ADMIN", "MANAGER");
+    const session = await requireRole("ADMIN", "SPECIALIST", "STORE");
 
-    // MANAGER only ever sees their own store's numbers.
-    const storeId = session.user.role === "MANAGER" ? session.user.storeId : undefined;
+    // A store user only ever sees their own store's numbers.
+    const storeId = session.user.role === "STORE" ? session.user.storeId : undefined;
     const planogramFilter = storeId ? { planogram: { storeId } } : {};
 
     // These three queries don't depend on each other's results, so they run concurrently
@@ -58,7 +58,10 @@ export async function GET() {
     let done = 0;
     // Keyed by store code — same dedup as the overall totals just below, so "how many
     // planograms are done" can never disagree with "how many of THIS store's are done".
-    const byStore = new Map<string, { storeCode: string; done: number; inProgress: number }>();
+    const byStore = new Map<
+      string,
+      { storeCode: string; done: number; inProgress: number; notStarted: number; total: number }
+    >();
     for (const p of planograms) {
       const status = latestByPlanogram.get(p.id)?.status;
       if (status === "DONE") done++;
@@ -66,10 +69,14 @@ export async function GET() {
       else notStarted++;
 
       const code = p.store.code;
-      if (!byStore.has(code)) byStore.set(code, { storeCode: code, done: 0, inProgress: 0 });
+      if (!byStore.has(code)) {
+        byStore.set(code, { storeCode: code, done: 0, inProgress: 0, notStarted: 0, total: 0 });
+      }
       const entry = byStore.get(code)!;
+      entry.total++;
       if (status === "DONE") entry.done++;
       else if (status === "IN_PROGRESS") entry.inProgress++;
+      else entry.notStarted++;
     }
     const notDonePlanograms = totalPlanograms - done;
 

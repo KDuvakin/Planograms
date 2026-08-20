@@ -25,7 +25,7 @@ export async function GET() {
   }
 }
 
-const VALID_ROLES = new Set(["ADMIN", "MANAGER", "MERCHANDISER"]);
+const VALID_ROLES = new Set(["ADMIN", "SPECIALIST", "STORE"]);
 
 export async function POST(req: NextRequest) {
   try {
@@ -35,12 +35,12 @@ export async function POST(req: NextRequest) {
     const email = String(body.email ?? "").trim().toLowerCase();
     const password = String(body.password ?? "");
     const name = body.name ? String(body.name).trim() : null;
-    const role = VALID_ROLES.has(body.role) ? body.role : "MERCHANDISER";
+    const role = VALID_ROLES.has(body.role) ? body.role : "STORE";
     const storeId = body.storeId ? String(body.storeId) : null;
 
-    if (!email || password.length < 8) {
+    if (!email || password.length < 4) {
       return NextResponse.json(
-        { error: "email обязателен, пароль должен быть не короче 8 символов" },
+        { error: "email обязателен, пароль должен быть не короче 4 символов" },
         { status: 400 }
       );
     }

@@ -13,6 +13,7 @@
     "users": "Users",
     "stores": "Stores",
     "analytics": "Analytics",
+    "feedback": "Feedback",
     "signOut": "Sign out"
   },
   "home": {
@@ -35,7 +36,22 @@
       "DONE": "done"
     },
     "uncategorized": "Uncategorized",
-    "categoryStats": "New: {newCount} · In progress: {inProgress} · Total: {total}"
+    "categoryStats": "New: {newCount} · In progress: {inProgress} · Total: {total}",
+    "onlyNotDone": "Not done only",
+    "allDoneFiltered": "All planograms are done 🎉"
+  },
+  "planogramCatalog": {
+    "totalLabel": "Total unique planograms",
+    "searchPlaceholder": "Search: name, number",
+    "formatSearchPlaceholder": "Search by format",
+    "table": {
+      "node": "Number",
+      "name": "Name",
+      "format": "Format",
+      "stores": "Stores",
+      "updated": "Updated"
+    },
+    "empty": "Nothing found"
   },
   "preview": {
     "back": "← All planograms",
@@ -220,7 +236,9 @@
     "byStoreTable": {
       "store": "Store",
       "done": "Done",
-      "inProgress": "In progress"
+      "inProgress": "In progress",
+      "notStarted": "Not started",
+      "total": "Total"
     },
     "runsTitle": "Planograms by store",
     "allStores": "All stores",
@@ -229,7 +247,7 @@
       "planogram": "Planogram",
       "started": "Started",
       "finished": "Finished",
-      "duration": "Duration, min",
+      "duration": "Completion time, min",
       "feedbackCount": "Feedback"
     },
     "noRuns": "Nothing implemented yet",
@@ -249,6 +267,18 @@
       "otherReason": "other"
     },
     "noFeedback": "No feedback yet",
-    "minutesShort": "min"
+    "minutesShort": "min",
+    "onlyWithFeedback": "With feedback only",
+    "replyPlaceholder": "Reply to the store…",
+    "acceptedLabel": "Comment acknowledged",
+    "saveReply": "Save",
+    "saving": "Saving…",
+    "repliedByLabel": "Replied by"
+  },
+  "storeFeedback": {
+    "title": "Feedback",
+    "empty": "No feedback for your store yet",
+    "flag": "Flag",
+    "unflag": "Unflag"
   }
 }
