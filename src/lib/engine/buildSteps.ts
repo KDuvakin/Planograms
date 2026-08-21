@@ -32,11 +32,15 @@ export function buildSteps(state: EngineState): void {
     location[p.index] = { type: "shelf", rack: r, shelf: s };
   });
 
+  // Old-physical queue, consumed front-first — sorted so the front is always
+  // "the next old item in the direction we're sweeping": left-to-right normally,
+  // right-to-left when mirrored (kept in lockstep with the target-visit order below).
   Object.keys(remainingByShelf).forEach((r) => {
     Object.keys(remainingByShelf[r]).forEach((s) => {
-      remainingByShelf[r][s].sort(
-        (a, b) => (parseInt(a.positionNumberOld, 10) || 0) - (parseInt(b.positionNumberOld, 10) || 0)
-      );
+      remainingByShelf[r][s].sort((a, b) => {
+        const diff = (parseInt(a.positionNumberOld, 10) || 0) - (parseInt(b.positionNumberOld, 10) || 0);
+        return state.mirrored ? -diff : diff;
+      });
     });
   });
 
@@ -51,6 +55,10 @@ export function buildSteps(state: EngineState): void {
       if (!targetByShelf[r][s]) targetByShelf[r][s] = [];
       targetByShelf[r][s].push(p);
     });
+  // Always sorted ascending regardless of mirroring — `ti` (this array's index) doubles as
+  // each item's render rank via insertByTi(), so the rendered shelf always ends up in true
+  // left-to-right position order; the mirrored-visit-order loop below reads this same
+  // ascending array back-to-front instead of re-sorting it, keeping that render rank intact.
   Object.keys(targetByShelf).forEach((r) => {
     Object.keys(targetByShelf[r]).forEach((s) => {
       targetByShelf[r][s].sort(
@@ -127,7 +135,11 @@ export function buildSteps(state: EngineState): void {
         }
       }
 
-      for (let ti = 0; ti < target.length; ti++) {
+      // Visits `target` back-to-front when mirrored (right-to-left), in lockstep with the
+      // reversed `remaining` queue above — `ti` itself still means "true ascending render
+      // rank", only the VISIT sequence (which position gets worked on 1st/2nd/...) flips.
+      for (let step = 0; step < target.length; step++) {
+        const ti = state.mirrored ? target.length - 1 - step : step;
         const want = target[ti];
         const neededWidth = neededWidthOf(want);
         const wantIsAnchor = isAnchor(want);

@@ -101,6 +101,47 @@ describe("gap identity after coalescing", () => {
   });
 });
 
+describe("mirrored assembly", () => {
+  const flatten = (s: ReturnType<typeof createEngineState>) =>
+    Object.entries(s.racks)
+      .flatMap(([rack, shelves]) =>
+        Object.entries(shelves).flatMap(([shelf, rs]) =>
+          rs.items
+            .filter((it) => !isGap(it))
+            .map((it) => ("sap" in it ? `${rack}/${shelf}:${it.sap}:${it.currentFaces}` : ""))
+        )
+      )
+      .sort();
+
+  it("visits shelf positions right-to-left, but ends up at the exact same final layout as unmirrored", () => {
+    const unmirrored = createEngineState(items(SWAP_ROWS));
+    for (let i = 0; i < unmirrored.realStepsTotal; i++) nextStep(unmirrored);
+
+    const mirrored = createEngineState(items(SWAP_ROWS), true);
+    for (let i = 0; i < mirrored.realStepsTotal; i++) nextStep(mirrored);
+
+    expect(mirrored.realStepsTotal).toBe(unmirrored.realStepsTotal);
+    expect(flatten(mirrored)).toEqual(flatten(unmirrored));
+  });
+
+  it("visits target positions on a shelf back-to-front, keeping each step's render rank at its true ascending position", () => {
+    const rows = [
+      row("A", "New", "1", "1", "1", 1, 10),
+      row("B", "New", "1", "1", "2", 1, 10),
+      row("C", "New", "1", "1", "3", 1, 10),
+    ];
+
+    const ascending = createEngineState(items(rows));
+    expect(ascending.steps.map((s) => s.product.sap)).toEqual(["A", "B", "C"]);
+
+    const mirrored = createEngineState(items(rows), true);
+    expect(mirrored.steps.map((s) => s.product.sap)).toEqual(["C", "B", "A"]);
+    expect(mirrored.steps.find((s) => s.product.sap === "A")?.ti).toBe(0);
+    expect(mirrored.steps.find((s) => s.product.sap === "B")?.ti).toBe(1);
+    expect(mirrored.steps.find((s) => s.product.sap === "C")?.ti).toBe(2);
+  });
+});
+
 describe("seekToRealStep", () => {
   it("jumping straight to a step produces the same state as stepping there one click at a time", () => {
     const stepped = createEngineState(items(SWAP_ROWS));

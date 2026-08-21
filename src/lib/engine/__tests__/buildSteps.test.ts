@@ -139,6 +139,29 @@ describe("buildSteps — forced eviction chain", () => {
   });
 });
 
+describe("buildSteps — forced eviction chain, mirrored", () => {
+  it("still evicts every blocking product needed to fit the incoming item, just in reversed visit order", () => {
+    const state = makeState(
+      [
+        row("F", "Old", "1", "1", "1", 1, 10),
+        row("F", "New", "1", "1", "1", 1, 10),
+        row("G", "Old", "1", "1", "2", 1, 10), // deleted — no New row
+        row("H", "Old", "1", "1", "3", 1, 10), // deleted — no New row
+        row("J", "New", "1", "1", "2", 4, 5), // new — needs width 20
+      ],
+      true
+    );
+    expect(state.realStepsTotal).toBe(3);
+
+    const evictedSaps = state.steps.filter((s) => s.type === "evict").map((s) => s.product.sap);
+    expect(evictedSaps.sort()).toEqual(["G", "H"]);
+
+    const placeStep = state.steps.find((s) => s.type === "place");
+    expect(placeStep?.product.sap).toBe("J");
+    if (placeStep?.type === "place") expect(placeStep.source).toBe("newBasket");
+  });
+});
+
 describe("buildSteps — mirrored rack order", () => {
   it("processes racks ascending by default, descending when mirrored — step content is unaffected", () => {
     const rows = [
