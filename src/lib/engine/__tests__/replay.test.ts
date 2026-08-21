@@ -140,6 +140,42 @@ describe("mirrored assembly", () => {
     expect(mirrored.steps.find((s) => s.product.sap === "B")?.ti).toBe(1);
     expect(mirrored.steps.find((s) => s.product.sap === "C")?.ti).toBe(2);
   });
+
+  it("renders a mirrored shelf in true ascending position order at every step, not just in the final state", () => {
+    // Shelf reflow shaped like the real regression: last old item (C) is discontinued,
+    // a new item (D) is inserted at the front, and everyone else shifts by one —
+    // forcing every position on the shelf to be touched, back-to-front when mirrored.
+    const rows = [
+      row("A", "Old", "1", "1", "1", 1, 10),
+      row("A", "New", "1", "1", "2", 1, 10),
+      row("B", "Old", "1", "1", "2", 1, 10),
+      row("B", "New", "1", "1", "3", 1, 10),
+      row("C", "Old", "1", "1", "3", 1, 10), // deleted — no New row
+      row("D", "New", "1", "1", "1", 1, 10), // new — no Old row
+    ];
+
+    const renderedOrder = (s: ReturnType<typeof createEngineState>) =>
+      s.racks["1"]["1"].items.filter((it): it is Extract<typeof it, { sap: string }> => "sap" in it).map((it) => it.sap);
+
+    const expectedOrder = ["D", "A", "B"];
+    const mirrored = createEngineState(items(rows), true);
+    for (let i = 0; i < mirrored.realStepsTotal; i++) {
+      nextStep(mirrored);
+      // regardless of which order steps are *visited* in, whatever subset of
+      // items has been rendered so far must read left-to-right in true
+      // ascending target-position order — this is exactly what regressed: a
+      // settled item was getting spliced in at index 0, ahead of items that
+      // belonged before it.
+      const expectedSoFar = expectedOrder.filter((sap) => renderedOrder(mirrored).includes(sap));
+      expect(renderedOrder(mirrored)).toEqual(expectedSoFar);
+    }
+
+    // old (30cm: A+B+C) and new (30cm: D+A+B) totals match exactly here, so the
+    // shelf should end with no leftover gap at all — not a phantom one stranded
+    // wherever an eviction happened to occur.
+    expect(mirrored.racks["1"]["1"].items.some(isGap)).toBe(false);
+    expect(renderedOrder(mirrored)).toEqual(["D", "A", "B"]);
+  });
 });
 
 describe("seekToRealStep", () => {

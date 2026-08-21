@@ -35,28 +35,51 @@ function coalesceGaps(rs: ShelfState): void {
 /**
  * Inserts an item at its target index (ti) — not "at the end", since with
  * recursive rearrangement items may not resolve strictly left to right. All
- * already-settled items carry `_ti` and are sorted by it first; the untouched
- * tail of the old layout (no `_ti`) always stays after them.
+ * already-settled items carry `_ti` and are sorted by it first.
+ *
+ * The untouched remainder of the old layout (no `_ti`) sits on whichever side
+ * hasn't been visited yet: the tail when sweeping left-to-right (ascending ti,
+ * the default), the head when sweeping right-to-left (mirrored — settled items
+ * arrive in DESCENDING ti order, so every already-settled neighbour necessarily
+ * has a larger ti and belongs after the new one; untouched items belong before
+ * and must NOT stop the scan). Gaps are skipped while locating this boundary —
+ * they're not "untouched old layout", just leftover free space — and handled
+ * separately below.
+ *
+ * Freed width is a single shared pool per shelf (mirroring how buildSteps'
+ * own `freeWidth` ledger treats it), not pinned to wherever it happened to
+ * originate: whichever gap can cover this item, wherever it sits, is fair
+ * game. Preferring one already sitting at the boundary (checked first) simply
+ * avoids reshuffling the array when nothing needs to move.
  */
-function insertByTi(rs: ShelfState, item: Product, ti: number): void {
+function insertByTi(rs: ShelfState, item: Product, ti: number, mirrored: boolean): void {
   const neededW = item.faceWidth * (item.facesNew || item.currentFaces || 0);
 
   let idx = rs.items.length;
   for (let i = 0; i < rs.items.length; i++) {
-    const t = (rs.items[i] as Product)._ti;
-    if (t === undefined || t > ti) {
+    const slot = rs.items[i];
+    if (isGap(slot)) continue;
+    const t = (slot as Product)._ti;
+    const isBoundary = mirrored ? t !== undefined && t > ti : t === undefined || t > ti;
+    if (isBoundary) {
       idx = i;
       break;
     }
   }
 
-  // if a gap of sufficient (or larger) width already sits right at the boundary —
-  // occupy it in place; any leftover stays right after it, and no untouched
-  // neighbour ever shifts
-  const here = rs.items[idx];
-  if (here && isGap(here) && here.width >= neededW - RENDER_FIT_SLACK) {
-    const leftover = here.width - neededW;
-    rs.items[idx] = item;
+  const fitsHere = (g: ShelfSlot | undefined): g is GapMarker => !!g && isGap(g) && g.width >= neededW - RENDER_FIT_SLACK;
+
+  let gapIdx = fitsHere(rs.items[idx]) ? idx : -1;
+  if (gapIdx === -1) {
+    gapIdx = rs.items.findIndex((slot) => fitsHere(slot));
+  }
+
+  if (gapIdx !== -1) {
+    const gap = rs.items[gapIdx] as GapMarker;
+    const leftover = gap.width - neededW;
+    rs.items.splice(gapIdx, 1);
+    if (gapIdx < idx) idx--; // the removal shifted everything after it left by one
+    rs.items.splice(idx, 0, item);
     item._ti = ti;
     if (leftover > EPS_GAP) {
       rs.items.splice(idx + 1, 0, { __gap: true, width: leftover } satisfies GapMarker);
@@ -64,8 +87,9 @@ function insertByTi(rs: ShelfState, item: Product, ti: number): void {
     return;
   }
 
-  // fallback: no local gap exactly here — insert at the boundary as before
-  // (uses free space accumulated elsewhere on the shelf)
+  // no gap anywhere on the shelf covers this — insert at the boundary anyway
+  // (the shelf is over-budget; buildSteps' freeWidth ledger already accounted
+  // for this, there's simply nothing left to reuse)
   rs.items.splice(idx, 0, item);
   item._ti = ti;
 }
@@ -122,7 +146,7 @@ export function execute(state: EngineState, step: Step, silent: boolean): void {
     p.currentFaces = p.facesNew;
     p.state = "correct";
 
-    insertByTi(rs, p, step.ti!);
+    insertByTi(rs, p, step.ti!, state.mirrored);
     rs.cursor++;
 
     if (!silent) {
@@ -206,7 +230,7 @@ export function execute(state: EngineState, step: Step, silent: boolean): void {
     p.currentFaces = p.facesNew;
     p.state = "correct";
 
-    insertByTi(rs, p, step.ti!);
+    insertByTi(rs, p, step.ti!, state.mirrored);
     rs.cursor++;
 
     if (!silent) {
