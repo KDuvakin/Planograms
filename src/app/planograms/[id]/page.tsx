@@ -8,6 +8,7 @@ import { useLocale, useTranslations } from "next-intl";
 import {
   createEngineState,
   isGap,
+  mirrorRackLabel,
   rackNumbers,
   racksWithChanges,
   shelfNumbers,
@@ -54,7 +55,10 @@ export default function PlanogramPreviewPage({ params }: { params: Promise<{ id:
     fetcher
   );
 
-  const state: EngineState | null = useMemo(() => (items ? createEngineState(items) : null), [items]);
+  const state: EngineState | null = useMemo(
+    () => (items ? createEngineState(items, meta?.mirrored ?? false) : null),
+    [items, meta?.mirrored]
+  );
   const racks = useMemo(() => (state ? rackNumbers(state) : []), [state]);
   const changedRacks = useMemo(() => (state ? racksWithChanges(state) : new Set<string>()), [state]);
   // Mirroring flips the whole planogram, not just each shelf on its own — the last rack
@@ -119,9 +123,12 @@ export default function PlanogramPreviewPage({ params }: { params: Promise<{ id:
       </header>
 
       <div className={styles.rackHeadingRow}>
-        {rackIndex >= 0 && (
+        {rackIndex >= 0 && currentRack && (
           <div className={styles.rackHeading}>
-            {tRun("rackCounter", { current: rackIndex + 1, total: orderedRacks.length })}
+            {tRun("rackCounter", {
+              current: mirrorRackLabel(currentRack, racks, meta.mirrored),
+              total: orderedRacks.length,
+            })}
           </div>
         )}
         <label className={styles.mirrorRow}>
@@ -142,7 +149,14 @@ export default function PlanogramPreviewPage({ params }: { params: Promise<{ id:
 
       {currentRack && (
         <>
-          <RackTabs racks={orderedRacks} current={currentRack} onSelect={setSelectedRack} changedRacks={changedRacks} />
+          <RackTabs
+            racks={orderedRacks}
+            current={currentRack}
+            onSelect={setSelectedRack}
+            changedRacks={changedRacks}
+            allRacks={racks}
+            mirrored={meta.mirrored}
+          />
           <div className={styles.shelves}>
             {shelfNumbers(state, currentRack).map((shelf) => (
               <ShelfRow
@@ -162,7 +176,14 @@ export default function PlanogramPreviewPage({ params }: { params: Promise<{ id:
         {t("releaseDate", { date: new Date(meta.importedAt).toLocaleDateString(locale) })}
       </p>
 
-      {selectedProduct && <ProductDetailModal product={selectedProduct} onClose={() => setSelectedProduct(null)} />}
+      {selectedProduct && (
+        <ProductDetailModal
+          product={selectedProduct}
+          racks={racks}
+          mirrored={meta.mirrored}
+          onClose={() => setSelectedProduct(null)}
+        />
+      )}
 
       <div className={styles.actions}>
         <button type="button" className={styles.startBtn} disabled={starting} onClick={handleStart}>

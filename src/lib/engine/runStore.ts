@@ -29,8 +29,8 @@ export interface RunState extends EngineState {
  * avoidable risk when plain mutation + a shallow top-level copy gets React the same
  * "state changed" signal with zero ambiguity about identity.
  */
-export function createRunStore(items: PlanogramItemLike[], initialRealStep = 0) {
-  const initial = createEngineState(items);
+export function createRunStore(items: PlanogramItemLike[], initialRealStep = 0, mirrored = false) {
+  const initial = createEngineState(items, mirrored);
   if (initialRealStep > 0) {
     engineSeekToRealStep(initial, initialRealStep);
   }

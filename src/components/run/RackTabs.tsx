@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import { mirrorRackLabel } from "@/lib/engine";
 import styles from "./run.module.css";
 
 export function RackTabs({
@@ -8,21 +9,27 @@ export function RackTabs({
   current,
   onSelect,
   changedRacks,
+  allRacks,
+  mirrored,
 }: {
   racks: string[];
   current: string;
   onSelect: (rack: string) => void;
   /** Racks with any pending change — colors the tab so staff can spot which racks need work. */
   changedRacks?: Set<string>;
+  /** Full true rack list (unreversed) — needed to compute the mirrored label. */
+  allRacks: string[];
+  mirrored: boolean;
 }) {
   const t = useTranslations("run");
   const tLegend = useTranslations("preview.legend");
   const idx = racks.indexOf(current);
+  const labelFor = (r: string) => mirrorRackLabel(r, allRacks, mirrored);
 
   return (
     <div className={styles.rackTabsWrap}>
       <div className={styles.rackTabsLabel}>
-        {t("rackLabel")} {current}
+        {t("rackLabel")} {labelFor(current)}
       </div>
       <div className={styles.rackTabs}>
         <button
@@ -46,7 +53,7 @@ export function RackTabs({
                 onClick={() => onSelect(r)}
                 title={changedRacks ? tLegend(hasChanges ? "changed" : "ok") : undefined}
               >
-                {r}
+                {labelFor(r)}
                 {changedRacks && (
                   <span className={`${styles.tabDot} ${hasChanges ? styles.tabDotChanged : styles.tabDotOk}`} />
                 )}

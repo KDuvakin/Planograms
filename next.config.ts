@@ -13,7 +13,7 @@ const nextConfig: NextConfig = {
      blocks cross-origin dev asset requests by default, which silently breaks client
      JS (and with it next-auth's signIn()) for anyone but localhost. Only matters for
      `next dev` — add this machine's current LAN IP whenever it changes. */
-  allowedDevOrigins: ["192.168.8.254", "192.168.1.38", "192.168.9.4", "192.168.9.3"],
+  allowedDevOrigins: ["192.168.8.254", "192.168.1.38", "192.168.9.4", "192.168.9.3", "192.168.50.252", "127.0.0.1"],
 };
 
 export default withNextIntl(nextConfig);

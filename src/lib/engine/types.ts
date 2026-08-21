@@ -127,6 +127,11 @@ export interface EngineState {
   products: Product[];
   racks: Racks;
   basket: Basket;
+  /** Store-set display flag (Planogram.mirrored) — when true, buildSteps() walks racks in
+   * descending order too, so staff physically start with the true last rack (labelled "1")
+   * and finish at the true first (labelled last), matching how a mirrored store is walked.
+   * Never changes step *content*, only which rack's shelves get processed first. */
+  mirrored: boolean;
   steps: Step[];
   /** clickBoundaries[k] = raw index in `steps` right after the k-th real (clickable) step. */
   clickBoundaries: number[];

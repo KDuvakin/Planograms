@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useLocale, useTranslations } from "next-intl";
 import useSWR from "swr";
-import { isGap, rackNumbers, shelfNumbers } from "@/lib/engine";
+import { isGap, mirrorRackLabel, rackNumbers, shelfNumbers } from "@/lib/engine";
 import type { NavigatorText, Product, ShelfSlot } from "@/lib/engine";
 import type { PlanogramItemLike } from "@/lib/engine/loadProducts";
 import { createRunStore } from "@/lib/engine/runStore";
@@ -61,6 +61,24 @@ const HIGHLIGHT_COLOR_VAR: Record<HighlightKind, string> = {
   ok: "var(--ok)",
 };
 
+const RACK_PARAM_KEYS = ["rack", "fromRack", "oldRack"] as const;
+
+/** The engine's instruction params always carry the TRUE rack id — this only swaps what's
+ * shown in the rendered instruction text when the planogram is mirrored, same as every
+ * other rack label on this screen. */
+function mirrorNavigatorParams(
+  params: Record<string, string | number> | undefined,
+  racks: string[],
+  mirrored: boolean
+): Record<string, string | number> | undefined {
+  if (!params || !mirrored) return params;
+  const out = { ...params };
+  for (const key of RACK_PARAM_KEYS) {
+    if (typeof out[key] === "string") out[key] = mirrorRackLabel(out[key] as string, racks, true);
+  }
+  return out;
+}
+
 interface Meta {
   id: string;
   node: string;
@@ -95,7 +113,7 @@ export function RunView({
   const locale = useLocale();
   const router = useRouter();
   const { data: session } = useSession();
-  const [useRunState] = useState(() => createRunStore(items, run.currentRealStep));
+  const [useRunState] = useState(() => createRunStore(items, run.currentRealStep, meta.mirrored));
   const state = useRunState();
   const [feedbackOpen, setFeedbackOpen] = useState(false);
   const [feedbackCount, setFeedbackCount] = useState(0);
@@ -138,7 +156,9 @@ export function RunView({
   const racks = rackNumbers(state);
 
   const lastExecutedStep = state.currentStep > 0 ? state.steps[state.currentStep - 1] : null;
-  const focusRack = lastExecutedStep?.rack ?? racks[0] ?? null;
+  // Before the first click there's no "current" step yet — fall back to whatever rack the
+  // plan actually starts on (the true last rack when mirrored), not always racks[0].
+  const focusRack = lastExecutedStep?.rack ?? state.steps[0]?.rack ?? racks[0] ?? null;
   const rackIndex = focusRack ? racks.indexOf(focusRack) : -1;
 
   const isDone = state.currentRealStep >= state.realStepsTotal;
@@ -202,10 +222,15 @@ export function RunView({
           )}
         </header>
 
-        <p className={styles.subtitle}>{t("rackCompleteTitle", { rack: rackTransition.completedRack })}</p>
+        <p className={styles.subtitle}>
+          {t("rackCompleteTitle", { rack: mirrorRackLabel(rackTransition.completedRack, racks, meta.mirrored) })}
+        </p>
 
         <div className={styles.rackHeading}>
-          {t("rackCounter", { current: racks.indexOf(rackTransition.nextRack) + 1, total: racks.length })}
+          {t("rackCounter", {
+            current: mirrorRackLabel(rackTransition.nextRack, racks, meta.mirrored),
+            total: racks.length,
+          })}
         </div>
 
         <DiffLegend />
@@ -225,12 +250,19 @@ export function RunView({
         <div className={styles.controls}>
           <div className={styles.controlsRow}>
             <button type="button" className={styles.btnPrimary} onClick={handleNext}>
-              {t("continueToRack", { rack: rackTransition.nextRack })}
+              {t("continueToRack", { rack: mirrorRackLabel(rackTransition.nextRack, racks, meta.mirrored) })}
             </button>
           </div>
         </div>
 
-        {selectedProduct && <ProductDetailModal product={selectedProduct} onClose={() => setSelectedProduct(null)} />}
+        {selectedProduct && (
+          <ProductDetailModal
+            product={selectedProduct}
+            racks={racks}
+            mirrored={meta.mirrored}
+            onClose={() => setSelectedProduct(null)}
+          />
+        )}
       </main>
     );
   }
@@ -241,7 +273,7 @@ export function RunView({
         article: lastExecutedStep.product.article,
         sap: lastExecutedStep.product.sap,
         ean: lastExecutedStep.product.ean,
-        rack: lastExecutedStep.rack,
+        rack: mirrorRackLabel(lastExecutedStep.rack, racks, meta.mirrored),
         shelf: lastExecutedStep.shelf,
         positionNumber: lastExecutedStep.product.positionNumberNew,
         faces: lastExecutedStep.product.facesNew,
@@ -270,8 +302,10 @@ export function RunView({
             </span>
           </div>
         )}
-        {rackIndex >= 0 && (
-          <div className={styles.rackHeading}>{t("rackCounter", { current: rackIndex + 1, total: racks.length })}</div>
+        {rackIndex >= 0 && focusRack && (
+          <div className={styles.rackHeading}>
+            {t("rackCounter", { current: mirrorRackLabel(focusRack, racks, meta.mirrored), total: racks.length })}
+          </div>
         )}
       </header>
 
@@ -321,7 +355,9 @@ export function RunView({
       <section className={styles.instructionCard} data-kind={state.navigator.kind}>
         <div className={styles.instructionTag}>{tStepLabel(state.navigator.kind)}</div>
         <div className={runStyles.stepDescLabel}>{t("stepDescriptionLabel")}</div>
-        <p className={styles.instructionText}>{tInstructions(state.navigator.key, state.navigator.params)}</p>
+        <p className={styles.instructionText}>
+          {tInstructions(state.navigator.key, mirrorNavigatorParams(state.navigator.params, racks, meta.mirrored))}
+        </p>
       </section>
 
       <div className={styles.controls}>
@@ -361,7 +397,14 @@ export function RunView({
         />
       )}
 
-      {selectedProduct && <ProductDetailModal product={selectedProduct} onClose={() => setSelectedProduct(null)} />}
+      {selectedProduct && (
+        <ProductDetailModal
+          product={selectedProduct}
+          racks={racks}
+          mirrored={meta.mirrored}
+          onClose={() => setSelectedProduct(null)}
+        />
+      )}
     </main>
   );
 }

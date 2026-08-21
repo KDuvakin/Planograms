@@ -70,7 +70,9 @@ export function buildSteps(state: EngineState): void {
     }
   }
 
-  const rackKeys = Object.keys(targetByShelf).sort((a, b) => parseInt(a, 10) - parseInt(b, 10));
+  const rackKeys = Object.keys(targetByShelf).sort((a, b) =>
+    state.mirrored ? parseInt(b, 10) - parseInt(a, 10) : parseInt(a, 10) - parseInt(b, 10)
+  );
 
   rackKeys.forEach((r) => {
     const shelfKeys = Object.keys(targetByShelf[r]).sort((a, b) => parseInt(a, 10) - parseInt(b, 10));

@@ -16,11 +16,12 @@ import { buildInitial } from "./buildInitial";
 import { buildSteps } from "./buildSteps";
 
 /** Builds a fresh EngineState from stored items — step 0, full plan computed. */
-export function createEngineState(items: PlanogramItemLike[]): EngineState {
+export function createEngineState(items: PlanogramItemLike[], mirrored = false): EngineState {
   const state: EngineState = {
     products: loadProducts(items),
     racks: {},
     basket: { deleted: [], new: [], temp: [] },
+    mirrored,
     steps: [],
     clickBoundaries: [0],
     realStepsTotal: 0,

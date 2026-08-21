@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import type { Product } from "@/lib/engine";
+import { mirrorRackLabel, type Product } from "@/lib/engine";
 import styles from "./run.module.css";
 
 // Same state -> CSS-class mapping Block.tsx uses for the shelf block itself.
@@ -26,7 +26,18 @@ const LEGEND_KEY: Record<Product["state"], "ok" | "changed" | "new" | "removed">
 /** Full product info on tap — the shelf block itself only has room for a truncated
  * SAP/name, so anything needing the rest (full name, EAN, before/after position) opens
  * this instead of relying on a native title-attribute tooltip. */
-export function ProductDetailModal({ product, onClose }: { product: Product; onClose: () => void }) {
+export function ProductDetailModal({
+  product,
+  racks,
+  mirrored,
+  onClose,
+}: {
+  product: Product;
+  /** Full true rack list (unreversed) — needed to compute the mirrored label. */
+  racks: string[];
+  mirrored: boolean;
+  onClose: () => void;
+}) {
   const t = useTranslations("run");
   const tCommon = useTranslations("common");
   const tLegend = useTranslations("preview.legend");
@@ -61,7 +72,7 @@ export function ProductDetailModal({ product, onClose }: { product: Product; onC
             <div className={styles.detailPositionLabel}>{tProductDetail("before")}</div>
             <p className={styles.detailPosition}>
               {tFeedback("productLocation", {
-                rack: product.rackOld,
+                rack: mirrorRackLabel(product.rackOld, racks, mirrored),
                 shelf: product.shelfOld,
                 position: product.positionNumberOld,
                 faces: product.facesOld,
@@ -70,7 +81,7 @@ export function ProductDetailModal({ product, onClose }: { product: Product; onC
             <div className={styles.detailPositionLabel}>{tProductDetail("after")}</div>
             <p className={styles.detailPosition}>
               {tFeedback("productLocation", {
-                rack: product.rackNew,
+                rack: mirrorRackLabel(product.rackNew, racks, mirrored),
                 shelf: product.shelfNew,
                 position: product.positionNumberNew,
                 faces: product.facesNew,
@@ -81,7 +92,7 @@ export function ProductDetailModal({ product, onClose }: { product: Product; onC
         {(!showOld || !showNew || product.state !== "move") && (
           <p className={styles.detailPosition}>
             {tFeedback("productLocation", {
-              rack: showNew ? product.rackNew : product.rackOld,
+              rack: mirrorRackLabel(showNew ? product.rackNew : product.rackOld, racks, mirrored),
               shelf: showNew ? product.shelfNew : product.shelfOld,
               position: showNew ? product.positionNumberNew : product.positionNumberOld,
               faces: showNew ? product.facesNew : product.facesOld,

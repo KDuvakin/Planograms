@@ -4,12 +4,13 @@ import { buildSteps } from "../buildSteps";
 import type { EngineState, Step } from "../types";
 import { buildTestProducts, row } from "./fixtures";
 
-function makeState(rows: ReturnType<typeof row>[]): EngineState {
+function makeState(rows: ReturnType<typeof row>[], mirrored = false): EngineState {
   const { products } = buildTestProducts(rows);
   const state: EngineState = {
     products,
     racks: {},
     basket: { deleted: [], new: [], temp: [] },
+    mirrored,
     steps: [],
     clickBoundaries: [0],
     realStepsTotal: 0,
@@ -135,6 +136,25 @@ describe("buildSteps — forced eviction chain", () => {
       expect(placeStep.product.sap).toBe("J");
       expect(placeStep.source).toBe("newBasket");
     }
+  });
+});
+
+describe("buildSteps — mirrored rack order", () => {
+  it("processes racks ascending by default, descending when mirrored — step content is unaffected", () => {
+    const rows = [
+      row("A", "Old", "1", "1", "1", 1, 10),
+      row("A", "New", "1", "1", "2", 1, 10),
+      row("B", "Old", "2", "1", "1", 1, 10),
+      row("B", "New", "2", "1", "2", 1, 10),
+    ];
+    const ascending = makeState(rows, false);
+    expect(ascending.steps.map((s) => s.product.sap)).toEqual(["A", "B"]);
+
+    const mirrored = makeState(rows, true);
+    expect(mirrored.steps.map((s) => s.product.sap)).toEqual(["B", "A"]);
+
+    // same two moves either way, just reordered
+    expect(types(ascending.steps).sort()).toEqual(types(mirrored.steps).sort());
   });
 });
 
