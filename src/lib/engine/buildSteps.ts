@@ -32,15 +32,23 @@ export function buildSteps(state: EngineState): void {
     location[p.index] = { type: "shelf", rack: r, shelf: s };
   });
 
-  // Old-physical queue, consumed front-first — sorted so the front is always
-  // "the next old item in the direction we're sweeping": left-to-right normally,
-  // right-to-left when mirrored (kept in lockstep with the target-visit order below).
+  // Old-physical queue, consumed front-first, always left to right by position number.
+  // Mirroring never reverses this: the screen already renders a mirrored shelf flipped
+  // (see ShelfRow) and racks are already walked in reverse (see rackKeys below), so a
+  // worker on a mirrored shelf already sees position 1 highlighted on the physically
+  // right-hand side first, then position 2, etc. — right-to-left from their perspective
+  // — with zero changes needed here. Reversing this queue's own direction on top of that
+  // was tried and reverted: it made a right-to-left *internal* sweep, which forces early
+  // eviction of untouched anchors whenever a target position is filled by an item with no
+  // counterpart here yet (new, or arriving from another shelf) — that item gets visited
+  // FIRST instead of last, before anything has naturally freed up space, so anchors that
+  // never needed to move get evicted and placed straight back. Confirmed on real T203
+  // data: 241 steps mirrored vs. 205 unmirrored, same final layout, 36 pure round-trips.
   Object.keys(remainingByShelf).forEach((r) => {
     Object.keys(remainingByShelf[r]).forEach((s) => {
-      remainingByShelf[r][s].sort((a, b) => {
-        const diff = (parseInt(a.positionNumberOld, 10) || 0) - (parseInt(b.positionNumberOld, 10) || 0);
-        return state.mirrored ? -diff : diff;
-      });
+      remainingByShelf[r][s].sort(
+        (a, b) => (parseInt(a.positionNumberOld, 10) || 0) - (parseInt(b.positionNumberOld, 10) || 0)
+      );
     });
   });
 
@@ -55,10 +63,7 @@ export function buildSteps(state: EngineState): void {
       if (!targetByShelf[r][s]) targetByShelf[r][s] = [];
       targetByShelf[r][s].push(p);
     });
-  // Always sorted ascending regardless of mirroring — `ti` (this array's index) doubles as
-  // each item's render rank via insertByTi(), so the rendered shelf always ends up in true
-  // left-to-right position order; the mirrored-visit-order loop below reads this same
-  // ascending array back-to-front instead of re-sorting it, keeping that render rank intact.
+  // Always ascending — see the note above `remainingByShelf`'s own sort.
   Object.keys(targetByShelf).forEach((r) => {
     Object.keys(targetByShelf[r]).forEach((s) => {
       targetByShelf[r][s].sort(
@@ -135,11 +140,9 @@ export function buildSteps(state: EngineState): void {
         }
       }
 
-      // Visits `target` back-to-front when mirrored (right-to-left), in lockstep with the
-      // reversed `remaining` queue above — `ti` itself still means "true ascending render
-      // rank", only the VISIT sequence (which position gets worked on 1st/2nd/...) flips.
+      // Always left to right — see the note above `remainingByShelf`'s own sort.
       for (let step = 0; step < target.length; step++) {
-        const ti = state.mirrored ? target.length - 1 - step : step;
+        const ti = step;
         const want = target[ti];
         const neededWidth = neededWidthOf(want);
         const wantIsAnchor = isAnchor(want);

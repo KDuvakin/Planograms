@@ -113,7 +113,7 @@ describe("mirrored assembly", () => {
       )
       .sort();
 
-  it("visits shelf positions right-to-left, but ends up at the exact same final layout as unmirrored", () => {
+  it("ends up at the exact same final layout as unmirrored", () => {
     const unmirrored = createEngineState(items(SWAP_ROWS));
     for (let i = 0; i < unmirrored.realStepsTotal; i++) nextStep(unmirrored);
 
@@ -124,7 +124,15 @@ describe("mirrored assembly", () => {
     expect(flatten(mirrored)).toEqual(flatten(unmirrored));
   });
 
-  it("visits target positions on a shelf back-to-front, keeping each step's render rank at its true ascending position", () => {
+  it("processes positions WITHIN a shelf in the same left-to-right order as unmirrored — only which rack goes first changes", () => {
+    // Mirroring already reverses which rack is walked first (buildSteps' rackKeys
+    // sort) and how a shelf is drawn on screen (ShelfRow's own reverse) — so a
+    // worker on a mirrored shelf already sees position 1 highlighted on the
+    // physically right-hand side first, then position 2, etc: right-to-left from
+    // their perspective, with zero help needed from buildSteps itself. A genuinely
+    // right-to-left *internal* sweep was tried and reverted (see buildSteps' own
+    // notes) because it forces early eviction of untouched anchors whenever a
+    // target position is filled by an item with no counterpart on this shelf yet.
     const rows = [
       row("A", "New", "1", "1", "1", 1, 10),
       row("B", "New", "1", "1", "2", 1, 10),
@@ -132,49 +140,35 @@ describe("mirrored assembly", () => {
     ];
 
     const ascending = createEngineState(items(rows));
-    expect(ascending.steps.map((s) => s.product.sap)).toEqual(["A", "B", "C"]);
-
     const mirrored = createEngineState(items(rows), true);
-    expect(mirrored.steps.map((s) => s.product.sap)).toEqual(["C", "B", "A"]);
-    expect(mirrored.steps.find((s) => s.product.sap === "A")?.ti).toBe(0);
-    expect(mirrored.steps.find((s) => s.product.sap === "B")?.ti).toBe(1);
-    expect(mirrored.steps.find((s) => s.product.sap === "C")?.ti).toBe(2);
+
+    expect(mirrored.steps.map((s) => s.product.sap)).toEqual(ascending.steps.map((s) => s.product.sap));
+    expect(mirrored.steps.map((s) => s.ti)).toEqual(ascending.steps.map((s) => s.ti));
   });
 
-  it("renders a mirrored shelf in true ascending position order at every step, not just in the final state", () => {
-    // Shelf reflow shaped like the real regression: last old item (C) is discontinued,
-    // a new item (D) is inserted at the front, and everyone else shifts by one —
-    // forcing every position on the shelf to be touched, back-to-front when mirrored.
+  it("never force-evicts untouched anchors just to make room for an item arriving from elsewhere", () => {
+    // Reproduces the real regression (T203, rack 5 / shelf 4): a shelf of items
+    // that never move (anchors), plus one item moving IN from a different shelf
+    // at the far end. Unmirrored, this is one "move" and a pile of silent
+    // confirms. A naive right-to-left sweep would hit the incoming item FIRST
+    // (before anything has naturally freed up space) and evict every anchor in
+    // its way, only to place them straight back a few steps later.
     const rows = [
       row("A", "Old", "1", "1", "1", 1, 10),
-      row("A", "New", "1", "1", "2", 1, 10),
+      row("A", "New", "1", "1", "1", 1, 10),
       row("B", "Old", "1", "1", "2", 1, 10),
-      row("B", "New", "1", "1", "3", 1, 10),
-      row("C", "Old", "1", "1", "3", 1, 10), // deleted — no New row
-      row("D", "New", "1", "1", "1", 1, 10), // new — no Old row
+      row("B", "New", "1", "1", "2", 1, 10),
+      row("C", "Old", "1", "1", "3", 1, 10),
+      row("C", "New", "1", "1", "3", 1, 10),
+      row("D", "Old", "1", "2", "1", 1, 10), // arrives from shelf 2, needs its own width
+      row("D", "New", "1", "1", "4", 1, 10),
     ];
 
-    const renderedOrder = (s: ReturnType<typeof createEngineState>) =>
-      s.racks["1"]["1"].items.filter((it): it is Extract<typeof it, { sap: string }> => "sap" in it).map((it) => it.sap);
-
-    const expectedOrder = ["D", "A", "B"];
     const mirrored = createEngineState(items(rows), true);
-    for (let i = 0; i < mirrored.realStepsTotal; i++) {
-      nextStep(mirrored);
-      // regardless of which order steps are *visited* in, whatever subset of
-      // items has been rendered so far must read left-to-right in true
-      // ascending target-position order — this is exactly what regressed: a
-      // settled item was getting spliced in at index 0, ahead of items that
-      // belonged before it.
-      const expectedSoFar = expectedOrder.filter((sap) => renderedOrder(mirrored).includes(sap));
-      expect(renderedOrder(mirrored)).toEqual(expectedSoFar);
-    }
+    const shelfSteps = mirrored.steps.filter((s) => s.rack === "1" && s.shelf === "1");
 
-    // old (30cm: A+B+C) and new (30cm: D+A+B) totals match exactly here, so the
-    // shelf should end with no leftover gap at all — not a phantom one stranded
-    // wherever an eviction happened to occur.
-    expect(mirrored.racks["1"]["1"].items.some(isGap)).toBe(false);
-    expect(renderedOrder(mirrored)).toEqual(["D", "A", "B"]);
+    expect(shelfSteps.map((s) => s.type)).toEqual(["confirm", "confirm", "confirm", "move"]);
+    expect(shelfSteps.filter((s) => s.type === "evict")).toHaveLength(0);
   });
 });
 

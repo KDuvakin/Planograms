@@ -140,7 +140,7 @@ describe("buildSteps — forced eviction chain", () => {
 });
 
 describe("buildSteps — forced eviction chain, mirrored", () => {
-  it("still evicts every blocking product needed to fit the incoming item, just in reversed visit order", () => {
+  it("still evicts every blocking product needed to fit the incoming item", () => {
     const state = makeState(
       [
         row("F", "Old", "1", "1", "1", 1, 10),

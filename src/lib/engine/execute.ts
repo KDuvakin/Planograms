@@ -35,16 +35,13 @@ function coalesceGaps(rs: ShelfState): void {
 /**
  * Inserts an item at its target index (ti) — not "at the end", since with
  * recursive rearrangement items may not resolve strictly left to right. All
- * already-settled items carry `_ti` and are sorted by it first.
- *
- * The untouched remainder of the old layout (no `_ti`) sits on whichever side
- * hasn't been visited yet: the tail when sweeping left-to-right (ascending ti,
- * the default), the head when sweeping right-to-left (mirrored — settled items
- * arrive in DESCENDING ti order, so every already-settled neighbour necessarily
- * has a larger ti and belongs after the new one; untouched items belong before
- * and must NOT stop the scan). Gaps are skipped while locating this boundary —
- * they're not "untouched old layout", just leftover free space — and handled
- * separately below.
+ * already-settled items carry `_ti` and are sorted by it first; the untouched
+ * tail of the old layout (no `_ti`) always stays after them — buildSteps only
+ * ever settles positions in ascending ti order, mirrored or not (see its own
+ * notes on why a genuinely right-to-left internal sweep was reverted), so this
+ * stays a simple ascending scan. Gaps are skipped while locating this boundary
+ * — they're not "untouched old layout", just leftover free space — and
+ * handled separately below.
  *
  * Freed width is a single shared pool per shelf (mirroring how buildSteps'
  * own `freeWidth` ledger treats it), not pinned to wherever it happened to
@@ -52,7 +49,7 @@ function coalesceGaps(rs: ShelfState): void {
  * game. Preferring one already sitting at the boundary (checked first) simply
  * avoids reshuffling the array when nothing needs to move.
  */
-function insertByTi(rs: ShelfState, item: Product, ti: number, mirrored: boolean): void {
+function insertByTi(rs: ShelfState, item: Product, ti: number): void {
   const neededW = item.faceWidth * (item.facesNew || item.currentFaces || 0);
 
   let idx = rs.items.length;
@@ -60,8 +57,7 @@ function insertByTi(rs: ShelfState, item: Product, ti: number, mirrored: boolean
     const slot = rs.items[i];
     if (isGap(slot)) continue;
     const t = (slot as Product)._ti;
-    const isBoundary = mirrored ? t !== undefined && t > ti : t === undefined || t > ti;
-    if (isBoundary) {
+    if (t === undefined || t > ti) {
       idx = i;
       break;
     }
@@ -146,7 +142,7 @@ export function execute(state: EngineState, step: Step, silent: boolean): void {
     p.currentFaces = p.facesNew;
     p.state = "correct";
 
-    insertByTi(rs, p, step.ti!, state.mirrored);
+    insertByTi(rs, p, step.ti!);
     rs.cursor++;
 
     if (!silent) {
@@ -230,7 +226,7 @@ export function execute(state: EngineState, step: Step, silent: boolean): void {
     p.currentFaces = p.facesNew;
     p.state = "correct";
 
-    insertByTi(rs, p, step.ti!, state.mirrored);
+    insertByTi(rs, p, step.ti!);
     rs.cursor++;
 
     if (!silent) {
