@@ -6,13 +6,14 @@ import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useLocale, useTranslations } from "next-intl";
 import useSWR from "swr";
-import { rackNumbers, shelfNumbers } from "@/lib/engine";
-import type { NavigatorText } from "@/lib/engine";
+import { isGap, rackNumbers, shelfNumbers } from "@/lib/engine";
+import type { NavigatorText, Product, ShelfSlot } from "@/lib/engine";
 import type { PlanogramItemLike } from "@/lib/engine/loadProducts";
 import { createRunStore } from "@/lib/engine/runStore";
 import { ShelfRow } from "@/components/run/ShelfRow";
 import { ProductIcon } from "@/components/run/ProductIcon";
 import { DiffLegend } from "@/components/run/DiffLegend";
+import { ProductDetailModal } from "@/components/run/ProductDetailModal";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { FeedbackDialog, type FeedbackProductInfo } from "@/components/run/FeedbackDialog";
 import { CompletionScreen } from "@/components/run/CompletionScreen";
@@ -63,6 +64,7 @@ const HIGHLIGHT_COLOR_VAR: Record<HighlightKind, string> = {
 interface Meta {
   id: string;
   node: string;
+  mirrored: boolean;
   store: { code: string; name: string | null };
 }
 
@@ -97,6 +99,10 @@ export function RunView({
   const state = useRunState();
   const [feedbackOpen, setFeedbackOpen] = useState(false);
   const [feedbackCount, setFeedbackCount] = useState(0);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  function handleSelectSlot(slot: ShelfSlot) {
+    if (!isGap(slot)) setSelectedProduct(slot);
+  }
   const [rackTransition, setRackTransition] = useState<{ completedRack: string; nextRack: string } | null>(null);
   const { data: categories } = useSWR<CategoryWithNodes[]>("/api/categories", fetcher);
   const category = resolveNodeCategory(categories ?? [], meta.node, locale);
@@ -211,6 +217,8 @@ export function RunView({
             shelfNum={shelf}
             items={state.racks[rackTransition.nextRack][shelf].items}
             scale={SCALE}
+            mirrored={meta.mirrored}
+            onSelectProduct={handleSelectSlot}
           />
         ))}
 
@@ -221,6 +229,8 @@ export function RunView({
             </button>
           </div>
         </div>
+
+        {selectedProduct && <ProductDetailModal product={selectedProduct} onClose={() => setSelectedProduct(null)} />}
       </main>
     );
   }
@@ -302,6 +312,8 @@ export function RunView({
             scale={SCALE}
             highlightIndex={lastExecutedStep.product.index}
             highlightColor={highlightColor}
+            mirrored={meta.mirrored}
+            onSelectProduct={handleSelectSlot}
           />
         </>
       )}
@@ -348,6 +360,8 @@ export function RunView({
           onSubmitted={() => setFeedbackCount((n) => n + 1)}
         />
       )}
+
+      {selectedProduct && <ProductDetailModal product={selectedProduct} onClose={() => setSelectedProduct(null)} />}
     </main>
   );
 }

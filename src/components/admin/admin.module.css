@@ -164,15 +164,6 @@
   font-weight: 600;
 }
 
-/* caps how much width a long free-text column (e.g. a planogram's name) can claim, so
-   short fixed-format columns after it — like a date — don't get pushed off a narrow
-   screen */
-.truncateCell {
-  max-width: 130px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
 /* a run with feedback attached stands out from the rest of the list at a glance */
 .rowWithFeedback td {
   background: var(--move-soft);

@@ -6,6 +6,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { localizedName, type CategoryWithNodes } from "@/lib/nodeCategory";
 import { filterRows } from "@/lib/tableSearch";
 import styles from "@/components/admin/admin.module.css";
+import treeStyles from "@/app/planograms/planograms.module.css";
 import { fetcher } from "@/lib/swrFetcher";
 
 interface CatalogEntry {
@@ -15,11 +16,39 @@ interface CatalogEntry {
   storeCount: number;
 }
 
+interface SubGroup {
+  name: string | null;
+  entries: (CatalogEntry & { nodeName: string | null })[];
+}
+
 interface CategoryGroup {
   key: string;
   name: string;
   icon: string;
   entries: (CatalogEntry & { nodeName: string | null })[];
+  subGroups: SubGroup[];
+}
+
+/** Splits a category's entries by their Node's given name (e.g. "Кофе") — mirrors the
+ * store tree's own subGroupsFor, so the same Node showing up under several formats still
+ * lands in one named subgroup instead of one row per format. */
+function subGroupsFor(entries: CategoryGroup["entries"]): SubGroup[] {
+  const named = new Map<string, CategoryGroup["entries"]>();
+  const flat: CategoryGroup["entries"] = [];
+  for (const e of entries) {
+    if (!e.nodeName) {
+      flat.push(e);
+      continue;
+    }
+    if (!named.has(e.nodeName)) named.set(e.nodeName, []);
+    named.get(e.nodeName)!.push(e);
+  }
+  const result: SubGroup[] = Array.from(named.entries()).map(([name, groupEntries]) => ({
+    name,
+    entries: groupEntries,
+  }));
+  if (flat.length > 0) result.push({ name: null, entries: flat });
+  return result;
 }
 
 /** Same category → planograms tree the store's own list uses (icon, name, count,
@@ -47,22 +76,33 @@ function groupByCategory(
     else leftover.push({ ...e, nodeName: null });
   }
 
-  const groups: CategoryGroup[] = categories.map((c) => ({
-    key: c.id,
-    name: localizedName(c, locale),
-    icon: c.icon,
-    entries: byId.get(c.id)!,
-  }));
+  const groups: CategoryGroup[] = categories.map((c) => {
+    const catEntries = byId.get(c.id)!;
+    return {
+      key: c.id,
+      name: localizedName(c, locale),
+      icon: c.icon,
+      entries: catEntries,
+      subGroups: subGroupsFor(catEntries),
+    };
+  });
 
   if (leftover.length > 0) {
-    groups.push({ key: "uncategorized", name: uncategorizedLabel, icon: "📦", entries: leftover });
+    groups.push({
+      key: "uncategorized",
+      name: uncategorizedLabel,
+      icon: "📦",
+      entries: leftover,
+      subGroups: [{ name: null, entries: leftover }],
+    });
   }
   return groups;
 }
 
 /** ADMIN and SPECIALIST don't run resets — they need the catalog of unique planograms
  * (one per store format × Node) rather than the per-store operational tree, but grouped
- * the same category → planograms way the store's own list is. */
+ * and styled the same category → planograms way the store's own list is (just with a
+ * store count in place of a run-status badge, since nothing here has a run to be "done"). */
 export function CatalogView() {
   const t = useTranslations("planogramCatalog");
   const tPlanograms = useTranslations("planograms");
@@ -129,53 +169,61 @@ export function CatalogView() {
             </span>
           </div>
 
-          <div className={styles.catalogTree}>
+          <div className={treeStyles.tree}>
             {groups.map((group) => {
               const isExpanded = expanded.has(group.key);
               return (
-                <div key={group.key} className={styles.catalogGroup}>
+                <section key={group.key} className={treeStyles.categoryGroup}>
                   <button
                     type="button"
-                    className={styles.catalogHeader}
+                    className={treeStyles.categoryHeader}
                     onClick={() => toggleCategory(group.key)}
                     aria-expanded={isExpanded}
                   >
-                    <span className={styles.catalogIconWrap}>{group.icon}</span>
-                    <span className={styles.catalogHeaderLabel}>
-                      {group.name} <span className={styles.categoryCount}>({group.entries.length})</span>
-                    </span>
-                    <span className={`${styles.chevron} ${isExpanded ? "" : styles.chevronCollapsed}`}>▾</span>
+                    <span className={treeStyles.categoryIconWrap}>{group.icon}</span>
+                    <div className={treeStyles.categoryNameCol}>
+                      <span className={treeStyles.categoryName}>
+                        {group.name} <span className={treeStyles.categoryCount}>({group.entries.length})</span>
+                      </span>
+                    </div>
+                    <span className={`${treeStyles.chevron} ${isExpanded ? "" : treeStyles.chevronCollapsed}`}>▾</span>
                   </button>
 
                   {isExpanded && (
-                    <div className={styles.tableWrap}>
-                      <table className={styles.table}>
-                        <thead>
-                          <tr>
-                            <th>{t("table.node")}</th>
-                            <th>{t("table.name")}</th>
-                            <th>{t("table.format")}</th>
-                            <th>{t("table.stores")}</th>
-                            <th>{t("table.updated")}</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {group.entries.map((e) => (
-                            <tr key={`${e.format}::${e.node}`}>
-                              <td>{e.node}</td>
-                              <td className={styles.truncateCell} title={e.nodeName || undefined}>
-                                {e.nodeName || "—"}
-                              </td>
-                              <td>{e.format}</td>
-                              <td>{e.storeCount}</td>
-                              <td>{new Date(e.lastUpdated).toLocaleDateString(locale)}</td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
+                    <>
+                      {group.subGroups.map((sub) => (
+                        <div key={sub.name ?? "flat"}>
+                          {sub.name && <div className={treeStyles.subGroupLabel}>{sub.name}</div>}
+                          <ul className={treeStyles.list}>
+                            {sub.entries.map((e) => (
+                              <li key={`${e.format}::${e.node}`}>
+                                <div className={treeStyles.card}>
+                                  <div className={treeStyles.cardBody}>
+                                    <div className={treeStyles.cardNode}>
+                                      {e.node}
+                                      {e.nodeName ? ` — ${e.nodeName}` : ""}
+                                    </div>
+                                    <div className={treeStyles.cardMeta}>
+                                      <span>
+                                        {t("table.format")}: {e.format}
+                                      </span>
+                                      <span>
+                                        {t("table.updated")}: {new Date(e.lastUpdated).toLocaleDateString(locale)}
+                                      </span>
+                                      <span className={`${treeStyles.statusBadge} ${treeStyles.infoBadge}`}>
+                                        {e.storeCount} {t("table.stores")}
+                                      </span>
+                                    </div>
+                                  </div>
+                                </div>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      ))}
+                    </>
                   )}
-                </div>
+                </section>
               );
             })}
           </div>

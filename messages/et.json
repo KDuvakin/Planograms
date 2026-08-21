@@ -59,6 +59,7 @@
     "releaseDate": "Väljalaske kuupäev: {date}",
     "start": "Alusta",
     "continueFromStep": "Jätka sammust {step}",
+    "mirrorToggle": "Peegelpilt",
     "legend": {
       "ok": "muutusteta",
       "changed": "muudetud",
@@ -75,6 +76,7 @@
     "nextRackAria": "Järgmine riiul",
     "shelfLabel": "Tasand {n}",
     "rackLabel": "Riiul",
+    "customerFlowLabel": "Klientide vool",
     "backWithStep": "◀ Samm {step} / {total}",
     "nextWithStep": "Samm {step} / {total} ▶",
     "rackCompleteTitle": "Riiul {rack} on valmis",
@@ -296,6 +298,11 @@
     "title": "Tagasiside",
     "empty": "Teie poe kohta pole veel tagasisidet",
     "flag": "Märgi",
-    "unflag": "Eemalda märge"
+    "unflag": "Eemalda märge",
+    "unseenBanner": "Tagasisidele on vastatud ({count})"
+  },
+  "productDetail": {
+    "before": "Enne",
+    "after": "Pärast"
   }
 }

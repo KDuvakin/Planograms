@@ -59,6 +59,7 @@
     "releaseDate": "Release date: {date}",
     "start": "Start",
     "continueFromStep": "Continue from step {step}",
+    "mirrorToggle": "Mirrored display",
     "legend": {
       "ok": "no changes",
       "changed": "changed",
@@ -75,6 +76,7 @@
     "nextRackAria": "Next rack",
     "shelfLabel": "Shelf {n}",
     "rackLabel": "Rack",
+    "customerFlowLabel": "Customer flow",
     "backWithStep": "◀ Step {step} of {total}",
     "nextWithStep": "Step {step} of {total} ▶",
     "rackCompleteTitle": "Rack {rack} complete",
@@ -296,6 +298,11 @@
     "title": "Feedback",
     "empty": "No feedback for your store yet",
     "flag": "Flag",
-    "unflag": "Unflag"
+    "unflag": "Unflag",
+    "unseenBanner": "You have feedback replies ({count})"
+  },
+  "productDetail": {
+    "before": "Before",
+    "after": "After"
   }
 }

@@ -1,0 +1,22 @@
+BEGIN TRY
+
+BEGIN TRAN;
+
+-- AlterTable
+ALTER TABLE [dbo].[Store] ADD [mirrored] BIT NOT NULL CONSTRAINT [Store_mirrored_df] DEFAULT 0;
+
+-- AlterTable
+ALTER TABLE [dbo].[Feedback] ADD [seenByStore] BIT NOT NULL CONSTRAINT [Feedback_seenByStore_df] DEFAULT 0;
+
+COMMIT TRAN;
+
+END TRY
+BEGIN CATCH
+
+IF @@TRANCOUNT > 0
+BEGIN
+    ROLLBACK TRAN;
+END;
+THROW;
+
+END CATCH;

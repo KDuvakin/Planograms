@@ -71,6 +71,9 @@ export async function POST(req: NextRequest) {
               node,
               version: (previous?.version ?? 0) + 1,
               isCurrent: true,
+              // Carried forward from the previous version — re-importing a Node shouldn't
+              // silently reset a store's mirror setting for it back to the default.
+              mirrored: previous?.mirrored ?? false,
               sourceFileName: file.name,
               importedById: session.user.id,
             },

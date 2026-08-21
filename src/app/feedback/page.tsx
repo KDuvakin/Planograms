@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import useSWR from "swr";
+import { useEffect, useRef, useState } from "react";
+import useSWR, { mutate as globalMutate } from "swr";
 import { useLocale, useTranslations } from "next-intl";
 import { PageHeader } from "@/components/PageHeader";
 import { TopNav } from "@/components/TopNav";
@@ -35,6 +35,17 @@ export default function StoreFeedbackPage() {
   const { data: feedback, mutate } = useSWR<FeedbackRow[]>("/api/feedback", fetcher);
   const [openPhoto, setOpenPhoto] = useState<string | null>(null);
   const [pendingId, setPendingId] = useState<string | null>(null);
+
+  // Once the store actually opens this list, clear the "you got a reply" badge/banner —
+  // fire-once per mount, not on every refetch.
+  const markedSeen = useRef(false);
+  useEffect(() => {
+    if (markedSeen.current || !feedback) return;
+    markedSeen.current = true;
+    fetch("/api/feedback/mark-seen", { method: "POST" }).then(() => {
+      globalMutate("/api/feedback/unseen-count");
+    });
+  }, [feedback]);
 
   async function toggleFlag(f: FeedbackRow) {
     setPendingId(f.id);

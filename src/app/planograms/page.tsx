@@ -148,9 +148,11 @@ export default function PlanogramsPage() {
 function StoreTree() {
   const t = useTranslations("planograms");
   const tCommon = useTranslations("common");
+  const tStoreFeedback = useTranslations("storeFeedback");
   const locale = useLocale();
   const { data, isLoading } = useSWR<PlanogramListItem[]>("/api/planograms", fetcher);
   const { data: categories } = useSWR<CategoryWithNodes[]>("/api/categories", fetcher);
+  const { data: unseen } = useSWR<{ count: number }>("/api/feedback/unseen-count", fetcher);
 
   // Persisted across visits — store users re-open this list constantly mid-shift and
   // shouldn't have to re-toggle the filter every time.
@@ -179,6 +181,12 @@ function StoreTree() {
 
   return (
     <>
+      {!!unseen?.count && (
+        <Link href="/feedback" className={styles.feedbackBanner}>
+          {tStoreFeedback("unseenBanner", { count: unseen.count })}
+        </Link>
+      )}
+
       {isLoading && <p className={styles.hint}>{tCommon("loading")}</p>}
       {!isLoading && data?.length === 0 && <p className={styles.hint}>{t("empty")}</p>}
 

@@ -11,6 +11,7 @@ import { fetcher } from "@/lib/swrFetcher";
 interface PlanogramMeta {
   id: string;
   node: string;
+  mirrored: boolean;
   store: { code: string; name: string | null };
 }
 

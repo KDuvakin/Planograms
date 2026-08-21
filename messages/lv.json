@@ -59,6 +59,7 @@
     "releaseDate": "Izlaiduma datums: {date}",
     "start": "Sākt",
     "continueFromStep": "Turpināt no soļa {step}",
+    "mirrorToggle": "Spoguļattēls",
     "legend": {
       "ok": "bez izmaiņām",
       "changed": "izmaiņas",
@@ -75,6 +76,7 @@
     "nextRackAria": "Nākamais plaukts",
     "shelfLabel": "Līmenis {n}",
     "rackLabel": "Plaukts",
+    "customerFlowLabel": "Klientu plūsma",
     "backWithStep": "◀ Solis {step} no {total}",
     "nextWithStep": "Solis {step} no {total} ▶",
     "rackCompleteTitle": "Plaukts {rack} ir gatavs",
@@ -296,6 +298,11 @@
     "title": "Atsauksmes",
     "empty": "Jūsu veikalam vēl nav atsauksmju",
     "flag": "Atzīmēt",
-    "unflag": "Noņemt atzīmi"
+    "unflag": "Noņemt atzīmi",
+    "unseenBanner": "Saņemtas atbildes uz atsauksmēm ({count})"
+  },
+  "productDetail": {
+    "before": "Pirms",
+    "after": "Pēc"
   }
 }

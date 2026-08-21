@@ -97,6 +97,12 @@ model Planogram {
   version        Int      @default(1)
   isCurrent      Boolean  @default(true)
   shelfLengthCm  Float    @default(133)
+  // Some aisles route customer traffic right-to-left instead of the standard
+  // left-to-right — flips how shelf contents render on screen (display only, never
+  // the underlying rack/shelf/position data or instruction text). Lives per-planogram
+  // rather than per-store since different Nodes in the same store can face either way.
+  // Carried forward from the previous version whenever this Node is re-imported.
+  mirrored       Boolean  @default(false)
   sourceFileName String
   importedAt     DateTime @default(now())
   importedById   String
@@ -195,6 +201,10 @@ model Feedback {
   // The store's own "pay attention to this" marker — independent of the specialist's
   // reply, so a merchandiser can flag a row before anyone's replied to it.
   flaggedByStore Boolean @default(false)
+
+  // Flips true once the store has viewed a specialist's reply/acknowledgement —
+  // drives the "you got a reply" badge/banner without needing a separate read log.
+  seenByStore Boolean @default(false)
 
   photos FeedbackPhoto[]
 

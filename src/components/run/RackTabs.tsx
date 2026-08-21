@@ -7,12 +7,16 @@ export function RackTabs({
   racks,
   current,
   onSelect,
+  changedRacks,
 }: {
   racks: string[];
   current: string;
   onSelect: (rack: string) => void;
+  /** Racks with any pending change — colors the tab so staff can spot which racks need work. */
+  changedRacks?: Set<string>;
 }) {
   const t = useTranslations("run");
+  const tLegend = useTranslations("preview.legend");
   const idx = racks.indexOf(current);
 
   return (
@@ -32,16 +36,23 @@ export function RackTabs({
         </button>
 
         <div className={styles.tabsScroll}>
-          {racks.map((r) => (
-            <button
-              key={r}
-              type="button"
-              className={r === current ? styles.tabActive : styles.tab}
-              onClick={() => onSelect(r)}
-            >
-              {r}
-            </button>
-          ))}
+          {racks.map((r) => {
+            const hasChanges = changedRacks?.has(r) ?? false;
+            return (
+              <button
+                key={r}
+                type="button"
+                className={r === current ? styles.tabActive : styles.tab}
+                onClick={() => onSelect(r)}
+                title={changedRacks ? tLegend(hasChanges ? "changed" : "ok") : undefined}
+              >
+                {r}
+                {changedRacks && (
+                  <span className={`${styles.tabDot} ${hasChanges ? styles.tabDotChanged : styles.tabDotOk}`} />
+                )}
+              </button>
+            );
+          })}
         </div>
 
         <button

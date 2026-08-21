@@ -6,6 +6,7 @@
 
 .link,
 .linkActive {
+  position: relative;
   flex: 0 0 auto;
   padding: 7px 13px;
   border-radius: 999px;
@@ -19,4 +20,20 @@
 .linkActive {
   background: var(--ink);
   color: var(--surface);
+}
+
+.navBadge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: 999px;
+  background: var(--danger);
+  color: var(--surface);
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 16px;
+  text-align: center;
 }

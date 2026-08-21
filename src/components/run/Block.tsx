@@ -16,10 +16,12 @@ export function Block({
   slot,
   scale,
   highlightIndex,
+  onSelect,
 }: {
   slot: ShelfSlot;
   scale: number;
   highlightIndex?: number;
+  onSelect?: (slot: ShelfSlot) => void;
 }) {
   if (isGap(slot)) {
     // The gap a just-picked/moved-away item left behind — outline it so it's clear
@@ -46,6 +48,9 @@ export function Block({
         className={`${styles.block} ${STATE_CLASS[slot.state]} ${isHighlighted ? styles.highlighted : ""}`}
         title={`${slot.article} · SAP ${slot.sap}`}
         data-shelf-highlight={isHighlighted || undefined}
+        onClick={onSelect ? () => onSelect(slot) : undefined}
+        role={onSelect ? "button" : undefined}
+        tabIndex={onSelect ? 0 : undefined}
       >
         <div className={styles.blockSap}>{slot.sap}</div>
         <div className={styles.blockName}>{slot.article}</div>

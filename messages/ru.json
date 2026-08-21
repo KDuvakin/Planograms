@@ -59,6 +59,7 @@
     "releaseDate": "Дата релиза: {date}",
     "start": "Начать",
     "continueFromStep": "Продолжить с шага {step}",
+    "mirrorToggle": "Зеркальное отображение",
     "legend": {
       "ok": "без изменений",
       "changed": "изменения",
@@ -75,6 +76,7 @@
     "nextRackAria": "Следующий стеллаж",
     "shelfLabel": "Полка {n}",
     "rackLabel": "Стеллаж",
+    "customerFlowLabel": "Поток покупателей",
     "backWithStep": "◀ Шаг {step} из {total}",
     "nextWithStep": "Шаг {step} из {total} ▶",
     "rackCompleteTitle": "Стеллаж {rack} собран",
@@ -296,6 +298,11 @@
     "title": "Отзывы",
     "empty": "По вашему магазину пока нет отзывов",
     "flag": "Отметить",
-    "unflag": "Снять отметку"
+    "unflag": "Снять отметку",
+    "unseenBanner": "Получен ответ на отзывы ({count})"
+  },
+  "productDetail": {
+    "before": "Было",
+    "after": "Стало"
   }
 }
