@@ -227,3 +227,14 @@ model FeedbackPhoto {
 
   @@index([feedbackId])
 }
+
+// One row per calendar month — a running total of characters sent to Azure Speech,
+// so /api/tts can stop using the paid API once the free-tier budget for the month is
+// used up and fall back to the browser's own (free, lower-quality) voice instead of
+// silently starting to bill. Reset happens naturally: a new month just gets a new row.
+model TtsUsage {
+  id             String   @id @default(cuid())
+  yearMonth      String   @unique // "2026-08"
+  charactersUsed Int      @default(0)
+  updatedAt      DateTime @updatedAt
+}

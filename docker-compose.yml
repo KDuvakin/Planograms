@@ -15,6 +15,7 @@ services:
       SEED_ADMIN_PASSWORD: ${SEED_ADMIN_PASSWORD}
       AZURE_SPEECH_KEY: ${AZURE_SPEECH_KEY}
       AZURE_SPEECH_REGION: ${AZURE_SPEECH_REGION}
+      AZURE_TTS_MONTHLY_CHAR_LIMIT: ${AZURE_TTS_MONTHLY_CHAR_LIMIT:-500000}
     volumes:
       - uploads:/app/public/uploads
     depends_on:

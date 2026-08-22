@@ -33,6 +33,18 @@
   --font-body: 'Inter', sans-serif;
   --font-mono: 'IBM Plex Mono', monospace;
 
+  /* One shared type scale, so a "card heading" or "dialog title" is always the same
+     size wherever it shows up, instead of every screen having quietly picked its own
+     nearby number over time (17/18/19px all meaning "section heading", etc). */
+  --text-2xs: 11px;
+  --text-xs: 12px;
+  --text-sm: 13px;
+  --text-base: 14px;
+  --text-md: 16px;
+  --text-lg: 18px;
+  --text-xl: 24px;
+  --text-2xl: 28px;
+
   --radius: 10px;
   --radius-sm: 6px;
   --shadow-1: 0 1px 2px rgba(20, 35, 31, .06), 0 1px 1px rgba(20, 35, 31, .04);

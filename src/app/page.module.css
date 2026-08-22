@@ -30,14 +30,14 @@
 
 .title {
   font-family: var(--font-display);
-  font-size: 30px;
+  font-size: var(--text-2xl);
   margin: 0;
   color: var(--ink);
 }
 
 .status {
   color: var(--ok);
-  font-size: 14px;
+  font-size: var(--text-base);
   display: flex;
   align-items: center;
   gap: 6px;
@@ -58,5 +58,5 @@
   background: var(--accent);
   color: var(--accent-ink);
   font-weight: 600;
-  font-size: 14px;
+  font-size: var(--text-base);
 }

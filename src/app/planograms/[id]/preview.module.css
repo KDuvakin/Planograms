@@ -14,7 +14,7 @@
 }
 
 .back {
-  font-size: 13px;
+  font-size: var(--text-sm);
   color: var(--ink-soft);
 }
 
@@ -26,13 +26,13 @@
 
 .store {
   font-family: var(--font-mono);
-  font-size: 13px;
+  font-size: var(--text-sm);
   color: var(--accent);
   font-weight: 600;
 }
 
 .categoryBreadcrumb {
-  font-size: 12px;
+  font-size: var(--text-xs);
   color: var(--ink-soft);
   display: flex;
   align-items: center;
@@ -47,7 +47,7 @@
 }
 
 .rackHeading {
-  font-size: 15px;
+  font-size: var(--text-md);
   font-weight: 700;
   color: var(--ink);
   white-space: nowrap;
@@ -68,7 +68,7 @@
 }
 
 .mirrorLabel {
-  font-size: 13px;
+  font-size: var(--text-sm);
   font-weight: 600;
   color: var(--ink-soft);
   white-space: nowrap;
@@ -121,7 +121,7 @@
 .releaseDate {
   margin: 0;
   text-align: center;
-  font-size: 12px;
+  font-size: var(--text-xs);
   color: var(--ink-faint);
 }
 
@@ -147,7 +147,7 @@
   font-weight: 600;
   border: none;
   cursor: pointer;
-  font-size: 15px;
+  font-size: var(--text-md);
   font-family: inherit;
 }
 

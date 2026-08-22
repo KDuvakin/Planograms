@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { PageHeader } from "@/components/PageHeader";
 import { TopNav } from "@/components/TopNav";
-import styles from "./import.module.css";
+import styles from "@/components/admin/admin.module.css";
 import { fetcher } from "@/lib/swrFetcher";
 
 interface Store {
@@ -76,9 +76,9 @@ export default function ImportPage() {
             </option>
           ))}
         </select>
-        {format && <p className={styles.hint}>{t("storeCountHint", { count: storeCountForFormat })}</p>}
+        {format && <p className={styles.hintText}>{t("storeCountHint", { count: storeCountForFormat })}</p>}
         {formats.length === 0 && (
-          <p className={styles.hint}>
+          <p className={styles.hintText}>
             {t("noFormatsHint")} <Link href="/admin/stores" className={styles.inlineLink}>{t("noFormatsLink")}</Link>
           </p>
         )}
@@ -92,7 +92,7 @@ export default function ImportPage() {
           accept=".xlsx,.xls"
           onChange={(e) => setFile(e.target.files?.[0] ?? null)}
         />
-        <p className={styles.hint}>{t("hint")}</p>
+        <p className={styles.hintText}>{t("hint")}</p>
 
         {error && <p className={styles.error}>{error}</p>}
 

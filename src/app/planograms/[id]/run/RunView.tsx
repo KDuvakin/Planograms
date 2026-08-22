@@ -84,6 +84,29 @@ function mirrorNavigatorParams(
   return out;
 }
 
+interface TtsSegment {
+  text: string;
+  lang?: string;
+}
+
+// Product names are Estonian regardless of what language the rest of the UI/voice is
+// in — read them with the Estonian voice always, splitting the sentence into
+// before/article/after so only that one piece gets the different voice. Falls back to
+// one plain segment (current locale, unsplit) if the article can't be found verbatim
+// in the rendered text (e.g. no navigator.params.article at all, on the idle/done screens).
+function buildArticleSegments(text: string, article: string | undefined): TtsSegment[] {
+  if (!article) return [{ text }];
+  const idx = text.indexOf(article);
+  if (idx === -1) return [{ text }];
+  const before = text.slice(0, idx);
+  const after = text.slice(idx + article.length);
+  const segments: TtsSegment[] = [];
+  if (before) segments.push({ text: before });
+  segments.push({ text: article, lang: "et" });
+  if (after) segments.push({ text: after });
+  return segments;
+}
+
 /** Which of CLDR's three Russian plural categories a count falls into — 1/21/31... is
  * "one", 2-4/22-24... is "few" (except the 12-14 teens carve-out), everything else
  * (0, 5-20, 25+) is "many". */
@@ -238,6 +261,8 @@ export function RunView({
     state.navigator.key,
     withFacesPhrases(mirrorNavigatorParams(state.navigator.params, racks, meta.mirrored))
   );
+  const articleName = typeof state.navigator.params?.article === "string" ? state.navigator.params.article : undefined;
+  const ttsSegments = buildArticleSegments(instructionText, articleName);
 
   const [voiceEnabled, setVoiceEnabled] = useState(
     () => typeof window !== "undefined" && localStorage.getItem(VOICE_ENABLED_KEY) === "1"
@@ -316,14 +341,16 @@ export function RunView({
     window.speechSynthesis.speak(utterance);
   }
 
-  // Speaks `text` through the server's Azure AI voice, falling back to the browser's
-  // own (much lower quality, but zero-setup) voice if that request fails for any
-  // reason — no key configured, quota, network. Then — only if "Авто" is still on and
-  // not paused by the time speech actually finishes — waits AUTO_ADVANCE_DELAY_MS and
-  // clicks "Далее" on the caller's behalf. Used both for the automatic per-step speech
-  // and for the manual "Повторить" button, so repeating always restarts the same
-  // wait-then-advance cycle from scratch.
-  async function runVoiceCycle(text: string) {
+  // Speaks `segments` through the server's Azure AI voice (each segment can carry its
+  // own language — that's how a product's Estonian name stays Estonian regardless of
+  // the surrounding sentence's locale), falling back to the browser's own (much lower
+  // quality, single-voice, but zero-setup) voice reading `text` if that request fails
+  // for any reason — no key configured, quota, network. Then — only if "Авто" is still
+  // on and not paused by the time speech actually finishes — waits
+  // AUTO_ADVANCE_DELAY_MS and clicks "Далее" on the caller's behalf. Used both for the
+  // automatic per-step speech and for the manual "Повторить" button, so repeating
+  // always restarts the same wait-then-advance cycle from scratch.
+  async function runVoiceCycle(text: string, segments: TtsSegment[]) {
     stopVoiceCycle();
     if (!text) return;
     const controller = new AbortController();
@@ -332,7 +359,7 @@ export function RunView({
       const res = await fetch("/api/tts", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text, locale }),
+        body: JSON.stringify({ segments, locale }),
         signal: controller.signal,
       });
       if (!res.ok) throw new Error(`tts ${res.status}`);
@@ -357,7 +384,7 @@ export function RunView({
   // Speaks the current step automatically whenever it changes, while voice is on.
   useEffect(() => {
     if (!voiceEnabled || !lastExecutedStep || isDone || rackTransition) return;
-    runVoiceCycle(instructionText);
+    runVoiceCycle(instructionText, ttsSegments);
     return stopVoiceCycle;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [voiceEnabled, autoAdvance, autoPaused, state.currentStep, isDone, rackTransition]);
@@ -467,7 +494,7 @@ export function RunView({
   const highlightColor = highlightKind ? HIGHLIGHT_COLOR_VAR[highlightKind] : undefined;
 
   function handleRepeat() {
-    runVoiceCycle(instructionText);
+    runVoiceCycle(instructionText, ttsSegments);
   }
 
   return (
