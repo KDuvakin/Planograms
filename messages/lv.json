@@ -104,16 +104,16 @@
   "instructions": {
     "idle": "Spied „Solis 1“, lai sāktu planogrammas izvietošanu",
     "done": "Visi soļi pabeigti — plaukts atbilst jaunajam plānam",
-    "delete": "Paņem {article} ({sap}) no plaukta {rack} plaukta līmeņa {shelf} pozīcija {pos} — preces jaunajā plānā nav, ievieto grozā „Ārpus sortimenta“",
-    "pick": "Atbrīvo vietu: noņem {article} ({sap}) no plaukta {rack} plaukta līmeņa {shelf} pozīcija {pos} pagaidu grozā",
-    "moveSame": "Pārbīdi {article} ({sap}) plauktā {rack} līmenī {shelf}: no pozīcijas {oldPos} uz pozīciju {newPos}",
-    "moveDifferent": "Pārvieto {article} ({sap}) no plaukta {fromRack} līmeņa {fromShelf} uz plauktu {rack} līmeni {shelf}, pozīcija {newPos}, {faces} sejas",
-    "confirm": "{article} ({sap}) jau ir savā vietā — nekas nav jādara",
-    "resizeIncrease": "Palielini preces {article} ({sap}) seju skaitu plauktā {rack} līmenī {shelf}, pozīcija {newPos}: no {oldFaces} uz {newFaces}",
-    "resizeDecrease": "Samazini preces {article} ({sap}) seju skaitu plauktā {rack} līmenī {shelf}, pozīcija {newPos}: no {oldFaces} uz {newFaces}",
-    "placeFromTemp": "Paņem {article} ({sap}) no pagaidu groza un novieto plauktā {rack} līmenī {shelf}, pozīcija {newPos}, {faces} sejas",
-    "placeFromNew": "Paņem {article} ({sap}) no groza „Jauna prece“ un novieto plauktā {rack} līmenī {shelf}, pozīcija {newPos}, {faces} sejas",
-    "placeFromShelf": "Paņem {article} ({sap}) no plaukta {oldRack} līmeņa {oldShelf} un novieto plauktā {rack} līmenī {shelf}, pozīcija {newPos}, {faces} sejas"
+    "delete": "Paņem, {article}, produkta kods ({sap}), no plaukta - {rack}, līmenis {shelf}, pozīcijas numurs {pos}, preces jaunajā plānā nav, ievieto grozā „Ārpus sortimenta“",
+    "pick": "Atbrīvo vietu: noņem, {article}, produkta kods ({sap}), no plaukta - {rack}, līmenis {shelf}, pozīcijas numurs {pos}, pagaidu grozā",
+    "moveSame": "Pārbīdi, {article}, produkta kods ({sap}), plauktā - {rack}, līmenis {shelf}, no pozīcijas {oldPos} uz pozīciju {newPos}",
+    "moveDifferent": "Pārvieto, {article}, produkta kods ({sap}), no plaukta - {fromRack}, līmenis {fromShelf}, uz plauktu - {rack}, līmenis {shelf}, no pozīcijas {oldPos} uz pozīciju {newPos}, seju skaits {faces}",
+    "confirm": "{article}, produkta kods ({sap}), jau ir savā vietā — nekas nav jādara",
+    "resizeIncrease": "Palielini preces {article}, produkta kods ({sap}), seju skaitu plauktā - {rack}, līmenis {shelf}, pozīcijas numurs {newPos}: no {oldFaces} uz {newFaces}",
+    "resizeDecrease": "Samazini preces {article}, produkta kods ({sap}), seju skaitu plauktā - {rack}, līmenis {shelf}, pozīcijas numurs {newPos}: no {oldFaces} uz {newFaces}",
+    "placeFromTemp": "Paņem, {article}, produkta kods ({sap}), no pagaidu groza un novieto plauktā - {rack}, līmenis {shelf}, pozīcijas numurs {newPos}, {faces} sejas",
+    "placeFromNew": "Paņem, {article}, produkta kods ({sap}), no groza „Jauna prece“ un novieto plauktā - {rack}, līmenis {shelf}, pozīcijas numurs {newPos}, {faces} sejas",
+    "placeFromShelf": "Paņem, {article}, produkta kods ({sap}), no plaukta - {oldRack}, līmenis {oldShelf}, un novieto plauktā - {rack}, līmenis {shelf}, pozīcijas numurs {newPos}, {faces} sejas"
   },
   "feedback": {
     "sentThanks": "Paldies, nosūtīts!",

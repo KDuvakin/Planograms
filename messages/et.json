@@ -104,16 +104,16 @@
   "instructions": {
     "idle": "Vajuta „Samm 1“, et alustada planogrammi ülesseadmist",
     "done": "Kõik sammud on tehtud — riiul vastab uuele plaanile",
-    "delete": "Võta {article} ({sap}) riiulist {rack} tasandilt {shelf} positsioon {pos} — toodet uues plaanis pole, pane korvi „Sortimendist väljas“",
-    "pick": "Tee ruumi: eemalda {article} ({sap}) riiulist {rack} tasandilt {shelf} positsioon {pos} ajutisse korvi",
-    "moveSame": "Nihuta {article} ({sap}) riiulil {rack} tasandil {shelf}: positsioonilt {oldPos} positsioonile {newPos}",
-    "moveDifferent": "Tõsta {article} ({sap}) riiulist {fromRack} tasandilt {fromShelf} riiulisse {rack} tasandile {shelf}, positsioon {newPos}, esipindu {faces}",
-    "confirm": "{article} ({sap}) on juba õigel kohal — midagi teha pole vaja",
-    "resizeIncrease": "Suurenda toote {article} ({sap}) esipindade arvu riiulil {rack} tasandil {shelf}, positsioon {newPos}: {oldFaces} → {newFaces}",
-    "resizeDecrease": "Vähenda toote {article} ({sap}) esipindade arvu riiulil {rack} tasandil {shelf}, positsioon {newPos}: {oldFaces} → {newFaces}",
-    "placeFromTemp": "Võta {article} ({sap}) ajutisest korvist ja aseta riiulisse {rack} tasandile {shelf}, positsioon {newPos}, esipindu {faces}",
-    "placeFromNew": "Võta {article} ({sap}) korvist „Uus toode“ ja aseta riiulisse {rack} tasandile {shelf}, positsioon {newPos}, esipindu {faces}",
-    "placeFromShelf": "Võta {article} ({sap}) riiulist {oldRack} tasandilt {oldShelf} ja aseta riiulisse {rack} tasandile {shelf}, positsioon {newPos}, esipindu {faces}"
+    "delete": "Võta, {article}, tootekood ({sap}), riiulist - {rack}, tasand {shelf}, positsiooni number {pos}, toodet uues plaanis pole, pane korvi „Sortimendist väljas“",
+    "pick": "Tee ruumi: eemalda, {article}, tootekood ({sap}), riiulist - {rack}, tasand {shelf}, positsiooni number {pos}, ajutisse korvi",
+    "moveSame": "Nihuta, {article}, tootekood ({sap}), riiulil - {rack}, tasand {shelf}, positsioonilt {oldPos} positsioonile {newPos}",
+    "moveDifferent": "Tõsta, {article}, tootekood ({sap}), riiulist - {fromRack}, tasand {fromShelf}, riiulisse - {rack}, tasand {shelf}, positsioonilt {oldPos} positsioonile {newPos}, esipindade arv {faces}",
+    "confirm": "{article}, tootekood ({sap}), on juba õigel kohal — midagi teha pole vaja",
+    "resizeIncrease": "Suurenda toote {article}, tootekood ({sap}), esipindade arvu riiulil - {rack}, tasand {shelf}, positsiooni number {newPos}: {oldFaces} → {newFaces}",
+    "resizeDecrease": "Vähenda toote {article}, tootekood ({sap}), esipindade arvu riiulil - {rack}, tasand {shelf}, positsiooni number {newPos}: {oldFaces} → {newFaces}",
+    "placeFromTemp": "Võta, {article}, tootekood ({sap}), ajutisest korvist ja aseta riiulisse - {rack}, tasand {shelf}, positsiooni number {newPos}, esipindu {faces}",
+    "placeFromNew": "Võta, {article}, tootekood ({sap}), korvist „Uus toode“ ja aseta riiulisse - {rack}, tasand {shelf}, positsiooni number {newPos}, esipindu {faces}",
+    "placeFromShelf": "Võta, {article}, tootekood ({sap}), riiulist - {oldRack}, tasand {oldShelf}, ja aseta riiulisse - {rack}, tasand {shelf}, positsiooni number {newPos}, esipindu {faces}"
   },
   "feedback": {
     "sentThanks": "Aitäh, saadetud!",

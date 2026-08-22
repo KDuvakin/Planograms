@@ -104,16 +104,16 @@
   "instructions": {
     "idle": "Press \"Step 1\" to start setting up the planogram",
     "done": "All steps completed — the shelf now matches the new plan",
-    "delete": "Take {article} ({sap}) from rack {rack} shelf {shelf} position {pos} — it's not in the new plan, put it in the \"not assorted\" basket",
-    "pick": "Free up space: remove {article} ({sap}) from rack {rack} shelf {shelf} position {pos} into the temporary basket",
-    "moveSame": "Shift {article} ({sap}) on rack {rack} shelf {shelf}: from position {oldPos} to position {newPos}",
-    "moveDifferent": "Move {article} ({sap}) from rack {fromRack} shelf {fromShelf} to rack {rack} shelf {shelf}, position {newPos}, {faces} faces",
-    "confirm": "{article} ({sap}) is already in place — nothing to do",
-    "resizeIncrease": "Increase the face count of {article} ({sap}) on rack {rack} shelf {shelf}, position {newPos}: from {oldFaces} to {newFaces}",
-    "resizeDecrease": "Decrease the face count of {article} ({sap}) on rack {rack} shelf {shelf}, position {newPos}: from {oldFaces} to {newFaces}",
-    "placeFromTemp": "Take {article} ({sap}) from the temporary basket and place it on rack {rack} shelf {shelf}, position {newPos}, {faces} faces",
-    "placeFromNew": "Take {article} ({sap}) from the \"new item\" basket and place it on rack {rack} shelf {shelf}, position {newPos}, {faces} faces",
-    "placeFromShelf": "Take {article} ({sap}) from rack {oldRack} shelf {oldShelf} and place it on rack {rack} shelf {shelf}, position {newPos}, {faces} faces"
+    "delete": "Take, {article}, product code ({sap}), from rack - {rack}, shelf {shelf}, position number {pos}, it's not in the new plan, put it in the \"not assorted\" basket",
+    "pick": "Free up space: remove, {article}, product code ({sap}), from rack - {rack}, shelf {shelf}, position number {pos}, into the temporary basket",
+    "moveSame": "Shift, {article}, product code ({sap}), on rack - {rack}, shelf {shelf}, from position {oldPos} to position {newPos}",
+    "moveDifferent": "Move, {article}, product code ({sap}), from rack - {fromRack}, shelf {fromShelf}, to rack - {rack}, shelf {shelf}, from position {oldPos} to position {newPos}, face count {faces}",
+    "confirm": "{article}, product code ({sap}), is already in place — nothing to do",
+    "resizeIncrease": "Increase the face count of {article}, product code ({sap}), on rack - {rack}, shelf {shelf}, position number {newPos}: from {oldFaces} to {newFaces}",
+    "resizeDecrease": "Decrease the face count of {article}, product code ({sap}), on rack - {rack}, shelf {shelf}, position number {newPos}: from {oldFaces} to {newFaces}",
+    "placeFromTemp": "Take, {article}, product code ({sap}), from the temporary basket and place it onto rack - {rack}, shelf {shelf}, position number {newPos}, {faces} faces",
+    "placeFromNew": "Take, {article}, product code ({sap}), from the \"new item\" basket and place it onto rack - {rack}, shelf {shelf}, position number {newPos}, {faces} faces",
+    "placeFromShelf": "Take, {article}, product code ({sap}), from rack - {oldRack}, shelf {oldShelf}, and place it onto rack - {rack}, shelf {shelf}, position number {newPos}, {faces} faces"
   },
   "feedback": {
     "sentThanks": "Thanks, submitted!",

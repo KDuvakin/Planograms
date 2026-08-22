@@ -162,6 +162,7 @@ export function execute(state: EngineState, step: Step, silent: boolean): void {
               fromShelf: step.fromShelf,
               rack: step.rack,
               shelf: step.shelf,
+              oldPos,
               newPos: p.positionNumberNew,
               faces: p.facesNew,
             },

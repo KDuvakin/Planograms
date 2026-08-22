@@ -104,16 +104,16 @@
   "instructions": {
     "idle": "Нажмите «Шаг 1», чтобы начать выставление планограммы",
     "done": "Все шаги выполнены — полка собрана по новому плану",
-    "delete": "Возьми {article} ({sap}) со стеллажа {rack} полка {shelf} позиция {pos} — товара нет в новой планке, убери в корзину «Не ассорт»",
-    "pick": "Освободи место: убери {article} ({sap}) со стеллажа {rack} полка {shelf} позиция {pos} во временную корзину",
-    "moveSame": "Сдвинь {article} ({sap}) на стеллаже {rack} полка {shelf}: с позиции {oldPos} на позицию {newPos}",
-    "moveDifferent": "Переставь {article} ({sap}) со стеллажа {fromRack} полка {fromShelf} на стеллаж {rack} полка {shelf}, позиция {newPos}, лиц {faces}",
-    "confirm": "{article} ({sap}) уже стоит на своём месте — ничего делать не нужно",
-    "resizeIncrease": "Увеличь количество лиц у {article} ({sap}) на стеллаже {rack} полка {shelf}, позиция {newPos}: с {oldFaces} на {newFaces}",
-    "resizeDecrease": "Уменьши количество лиц у {article} ({sap}) на стеллаже {rack} полка {shelf}, позиция {newPos}: с {oldFaces} на {newFaces}",
-    "placeFromTemp": "Возьми {article} ({sap}) из временной корзины и поставь на стеллаж {rack} полка {shelf}, позиция {newPos}, лиц {faces}",
-    "placeFromNew": "Возьми {article} ({sap}) из корзины «Новый товар» и поставь на стеллаж {rack} полка {shelf}, позиция {newPos}, лиц {faces}",
-    "placeFromShelf": "Возьми {article} ({sap}) со стеллажа {oldRack} полка {oldShelf} и поставь на стеллаж {rack} полка {shelf}, позиция {newPos}, лиц {faces}"
+    "delete": "Возьми, {article}, товар ({sap}) со стеллажа - {rack}, полка {shelf}, позиция номер {pos}, товара нет в новой планке, убери в корзину «Не ассорт»",
+    "pick": "Освободи место: убери, {article}, товар ({sap}) со стеллажа - {rack}, полка {shelf}, позиция номер {pos}, во временную корзину",
+    "moveSame": "Сдвинь, {article}, товар ({sap}) на стеллаже - {rack}, полка {shelf}, с позиции {oldPos} на позицию {newPos}",
+    "moveDifferent": "Переставь, {article}, товар ({sap}) со стеллажа - {fromRack}, полка {fromShelf}, на стеллаж - {rack}, полка {shelf}, с позиции {oldPos} на позицию {newPos}, количество лиц {faces}",
+    "confirm": "{article}, товар ({sap}) уже стоит на своём месте — ничего делать не нужно",
+    "resizeIncrease": "Увеличь количество лиц у {article}, товар ({sap}) на стеллаже - {rack}, полка {shelf}, позиция номер {newPos}: с {oldFacesPhrase} на {newFacesPhrase}",
+    "resizeDecrease": "Уменьши количество лиц у {article}, товар ({sap}) на стеллаже - {rack}, полка {shelf}, позиция номер {newPos}: с {oldFacesPhrase} на {newFacesPhrase}",
+    "placeFromTemp": "Возьми, {article}, товар ({sap}) из временной корзины и поставь на стеллаж - {rack}, на полку {shelf}, позиция номер {newPos}, лица {faces}",
+    "placeFromNew": "Возьми, {article}, товар ({sap}) из корзины «Новый товар» и поставь на стеллаж - {rack}, на полку {shelf}, позиция номер {newPos}, лица {faces}",
+    "placeFromShelf": "Возьми, {article}, товар ({sap}) со стеллажа - {oldRack}, полка {oldShelf}, и поставь на стеллаж - {rack}, на полку {shelf}, позиция номер {newPos}, лица {faces}"
   },
   "feedback": {
     "sentThanks": "Спасибо, отправлено!",

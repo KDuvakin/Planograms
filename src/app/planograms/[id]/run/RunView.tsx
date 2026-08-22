@@ -84,6 +84,45 @@ function mirrorNavigatorParams(
   return out;
 }
 
+/** Which of CLDR's three Russian plural categories a count falls into — 1/21/31... is
+ * "one", 2-4/22-24... is "few" (except the 12-14 teens carve-out), everything else
+ * (0, 5-20, 25+) is "many". */
+function ruFacesCategory(n: number): "one" | "few" | "many" {
+  const mod10 = n % 10;
+  const mod100 = n % 100;
+  if (mod10 === 1 && mod100 !== 11) return "one";
+  if (mod10 >= 2 && mod10 <= 4 && !(mod100 >= 12 && mod100 <= 14)) return "few";
+  return "many";
+}
+
+// "с 2-х лиц на 1 лицо", "с 1-го лица на 2 лица" — the FROM value takes a genitive-case
+// digit suffix (-го/-х/-ти) the way Russian shorthand writes declined numerals, the TO
+// value reads as a plain count. Only the ru locale's own templates reference these —
+// harmless extra params for en/et/lv, which don't need this declension at all.
+function ruFacesFromPhrase(n: number): string {
+  const category = ruFacesCategory(n);
+  if (category === "one") return `${n}-го лица`;
+  if (category === "few") return `${n}-х лиц`;
+  return `${n}-ти лиц`;
+}
+
+function ruFacesToPhrase(n: number): string {
+  const category = ruFacesCategory(n);
+  if (category === "one") return `${n} лицо`;
+  if (category === "few") return `${n} лица`;
+  return `${n} лиц`;
+}
+
+function withFacesPhrases(
+  params: Record<string, string | number> | undefined
+): Record<string, string | number> | undefined {
+  if (!params) return params;
+  const out = { ...params };
+  if (typeof out.oldFaces === "number") out.oldFacesPhrase = ruFacesFromPhrase(out.oldFaces);
+  if (typeof out.newFaces === "number") out.newFacesPhrase = ruFacesToPhrase(out.newFaces);
+  return out;
+}
+
 interface Meta {
   id: string;
   node: string;
@@ -197,7 +236,7 @@ export function RunView({
   // but the displayed text itself has always covered every navigator state.
   const instructionText = tInstructions(
     state.navigator.key,
-    mirrorNavigatorParams(state.navigator.params, racks, meta.mirrored)
+    withFacesPhrases(mirrorNavigatorParams(state.navigator.params, racks, meta.mirrored))
   );
 
   const [voiceEnabled, setVoiceEnabled] = useState(
@@ -208,12 +247,14 @@ export function RunView({
   );
   const [autoPaused, setAutoPaused] = useState(false);
   const autoTimeoutRef = useRef<number | null>(null);
-  // onend/onerror fire asynchronously, possibly well after this render — refs (not the
-  // state values themselves) are what that callback must read, so a mid-speech toggle
-  // of "Авто"/"Пауза" takes effect immediately instead of using whatever was true when
-  // the utterance started.
+  // onend/onerror/onended fire asynchronously, possibly well after this render — refs
+  // (not the state values themselves) are what those callbacks must read, so a
+  // mid-speech toggle of "Авто"/"Пауза" takes effect immediately instead of using
+  // whatever was true when the utterance/audio started.
   const autoAdvanceRef = useRef(autoAdvance);
   const autoPausedRef = useRef(autoPaused);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const ttsAbortRef = useRef<AbortController | null>(null);
 
   useEffect(() => {
     localStorage.setItem(VOICE_ENABLED_KEY, voiceEnabled ? "1" : "0");
@@ -238,32 +279,79 @@ export function RunView({
 
   function stopVoiceCycle() {
     if (typeof window !== "undefined" && "speechSynthesis" in window) window.speechSynthesis.cancel();
+    if (ttsAbortRef.current) {
+      ttsAbortRef.current.abort();
+      ttsAbortRef.current = null;
+    }
+    if (audioRef.current) {
+      // strip handlers first — otherwise pausing/discarding mid-playback can itself
+      // fire onended/onerror and schedule an auto-advance for a cycle we're cancelling
+      audioRef.current.onended = null;
+      audioRef.current.onerror = null;
+      audioRef.current.pause();
+      URL.revokeObjectURL(audioRef.current.src);
+      audioRef.current = null;
+    }
     if (autoTimeoutRef.current !== null) {
       window.clearTimeout(autoTimeoutRef.current);
       autoTimeoutRef.current = null;
     }
   }
 
-  // Speaks `text`, then — only if "Авто" is still on and not paused by the time speech
-  // actually finishes — waits AUTO_ADVANCE_DELAY_MS and clicks "Далее" on the caller's
-  // behalf. Used both for the automatic per-step speech and for the manual "Повторить"
-  // button, so repeating always restarts the same wait-then-advance cycle from scratch.
-  function runVoiceCycle(text: string) {
-    stopVoiceCycle();
-    if (typeof window === "undefined" || !("speechSynthesis" in window) || !text) return;
+  function scheduleAutoAdvance() {
+    if (autoAdvanceRef.current && !autoPausedRef.current) {
+      autoTimeoutRef.current = window.setTimeout(() => {
+        autoTimeoutRef.current = null;
+        handleNext();
+      }, AUTO_ADVANCE_DELAY_MS);
+    }
+  }
+
+  function speakWithBrowserVoice(text: string) {
+    if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = SPEECH_LANG[locale] ?? "ru-RU";
-    const onDone = () => {
-      if (autoAdvanceRef.current && !autoPausedRef.current) {
-        autoTimeoutRef.current = window.setTimeout(() => {
-          autoTimeoutRef.current = null;
-          handleNext();
-        }, AUTO_ADVANCE_DELAY_MS);
-      }
-    };
-    utterance.onend = onDone;
-    utterance.onerror = onDone; // don't get stuck waiting forever if TTS fails
+    utterance.onend = scheduleAutoAdvance;
+    utterance.onerror = scheduleAutoAdvance; // don't get stuck waiting forever if TTS fails
     window.speechSynthesis.speak(utterance);
+  }
+
+  // Speaks `text` through the server's Azure AI voice, falling back to the browser's
+  // own (much lower quality, but zero-setup) voice if that request fails for any
+  // reason — no key configured, quota, network. Then — only if "Авто" is still on and
+  // not paused by the time speech actually finishes — waits AUTO_ADVANCE_DELAY_MS and
+  // clicks "Далее" on the caller's behalf. Used both for the automatic per-step speech
+  // and for the manual "Повторить" button, so repeating always restarts the same
+  // wait-then-advance cycle from scratch.
+  async function runVoiceCycle(text: string) {
+    stopVoiceCycle();
+    if (!text) return;
+    const controller = new AbortController();
+    ttsAbortRef.current = controller;
+    try {
+      const res = await fetch("/api/tts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text, locale }),
+        signal: controller.signal,
+      });
+      if (!res.ok) throw new Error(`tts ${res.status}`);
+      const blob = await res.blob();
+      if (controller.signal.aborted) return; // superseded while the request was in flight
+      const url = URL.createObjectURL(blob);
+      const audio = new Audio(url);
+      const onFinished = () => {
+        URL.revokeObjectURL(url);
+        audioRef.current = null;
+        scheduleAutoAdvance();
+      };
+      audio.onended = onFinished;
+      audio.onerror = onFinished;
+      audioRef.current = audio;
+      await audio.play();
+    } catch {
+      if (!controller.signal.aborted) speakWithBrowserVoice(text);
+    }
   }
 
   // Speaks the current step automatically whenever it changes, while voice is on.
@@ -408,7 +496,7 @@ export function RunView({
 
       <DiffLegend />
 
-      <div className={styles.voiceRow}>
+      <label className={styles.voiceRow}>
         <span className={styles.filterLabel}>{t("voiceAssistant")}</span>
         <span className={styles.switch}>
           <input
@@ -419,7 +507,7 @@ export function RunView({
           />
           <span className={styles.switchTrack} />
         </span>
-      </div>
+      </label>
 
       {voiceEnabled && (
         <div className={styles.voiceControlsRow}>
