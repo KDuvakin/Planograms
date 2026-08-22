@@ -21,13 +21,20 @@ export async function POST(req: NextRequest) {
     if (!code) {
       return NextResponse.json({ error: "code is required" }, { status: 400 });
     }
+    if (code.length > 4) {
+      return NextResponse.json({ error: "Номер магазина: максимум 4 символа (например, T203)" }, { status: 400 });
+    }
+    const format = body.format ? String(body.format).trim() : undefined;
+    if (format && format.length > 3) {
+      return NextResponse.json({ error: "Формат: максимум 3 символа" }, { status: 400 });
+    }
 
     const store = await prisma.store.create({
       data: {
         code,
         name: body.name ? String(body.name) : undefined,
         chain: body.chain ? String(body.chain) : undefined,
-        format: body.format ? String(body.format) : undefined,
+        format,
         address: body.address ? String(body.address) : undefined,
         email: body.email ? String(body.email) : undefined,
       },

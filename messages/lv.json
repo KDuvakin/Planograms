@@ -84,7 +84,12 @@
     "productLabel": "Prece",
     "sapCodeLabel": "SAP kods",
     "eanCodeLabel": "EAN kods",
-    "stepDescriptionLabel": "Soļa apraksts"
+    "stepDescriptionLabel": "Soļa apraksts",
+    "voiceAssistant": "Balss asistents",
+    "repeat": "Atkārtot",
+    "autoAdvance": "Auto",
+    "pause": "Pauze",
+    "resume": "Turpināt"
   },
   "stepLabel": {
     "pick": "Noņemt",
@@ -188,7 +193,7 @@
   "adminStores": {
     "title": "Veikali",
     "newStoreTitle": "Jauns veikals",
-    "code": "Kods",
+    "code": "Veikala numurs",
     "name": "Nosaukums",
     "chain": "Tīkls",
     "format": "Formāts",
@@ -197,7 +202,7 @@
     "allStoresTitle": "Visi veikali",
     "searchPlaceholder": "Meklēt: kods, nosaukums, tīkls, formāts, adrese, e-pasts",
     "table": {
-      "code": "Kods",
+      "code": "Veikala numurs",
       "name": "Nosaukums",
       "chain": "Tīkls",
       "format": "Formāts",
@@ -288,18 +293,22 @@
     "noFeedback": "Atsauksmju vēl nav",
     "minutesShort": "min",
     "onlyWithFeedback": "Tikai ar atsauksmēm",
+    "onlyNeedingReply": "Tikai bez atbildes",
     "replyPlaceholder": "Atbilde veikalam…",
     "acceptedLabel": "Komentārs pieņemts",
     "saveReply": "Saglabāt",
     "saving": "Saglabā…",
-    "repliedByLabel": "Atbildēja"
+    "repliedByLabel": "Atbildēja",
+    "flagSpecialist": "Atzīmēt",
+    "unflagSpecialist": "Noņemt atzīmi"
   },
   "storeFeedback": {
     "title": "Atsauksmes",
     "empty": "Jūsu veikalam vēl nav atsauksmju",
     "flag": "Atzīmēt",
     "unflag": "Noņemt atzīmi",
-    "unseenBanner": "Saņemtas atbildes uz atsauksmēm ({count})"
+    "unseenBanner": "Atsauksmju atjauninājumi ({count})",
+    "needsReplyNote": "Speciālists lūdz precizējumu"
   },
   "productDetail": {
     "before": "Pirms",

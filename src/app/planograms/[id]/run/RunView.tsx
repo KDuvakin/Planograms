@@ -63,6 +63,11 @@ const HIGHLIGHT_COLOR_VAR: Record<HighlightKind, string> = {
 
 const RACK_PARAM_KEYS = ["rack", "fromRack", "oldRack"] as const;
 
+const SPEECH_LANG: Record<string, string> = { ru: "ru-RU", en: "en-US", et: "et-EE", lv: "lv-LV" };
+const AUTO_ADVANCE_DELAY_MS = 3500;
+const VOICE_ENABLED_KEY = "run.voiceEnabled";
+const AUTO_ADVANCE_KEY = "run.autoAdvance";
+
 /** The engine's instruction params always carry the TRUE rack id — this only swaps what's
  * shown in the rendered instruction text when the planogram is mirrored, same as every
  * other rack label on this screen. */
@@ -164,26 +169,11 @@ export function RunView({
   const isDone = state.currentRealStep >= state.realStepsTotal;
   const progressPct = state.realStepsTotal ? Math.round((state.currentRealStep / state.realStepsTotal) * 100) : 0;
 
-  if (isDone) {
-    const placedCount = state.steps.filter(
-      (s) => s.type === "move" || s.type === "place" || s.type === "resize"
-    ).length;
-    const removedCount = state.steps.filter((s) => s.type === "evict" && s.to === "deleted").length;
-
-    return (
-      <CompletionScreen
-        placedCount={placedCount}
-        removedCount={removedCount}
-        feedbackCount={feedbackCount}
-        totalSteps={state.realStepsTotal}
-        userName={session?.user?.name ?? session?.user?.email ?? ""}
-        onDone={() => router.push("/planograms")}
-      />
-    );
-  }
-
   // Advances to the next real step — unless it would move onto a different rack,
   // in which case it first shows a "rack complete" summary and waits for a second click.
+  // Defined before the `isDone` early return below (and before the voice hooks that call
+  // it) purely so every hook in this component stays unconditional — this function itself
+  // calls no hooks, so its position doesn't matter to React, only to the reader.
   function handleNext() {
     if (rackTransition) {
       setRackTransition(null);
@@ -200,6 +190,109 @@ export function RunView({
       }
     }
     state.nextStep();
+  }
+
+  // Same text the instruction card shows, whether that's a real step or the idle/done
+  // placeholder — voice only ever gets SPOKEN for a real step (guarded separately below),
+  // but the displayed text itself has always covered every navigator state.
+  const instructionText = tInstructions(
+    state.navigator.key,
+    mirrorNavigatorParams(state.navigator.params, racks, meta.mirrored)
+  );
+
+  const [voiceEnabled, setVoiceEnabled] = useState(
+    () => typeof window !== "undefined" && localStorage.getItem(VOICE_ENABLED_KEY) === "1"
+  );
+  const [autoAdvance, setAutoAdvance] = useState(
+    () => typeof window !== "undefined" && localStorage.getItem(AUTO_ADVANCE_KEY) === "1"
+  );
+  const [autoPaused, setAutoPaused] = useState(false);
+  const autoTimeoutRef = useRef<number | null>(null);
+  // onend/onerror fire asynchronously, possibly well after this render — refs (not the
+  // state values themselves) are what that callback must read, so a mid-speech toggle
+  // of "Авто"/"Пауза" takes effect immediately instead of using whatever was true when
+  // the utterance started.
+  const autoAdvanceRef = useRef(autoAdvance);
+  const autoPausedRef = useRef(autoPaused);
+
+  useEffect(() => {
+    localStorage.setItem(VOICE_ENABLED_KEY, voiceEnabled ? "1" : "0");
+  }, [voiceEnabled]);
+  useEffect(() => {
+    localStorage.setItem(AUTO_ADVANCE_KEY, autoAdvance ? "1" : "0");
+    autoAdvanceRef.current = autoAdvance;
+  }, [autoAdvance]);
+  useEffect(() => {
+    autoPausedRef.current = autoPaused;
+  }, [autoPaused]);
+
+  function handleVoiceEnabledChange(checked: boolean) {
+    setVoiceEnabled(checked);
+    if (!checked) setAutoAdvance(false); // no point leaving auto-advance armed with voice off
+  }
+
+  function handleAutoAdvanceChange(checked: boolean) {
+    setAutoAdvance(checked);
+    if (checked) setAutoPaused(false); // turning it on should always start running, not paused
+  }
+
+  function stopVoiceCycle() {
+    if (typeof window !== "undefined" && "speechSynthesis" in window) window.speechSynthesis.cancel();
+    if (autoTimeoutRef.current !== null) {
+      window.clearTimeout(autoTimeoutRef.current);
+      autoTimeoutRef.current = null;
+    }
+  }
+
+  // Speaks `text`, then — only if "Авто" is still on and not paused by the time speech
+  // actually finishes — waits AUTO_ADVANCE_DELAY_MS and clicks "Далее" on the caller's
+  // behalf. Used both for the automatic per-step speech and for the manual "Повторить"
+  // button, so repeating always restarts the same wait-then-advance cycle from scratch.
+  function runVoiceCycle(text: string) {
+    stopVoiceCycle();
+    if (typeof window === "undefined" || !("speechSynthesis" in window) || !text) return;
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = SPEECH_LANG[locale] ?? "ru-RU";
+    const onDone = () => {
+      if (autoAdvanceRef.current && !autoPausedRef.current) {
+        autoTimeoutRef.current = window.setTimeout(() => {
+          autoTimeoutRef.current = null;
+          handleNext();
+        }, AUTO_ADVANCE_DELAY_MS);
+      }
+    };
+    utterance.onend = onDone;
+    utterance.onerror = onDone; // don't get stuck waiting forever if TTS fails
+    window.speechSynthesis.speak(utterance);
+  }
+
+  // Speaks the current step automatically whenever it changes, while voice is on.
+  useEffect(() => {
+    if (!voiceEnabled || !lastExecutedStep || isDone || rackTransition) return;
+    runVoiceCycle(instructionText);
+    return stopVoiceCycle;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [voiceEnabled, autoAdvance, autoPaused, state.currentStep, isDone, rackTransition]);
+
+  // Stop talking entirely once the reset is done or this screen unmounts.
+  useEffect(() => stopVoiceCycle, []);
+
+  if (isDone) {
+    const placedCount = state.steps.filter(
+      (s) => s.type === "move" || s.type === "place" || s.type === "resize"
+    ).length;
+    const removedCount = state.steps.filter((s) => s.type === "evict" && s.to === "deleted").length;
+
+    return (
+      <CompletionScreen
+        placedCount={placedCount}
+        removedCount={removedCount}
+        feedbackCount={feedbackCount}
+        totalSteps={state.realStepsTotal}
+        userName={session?.user?.name ?? session?.user?.email ?? ""}
+        onDone={() => router.push("/planograms")}
+      />
+    );
   }
 
   if (rackTransition) {
@@ -285,6 +378,10 @@ export function RunView({
   const kindStateClass = highlightKind ? HIGHLIGHT_CLASS[highlightKind] : undefined;
   const highlightColor = highlightKind ? HIGHLIGHT_COLOR_VAR[highlightKind] : undefined;
 
+  function handleRepeat() {
+    runVoiceCycle(instructionText);
+  }
+
   return (
     <main className={styles.page}>
       <div className={styles.topRow}>
@@ -310,6 +407,44 @@ export function RunView({
       </header>
 
       <DiffLegend />
+
+      <div className={styles.voiceRow}>
+        <span className={styles.filterLabel}>{t("voiceAssistant")}</span>
+        <span className={styles.switch}>
+          <input
+            type="checkbox"
+            className={styles.switchInput}
+            checked={voiceEnabled}
+            onChange={(e) => handleVoiceEnabledChange(e.target.checked)}
+          />
+          <span className={styles.switchTrack} />
+        </span>
+      </div>
+
+      {voiceEnabled && (
+        <div className={styles.voiceControlsRow}>
+          <button type="button" className={styles.voiceBtn} onClick={handleRepeat}>
+            {t("repeat")}
+          </button>
+          <label className={styles.autoToggleRow}>
+            <span className={styles.filterLabel}>{t("autoAdvance")}</span>
+            <span className={styles.switch}>
+              <input
+                type="checkbox"
+                className={styles.switchInput}
+                checked={autoAdvance}
+                onChange={(e) => handleAutoAdvanceChange(e.target.checked)}
+              />
+              <span className={styles.switchTrack} />
+            </span>
+          </label>
+          {autoAdvance && (
+            <button type="button" className={styles.voiceBtn} onClick={() => setAutoPaused((p) => !p)}>
+              {autoPaused ? t("resume") : t("pause")}
+            </button>
+          )}
+        </div>
+      )}
 
       <div className={styles.stepHeading}>
         {t("stepCounter", { current: state.currentRealStep, total: state.realStepsTotal })}
@@ -355,9 +490,7 @@ export function RunView({
       <section className={styles.instructionCard} data-kind={state.navigator.kind}>
         <div className={styles.instructionTag}>{tStepLabel(state.navigator.kind)}</div>
         <div className={runStyles.stepDescLabel}>{t("stepDescriptionLabel")}</div>
-        <p className={styles.instructionText}>
-          {tInstructions(state.navigator.key, mirrorNavigatorParams(state.navigator.params, racks, meta.mirrored))}
-        </p>
+        <p className={styles.instructionText}>{instructionText}</p>
       </section>
 
       <div className={styles.controls}>

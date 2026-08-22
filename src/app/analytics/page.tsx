@@ -48,6 +48,7 @@ interface RunRow {
 }
 
 const ONLY_WITH_FEEDBACK_KEY = "analytics.onlyWithFeedback";
+const ONLY_NEEDING_REPLY_KEY = "analytics.onlyNeedingReply";
 
 export default function AnalyticsPage() {
   const t = useTranslations("analytics");
@@ -80,7 +81,18 @@ export default function AnalyticsPage() {
   useEffect(() => {
     localStorage.setItem(ONLY_WITH_FEEDBACK_KEY, onlyWithFeedback ? "1" : "0");
   }, [onlyWithFeedback]);
-  const visibleRuns = onlyWithFeedback ? runs?.filter((r) => r.feedbackCount > 0) : runs;
+
+  const [onlyNeedingReply, setOnlyNeedingReply] = useState(
+    () => typeof window !== "undefined" && localStorage.getItem(ONLY_NEEDING_REPLY_KEY) === "1"
+  );
+  useEffect(() => {
+    localStorage.setItem(ONLY_NEEDING_REPLY_KEY, onlyNeedingReply ? "1" : "0");
+  }, [onlyNeedingReply]);
+
+  let visibleRuns = runs;
+  if (onlyWithFeedback) visibleRuns = visibleRuns?.filter((r) => r.feedbackCount > 0);
+  // "needs a reply" implies "has feedback" — checking both at once is just redundant, not conflicting.
+  if (onlyNeedingReply) visibleRuns = visibleRuns?.filter((r) => r.feedbackCount > 0 && !r.allFeedbackAnswered);
 
   const [feedbackModal, setFeedbackModal] = useState<{ title: string; planogramId: string } | null>(null);
 
@@ -176,6 +188,19 @@ export default function AnalyticsPage() {
               className={styles.switchInput}
               checked={onlyWithFeedback}
               onChange={(e) => setOnlyWithFeedback(e.target.checked)}
+            />
+            <span className={styles.switchTrack} />
+          </span>
+        </label>
+
+        <label className={styles.filterRow}>
+          <span className={styles.filterLabel}>{t("onlyNeedingReply")}</span>
+          <span className={styles.switch}>
+            <input
+              type="checkbox"
+              className={styles.switchInput}
+              checked={onlyNeedingReply}
+              onChange={(e) => setOnlyNeedingReply(e.target.checked)}
             />
             <span className={styles.switchTrack} />
           </span>

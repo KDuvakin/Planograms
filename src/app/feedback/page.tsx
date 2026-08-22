@@ -25,6 +25,7 @@ interface FeedbackRow {
   accepted: boolean;
   repliedBy: { email: string; name: string | null } | null;
   flaggedByStore: boolean;
+  flaggedBySpecialist: boolean;
   run: { planogram: { node: string } };
 }
 
@@ -71,12 +72,15 @@ export default function StoreFeedbackPage() {
             return (
               <div
                 key={f.id}
-                className={`${styles.recordCard} ${f.flaggedByStore ? styles.recordCardFlagged : ""}`}
+                className={`${styles.recordCard} ${
+                  f.flaggedBySpecialist ? styles.recordCardNeedsReply : f.flaggedByStore ? styles.recordCardFlagged : ""
+                }`}
               >
                 <div className={styles.recordHeader}>
                   <span>{f.run.planogram.node}</span>
                   <span>{new Date(f.createdAt).toLocaleString(locale)}</span>
                 </div>
+                {f.flaggedBySpecialist && <p className={styles.needsReplyNote}>{t("needsReplyNote")}</p>}
                 {f.photos.length > 0 && (
                   <div className={styles.thumbRow}>
                     {f.photos.map((p, i) => (

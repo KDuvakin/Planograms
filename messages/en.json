@@ -84,7 +84,12 @@
     "productLabel": "Product",
     "sapCodeLabel": "SAP code",
     "eanCodeLabel": "EAN code",
-    "stepDescriptionLabel": "Step description"
+    "stepDescriptionLabel": "Step description",
+    "voiceAssistant": "Voice assistant",
+    "repeat": "Repeat",
+    "autoAdvance": "Auto",
+    "pause": "Pause",
+    "resume": "Resume"
   },
   "stepLabel": {
     "pick": "Remove",
@@ -188,7 +193,7 @@
   "adminStores": {
     "title": "Stores",
     "newStoreTitle": "New store",
-    "code": "Code",
+    "code": "Store number",
     "name": "Name",
     "chain": "Chain",
     "format": "Format",
@@ -197,7 +202,7 @@
     "allStoresTitle": "All stores",
     "searchPlaceholder": "Search: code, name, chain, format, address, email",
     "table": {
-      "code": "Code",
+      "code": "Store number",
       "name": "Name",
       "chain": "Chain",
       "format": "Format",
@@ -288,18 +293,22 @@
     "noFeedback": "No feedback yet",
     "minutesShort": "min",
     "onlyWithFeedback": "With feedback only",
+    "onlyNeedingReply": "Not yet replied only",
     "replyPlaceholder": "Reply to the store…",
     "acceptedLabel": "Comment acknowledged",
     "saveReply": "Save",
     "saving": "Saving…",
-    "repliedByLabel": "Replied by"
+    "repliedByLabel": "Replied by",
+    "flagSpecialist": "Flag",
+    "unflagSpecialist": "Unflag"
   },
   "storeFeedback": {
     "title": "Feedback",
     "empty": "No feedback for your store yet",
     "flag": "Flag",
     "unflag": "Unflag",
-    "unseenBanner": "You have feedback replies ({count})"
+    "unseenBanner": "Feedback updates ({count})",
+    "needsReplyNote": "The specialist is asking you to clarify"
   },
   "productDetail": {
     "before": "Before",

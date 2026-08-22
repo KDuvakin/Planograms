@@ -24,6 +24,13 @@ export async function PATCH(req: Request, ctx: RouteContext<"/api/stores/[id]">)
     if (typeof body.address === "string") data.address = body.address.trim() || null;
     if (typeof body.email === "string") data.email = body.email.trim() || null;
 
+    if (data.code && data.code.length > 4) {
+      return NextResponse.json({ error: "Номер магазина: максимум 4 символа (например, T203)" }, { status: 400 });
+    }
+    if (data.format && data.format.length > 3) {
+      return NextResponse.json({ error: "Формат: максимум 3 символа" }, { status: 400 });
+    }
+
     const store = await prisma.store.update({ where: { id }, data });
     return NextResponse.json(store);
   } catch (e) {

@@ -94,7 +94,7 @@ export default function StoresAdminPage() {
         <div className={styles.form}>
           <label className={styles.field}>
             {t("code")}
-            <input className={styles.input} value={code} onChange={(e) => setCode(e.target.value)} required />
+            <input className={styles.input} value={code} onChange={(e) => setCode(e.target.value)} maxLength={4} required />
           </label>
           <label className={styles.field}>
             {t("name")}
@@ -106,7 +106,7 @@ export default function StoresAdminPage() {
           </label>
           <label className={styles.field}>
             {t("format")}
-            <input className={styles.input} value={format} onChange={(e) => setFormat(e.target.value)} />
+            <input className={styles.input} value={format} onChange={(e) => setFormat(e.target.value)} maxLength={3} />
           </label>
           <button className={styles.btnPrimary} type="submit" disabled={loading}>
             {loading ? t("creating") : t("create")}
@@ -147,6 +147,7 @@ export default function StoresAdminPage() {
                     <input
                       className={styles.input}
                       defaultValue={s.code}
+                      maxLength={4}
                       onBlur={(e) => {
                         if (e.target.value.trim() && e.target.value !== s.code) {
                           updateStore(s.id, { code: e.target.value });
@@ -176,6 +177,7 @@ export default function StoresAdminPage() {
                     <input
                       className={styles.input}
                       defaultValue={s.format ?? ""}
+                      maxLength={3}
                       onBlur={(e) => {
                         if (e.target.value !== (s.format ?? "")) updateStore(s.id, { format: e.target.value });
                       }}

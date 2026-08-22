@@ -16,6 +16,7 @@ export async function PATCH(req: Request, ctx: RouteContext<"/api/feedback/[id]"
       repliedAt?: Date;
       accepted?: boolean;
       flaggedByStore?: boolean;
+      flaggedBySpecialist?: boolean;
     } = {};
 
     if (role === "ADMIN" || role === "SPECIALIST") {
@@ -27,6 +28,15 @@ export async function PATCH(req: Request, ctx: RouteContext<"/api/feedback/[id]"
         data.repliedAt = new Date();
       }
       if (typeof body.accepted === "boolean") data.accepted = body.accepted;
+      if (typeof body.flaggedBySpecialist === "boolean") data.flaggedBySpecialist = body.flaggedBySpecialist;
+
+      // Actually answering (a non-empty reply, or ticking "accepted") addresses whatever
+      // the flag was asking about — clear it automatically so it never lingers, unless
+      // this same request is explicitly setting the flag itself.
+      const answering = (data.reply?.length ?? 0) > 0 || data.accepted === true;
+      if (answering && data.flaggedBySpecialist === undefined) {
+        data.flaggedBySpecialist = false;
+      }
     } else if (role === "STORE") {
       // The store may only flag feedback that belongs to its own runs.
       if (typeof body.flaggedByStore === "boolean") {

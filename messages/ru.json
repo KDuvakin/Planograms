@@ -84,7 +84,12 @@
     "productLabel": "Товар",
     "sapCodeLabel": "SAP код",
     "eanCodeLabel": "EAN код",
-    "stepDescriptionLabel": "Описание шага"
+    "stepDescriptionLabel": "Описание шага",
+    "voiceAssistant": "Голосовой помощник",
+    "repeat": "Повторить",
+    "autoAdvance": "Авто",
+    "pause": "Пауза",
+    "resume": "Продолжить"
   },
   "stepLabel": {
     "pick": "Убери",
@@ -188,7 +193,7 @@
   "adminStores": {
     "title": "Магазины",
     "newStoreTitle": "Новый магазин",
-    "code": "Код",
+    "code": "Номер магазина",
     "name": "Название",
     "chain": "Сеть",
     "format": "Формат",
@@ -197,7 +202,7 @@
     "allStoresTitle": "Все магазины",
     "searchPlaceholder": "Поиск: код, название, сеть, формат, адрес, email",
     "table": {
-      "code": "Код",
+      "code": "Номер магазина",
       "name": "Название",
       "chain": "Сеть",
       "format": "Формат",
@@ -288,18 +293,22 @@
     "noFeedback": "Пока нет отзывов",
     "minutesShort": "мин",
     "onlyWithFeedback": "Только с отзывами",
+    "onlyNeedingReply": "Только без ответа",
     "replyPlaceholder": "Ответ магазину…",
     "acceptedLabel": "Комментарий принят",
     "saveReply": "Сохранить",
     "saving": "Сохранение…",
-    "repliedByLabel": "Ответил"
+    "repliedByLabel": "Ответил",
+    "flagSpecialist": "Отметить",
+    "unflagSpecialist": "Снять отметку"
   },
   "storeFeedback": {
     "title": "Отзывы",
     "empty": "По вашему магазину пока нет отзывов",
     "flag": "Отметить",
     "unflag": "Снять отметку",
-    "unseenBanner": "Получен ответ на отзывы ({count})"
+    "unseenBanner": "Обновления по отзывам ({count})",
+    "needsReplyNote": "Специалист просит уточнить"
   },
   "productDetail": {
     "before": "Было",

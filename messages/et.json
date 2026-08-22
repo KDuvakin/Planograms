@@ -84,7 +84,12 @@
     "productLabel": "Toode",
     "sapCodeLabel": "SAP kood",
     "eanCodeLabel": "EAN kood",
-    "stepDescriptionLabel": "Sammu kirjeldus"
+    "stepDescriptionLabel": "Sammu kirjeldus",
+    "voiceAssistant": "Häälabiline",
+    "repeat": "Korda",
+    "autoAdvance": "Automaatne",
+    "pause": "Paus",
+    "resume": "Jätka"
   },
   "stepLabel": {
     "pick": "Eemalda",
@@ -188,7 +193,7 @@
   "adminStores": {
     "title": "Poed",
     "newStoreTitle": "Uus pood",
-    "code": "Kood",
+    "code": "Poe number",
     "name": "Nimi",
     "chain": "Kett",
     "format": "Formaat",
@@ -197,7 +202,7 @@
     "allStoresTitle": "Kõik poed",
     "searchPlaceholder": "Otsi: kood, nimi, kett, formaat, aadress, e-post",
     "table": {
-      "code": "Kood",
+      "code": "Poe number",
       "name": "Nimi",
       "chain": "Kett",
       "format": "Formaat",
@@ -288,18 +293,22 @@
     "noFeedback": "Tagasisidet pole veel",
     "minutesShort": "min",
     "onlyWithFeedback": "Ainult tagasisidega",
+    "onlyNeedingReply": "Ainult vastuseta",
     "replyPlaceholder": "Vastus poele…",
     "acceptedLabel": "Kommentaar kinnitatud",
     "saveReply": "Salvesta",
     "saving": "Salvestamine…",
-    "repliedByLabel": "Vastas"
+    "repliedByLabel": "Vastas",
+    "flagSpecialist": "Märgi",
+    "unflagSpecialist": "Eemalda märge"
   },
   "storeFeedback": {
     "title": "Tagasiside",
     "empty": "Teie poe kohta pole veel tagasisidet",
     "flag": "Märgi",
     "unflag": "Eemalda märge",
-    "unseenBanner": "Tagasisidele on vastatud ({count})"
+    "unseenBanner": "Tagasiside uuendused ({count})",
+    "needsReplyNote": "Spetsialist palub täpsustust"
   },
   "productDetail": {
     "before": "Enne",

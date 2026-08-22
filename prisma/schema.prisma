@@ -202,7 +202,13 @@ model Feedback {
   // reply, so a merchandiser can flag a row before anyone's replied to it.
   flaggedByStore Boolean @default(false)
 
-  // Flips true once the store has viewed a specialist's reply/acknowledgement —
+  // The specialist's own marker — set when they need the store to check something or
+  // clarify before a real reply can be given. Cleared automatically once they actually
+  // reply or tick "accepted" (see the PATCH /api/feedback/[id] handler), so it never
+  // lingers after the thing it was flagging for has been addressed.
+  flaggedBySpecialist Boolean @default(false)
+
+  // Flips true once the store has viewed a specialist's reply/acknowledgement/flag —
   // drives the "you got a reply" badge/banner without needing a separate read log.
   seenByStore Boolean @default(false)
 

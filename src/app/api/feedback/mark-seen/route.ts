@@ -13,9 +13,9 @@ export async function POST() {
         run: { planogram: { storeId: session.user.storeId ?? "__none__" } },
         seenByStore: false,
       },
-      select: { id: true, reply: true, accepted: true },
+      select: { id: true, reply: true, accepted: true, flaggedBySpecialist: true },
     });
-    const ids = candidates.filter((f) => f.reply?.trim() || f.accepted).map((f) => f.id);
+    const ids = candidates.filter((f) => f.reply?.trim() || f.accepted || f.flaggedBySpecialist).map((f) => f.id);
     if (ids.length > 0) {
       await prisma.feedback.updateMany({ where: { id: { in: ids } }, data: { seenByStore: true } });
     }

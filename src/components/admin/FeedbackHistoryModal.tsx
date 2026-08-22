@@ -21,6 +21,7 @@ export interface FeedbackHistoryItem {
   reply: string | null;
   accepted: boolean;
   repliedBy: { email: string; name: string | null } | null;
+  flaggedBySpecialist: boolean;
 }
 
 function ReplyForm({ item, onUpdated }: { item: FeedbackHistoryItem; onUpdated: () => void }) {
@@ -28,6 +29,7 @@ function ReplyForm({ item, onUpdated }: { item: FeedbackHistoryItem; onUpdated: 
   const [reply, setReply] = useState(item.reply ?? "");
   const [accepted, setAccepted] = useState(item.accepted);
   const [saving, setSaving] = useState(false);
+  const [flagging, setFlagging] = useState(false);
 
   async function handleSave() {
     setSaving(true);
@@ -37,6 +39,20 @@ function ReplyForm({ item, onUpdated }: { item: FeedbackHistoryItem; onUpdated: 
       body: JSON.stringify({ reply, accepted }),
     });
     setSaving(false);
+    onUpdated();
+  }
+
+  // Independent of the reply itself — lets a specialist say "I need the store to check
+  // or clarify something" before they're ready to write an actual answer. Saving a real
+  // reply (or ticking "accepted") clears it automatically on the server.
+  async function toggleFlag() {
+    setFlagging(true);
+    await fetch(`/api/feedback/${item.id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ flaggedBySpecialist: !item.flaggedBySpecialist }),
+    });
+    setFlagging(false);
     onUpdated();
   }
 
@@ -58,6 +74,9 @@ function ReplyForm({ item, onUpdated }: { item: FeedbackHistoryItem; onUpdated: 
         </label>
         <button type="button" className={styles.btnGhost} disabled={!dirty || saving} onClick={handleSave}>
           {saving ? t("saving") : t("saveReply")}
+        </button>
+        <button type="button" className={styles.btnGhost} disabled={flagging} onClick={toggleFlag}>
+          {item.flaggedBySpecialist ? t("unflagSpecialist") : t("flagSpecialist")}
         </button>
       </div>
     </div>
@@ -96,7 +115,10 @@ export function FeedbackHistoryModal({
           {items.map((f) => {
             const reasons = REASON_KEYS.filter((key) => f[key]);
             return (
-              <div key={f.id} className={styles.recordCard}>
+              <div
+                key={f.id}
+                className={`${styles.recordCard} ${f.flaggedBySpecialist ? styles.recordCardNeedsReply : ""}`}
+              >
                 <div className={styles.recordHeader}>
                   <span>{new Date(f.createdAt).toLocaleString(locale)}</span>
                 </div>

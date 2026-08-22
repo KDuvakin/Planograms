@@ -282,6 +282,14 @@
   background: var(--move-soft);
 }
 
+/* the specialist's "I need the store to check/clarify this" marker — a different
+   color from the store's own flag above, since the two are set by different people
+   and mean different things */
+.recordCardNeedsReply {
+  border-color: var(--danger);
+  background: var(--danger-soft);
+}
+
 .recordHeader {
   display: flex;
   align-items: baseline;
@@ -309,6 +317,13 @@
   font-size: 13px;
   color: var(--ink);
   font-style: italic;
+}
+
+.needsReplyNote {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--danger);
 }
 
 .replyReadout {
